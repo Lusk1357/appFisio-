@@ -1,0 +1,592 @@
+/* exercicios_dia.css */
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+html,
+body {
+	scrollbar-width: none;
+	-ms-overflow-style: none;
+}
+
+body::-webkit-scrollbar {
+	display: none;
+}
+
+body {
+	background-color: #f0f2f5;
+	font-family: "DM Sans", sans-serif;
+	display: flex;
+	justify-content: center;
+	min-height: 100vh;
+}
+
+.app-container {
+	width: 100%;
+	max-width: 430px;
+	min-height: 100vh;
+	background: #f0f2f5;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding-bottom: 100px;
+}
+
+/* ── Header ── */
+.page-header {
+	width: 100%;
+	padding: 14px 20px;
+	display: flex;
+	align-items: center;
+}
+
+.btn-back {
+	width: 36px;
+	height: 36px;
+	border: none;
+	background: transparent;
+	cursor: pointer;
+	color: #1a1a2e;
+	font-size: 18px;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: background 0.2s;
+}
+
+.btn-back:hover {
+	background: rgba(0, 0, 0, 0.06);
+}
+
+/* ── Hero ── */
+.profile-hero {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 10px;
+	margin-top: 4px;
+	margin-bottom: 16px;
+}
+
+.avatar-wrapper {
+	width: 90px;
+	height: 90px;
+	border-radius: 50%;
+	overflow: hidden;
+	background: #dce6fb;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	box-shadow: 0 4px 18px rgba(91, 138, 245, 0.2);
+}
+
+.avatar-placeholder {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 36px;
+	color: #7aa3ec;
+}
+
+.avatar-placeholder img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.patient-name {
+	font-family: "Bebas Neue", sans-serif;
+	font-size: 24px;
+	letter-spacing: 1.5px;
+	color: #1a1a2e;
+	text-transform: uppercase;
+}
+
+/* ── Navegação de dias ── */
+.day-nav-section {
+	width: 100%;
+	padding: 0 20px;
+	margin-bottom: 16px;
+}
+
+.month-year-label {
+	font-size: 12px;
+	font-weight: 500;
+	color: #6b7280;
+	margin-bottom: 4px;
+	text-transform: capitalize;
+}
+
+.day-nav {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.nav-btn {
+	width: 28px;
+	height: 28px;
+	border: none;
+	background: transparent;
+	color: #1a1a2e;
+	font-size: 14px;
+	cursor: pointer;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: background 0.15s;
+}
+
+.nav-btn:hover {
+	background: rgba(0, 0, 0, 0.07);
+}
+
+.day-label {
+	font-family: "DM Sans", sans-serif;
+	font-weight: 700;
+	font-size: 15px;
+	color: #1a1a2e;
+	text-transform: capitalize;
+}
+
+/* ── Lista de exercícios ── */
+.exercises-list {
+	width: 100%;
+	padding: 0 20px;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+/* Bloco de exercício */
+.exercise-block {
+	width: 100%;
+	height: 72px;
+	border-radius: 16px;
+	overflow: hidden;
+	position: relative;
+	cursor: pointer;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+	animation: slideIn 0.28s ease both;
+}
+
+@keyframes slideIn {
+	from {
+		opacity: 0;
+		transform: translateY(10px);
+	}
+
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@keyframes slideOut {
+	from {
+		opacity: 1;
+		transform: translateY(0);
+		max-height: 72px;
+		margin-bottom: 0;
+	}
+
+	to {
+		opacity: 0;
+		transform: translateY(-8px);
+		max-height: 0;
+		margin-bottom: -10px;
+	}
+}
+
+.exercise-block.removing {
+	animation: slideOut 0.28s ease forwards;
+	pointer-events: none;
+}
+
+.exercise-bg {
+	position: absolute;
+	inset: 0;
+	background: linear-gradient(135deg, #7aa3ec 0%, #4a7de8 100%);
+	/* quando houver imagem real: background-image */
+}
+
+.exercise-overlay {
+	position: absolute;
+	inset: 0;
+	background: linear-gradient(90deg,
+			rgba(26, 26, 46, 0.72) 0%,
+			rgba(26, 26, 46, 0.2) 100%);
+	display: flex;
+	align-items: center;
+	padding: 0 18px;
+}
+
+.exercise-name {
+	color: #fff;
+	font-family: "DM Sans", sans-serif;
+	font-weight: 700;
+	font-size: 15px;
+	letter-spacing: 0.3px;
+}
+
+/* Botão "+" para adicionar */
+.add-exercise-btn {
+	width: 100%;
+	height: 72px;
+	border-radius: 16px;
+	border: 2px dashed #b0c4f5;
+	background: #edf2fe;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	transition:
+		background 0.18s,
+		border-color 0.18s;
+	color: #5b8af5;
+	font-size: 28px;
+}
+
+.add-exercise-btn:hover {
+	background: #dce6fb;
+	border-color: #5b8af5;
+}
+
+/* ── Footer ── */
+.bottom-bar {
+	position: fixed;
+	bottom: 0;
+	left: 50%;
+	transform: translateX(-50%);
+	width: 100%;
+	max-width: 430px;
+	padding: 16px 20px;
+	background: #f0f2f5;
+	border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.btn-save {
+	width: 100%;
+	height: 52px;
+	background: #1a1a2e;
+	color: #fff;
+	border: none;
+	border-radius: 14px;
+	font-family: "DM Sans", sans-serif;
+	font-size: 15px;
+	font-weight: 700;
+	letter-spacing: 1.5px;
+	cursor: pointer;
+	transition:
+		background 0.2s,
+		transform 0.15s;
+}
+
+.btn-save:hover {
+	background: #2d2d4e;
+}
+
+.btn-save:active {
+	transform: scale(0.98);
+}
+
+.btn-save:disabled {
+	background: #9ca3af;
+	cursor: not-allowed;
+	transform: none;
+}
+
+/* ── Overlays e Popups ── */
+.overlay {
+	position: fixed;
+	inset: 0;
+	background: rgba(0, 0, 0, 0.45);
+	display: none;
+	align-items: flex-end;
+	justify-content: center;
+	z-index: 100;
+	animation: fadeOverlay 0.2s ease;
+}
+
+.overlay.open {
+	display: flex;
+}
+
+@keyframes fadeOverlay {
+	from {
+		opacity: 0;
+	}
+
+	to {
+		opacity: 1;
+	}
+}
+
+.popup {
+	width: 100%;
+	max-width: 430px;
+	background: #fff;
+	border-radius: 24px 24px 0 0;
+	padding: 20px;
+	animation: slideUp 0.28s cubic-bezier(0.175, 0.885, 0.32, 1.1) both;
+	max-height: 75vh;
+	overflow-y: auto;
+}
+
+@keyframes slideUp {
+	from {
+		transform: translateY(40px);
+		opacity: 0;
+	}
+
+	to {
+		transform: translateY(0);
+		opacity: 1;
+	}
+}
+
+.popup-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 16px;
+	font-weight: 700;
+	font-size: 15px;
+	color: #1a1a2e;
+}
+
+.popup-close {
+	width: 30px;
+	height: 30px;
+	border: none;
+	background: #f3f4f6;
+	border-radius: 50%;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 14px;
+	color: #6b7280;
+	transition: background 0.15s;
+}
+
+.popup-close:hover {
+	background: #e5e7eb;
+}
+
+/* Lista de escolha de exercício */
+.exercise-pick-list {
+	list-style: none;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	max-height: 50vh;
+	overflow-y: auto;
+	padding-right: 5px;
+	/* space for scrollbar */
+}
+
+.exercise-pick-list::-webkit-scrollbar {
+	width: 6px;
+}
+
+.exercise-pick-list::-webkit-scrollbar-thumb {
+	background-color: #cbd5e1;
+	border-radius: 4px;
+}
+
+.exercise-pick-list li {
+	padding: 14px 16px;
+	background: #f3f4f6;
+	border-radius: 12px;
+	font-weight: 600;
+	font-size: 14px;
+	color: #1a1a2e;
+	cursor: pointer;
+	transition:
+		background 0.15s,
+		transform 0.12s;
+}
+
+.exercise-pick-list li:hover {
+	background: #dce6fb;
+	transform: translateX(3px);
+}
+
+/* Opções do exercício */
+.options-list {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.option-btn {
+	width: 100%;
+	padding: 15px 18px;
+	border: none;
+	border-radius: 12px;
+	font-family: "DM Sans", sans-serif;
+	font-weight: 700;
+	font-size: 14px;
+	cursor: pointer;
+	letter-spacing: 0.5px;
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	transition:
+		filter 0.15s,
+		transform 0.12s;
+}
+
+.option-btn:active {
+	transform: scale(0.98);
+}
+
+.option-delete {
+	background: #fee2e2;
+	color: #dc2626;
+}
+
+.option-swap {
+	background: #dce6fb;
+	color: #2563eb;
+}
+
+.option-training {
+	background: #d1fae5;
+	color: #059669;
+}
+
+.option-delete:hover {
+	filter: brightness(0.95);
+}
+
+.option-swap:hover {
+	filter: brightness(0.95);
+}
+
+.option-training:hover {
+	filter: brightness(0.95);
+}
+
+/* Confirmação */
+.popup-confirm {
+	border-radius: 20px;
+	max-width: 380px;
+	margin: auto;
+	align-self: center;
+}
+
+.overlay.center {
+	align-items: center;
+}
+
+.confirm-text {
+	font-size: 15px;
+	color: #1a1a2e;
+	line-height: 1.5;
+	margin-bottom: 20px;
+	text-align: center;
+}
+
+.confirm-btns {
+	display: flex;
+	gap: 10px;
+}
+
+.btn-confirm-no,
+.btn-confirm-yes {
+	flex: 1;
+	height: 46px;
+	border: none;
+	border-radius: 12px;
+	font-family: "DM Sans", sans-serif;
+	font-weight: 700;
+	font-size: 14px;
+	cursor: pointer;
+	letter-spacing: 0.5px;
+	transition: filter 0.15s;
+}
+
+.btn-confirm-no {
+	background: #f3f4f6;
+	color: #374151;
+}
+
+.btn-confirm-yes {
+	background: #1a1a2e;
+	color: #fff;
+}
+
+.btn-confirm-no:hover {
+	filter: brightness(0.95);
+}
+
+.btn-confirm-yes:hover {
+	background: #2d2d4e;
+}
+
+/* ── Toast ── */
+#toast-container {
+	position: fixed;
+	top: 20px;
+	right: 20px;
+	left: 20px;
+	z-index: 9999;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 10px;
+	pointer-events: none;
+}
+
+.toast {
+	min-width: 280px;
+	max-width: 400px;
+	padding: 16px 20px;
+	border-radius: 12px;
+	color: #fff;
+	font-family: "DM Sans", sans-serif;
+	font-size: 15px;
+	font-weight: 700;
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+	opacity: 0;
+	transform: translateY(-20px);
+	animation: slideDown 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.toast i {
+	font-size: 20px;
+}
+
+.toast.success {
+	background-color: #10b981;
+}
+
+.toast.error {
+	background-color: #ef4444;
+}
+
+@keyframes slideDown {
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@keyframes fadeOut {
+	to {
+		opacity: 0;
+		transform: translateY(-20px);
+	}
+}

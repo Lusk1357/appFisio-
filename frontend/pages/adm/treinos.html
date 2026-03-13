@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Treinos - Pro Fisio</title>
+
+  <link rel="stylesheet" href="/style/adm/treinos.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <!-- Banco de dados de exercícios — deve ser carregado ANTES do treinos.js -->
+  <script src="/data/exercicios_db.js"></script>
+  <script src="/script/adm/treinos.js" defer></script>
+</head>
+
+<body>
+  <div class="app-container">
+
+    <!-- Header -->
+    <header class="page-header" style="justify-content: space-between;">
+      <button class="btn-back" onclick="history.back()">
+        <i class="fa-solid fa-chevron-left"></i>
+      </button>
+      <button class="btn-back" onclick="window.location.href='/pages/adm/home_adm.html'" title="Página Inicial">
+        <i class="fa-solid fa-house"></i>
+      </button>
+    </header>
+
+    <!-- Avatar + Nome do exercício -->
+    <section class="profile-hero">
+      <div class="avatar-wrapper">
+        <div class="avatar-circle" id="avatarDisplay">
+          <span id="exerciseInitials">?</span>
+        </div>
+      </div>
+      <h1 class="exercise-title" id="exerciseTitle">—</h1>
+      <p class="patient-subtitle" id="patientSubtitle">—</p>
+    </section>
+
+    <!-- Grade de treinos -->
+    <main class="treinos-grid" id="treinosGrid"></main>
+
+    <!-- Estado vazio -->
+    <div class="empty-state" id="emptyState" style="display:none">
+      <i class="fa-regular fa-circle-play"></i>
+      <p>Nenhum treino cadastrado para este exercício.</p>
+    </div>
+
+  </div>
+
+  <!-- ── Pop-up de vídeo ── -->
+  <div class="overlay" id="overlayVideo">
+    <div class="video-popup">
+      <div class="video-popup-header">
+        <span id="videoTitle">—</span>
+        <button class="popup-close" id="btnCloseVideo">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="video-wrapper">
+        <iframe id="videoFrame" src="" frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen></iframe>
+      </div>
+    </div>
+  </div>
+
+</body>
+
+</html>

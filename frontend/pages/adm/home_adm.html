@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Home Administrador - Pro Fisio</title>
+
+  <link rel="stylesheet" href="/style/adm/home_adm.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <script src="/script/adm/home_adm.js" defer></script>
+</head>
+
+<body>
+  <div class="app-container">
+
+    <!-- ══════════════════════════════
+         HERO HEADER
+    ══════════════════════════════════ -->
+    <header class="home-hero">
+      <div class="hero-texture"></div>
+
+      <h1 class="home-title">PRO <span>FISIO</span></h1>
+      <p class="home-subtitle">Painel de Controle</p>
+
+      <div class="hero-user-row">
+        <div class="hero-avatar">
+          <i class="fa-solid fa-user-shield" aria-hidden="true"></i>
+        </div>
+        <div class="hero-user-info">
+          <span class="hero-user-role">Nível de Acesso</span>
+          <span class="hero-user-name">Administrador</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- ══════════════════════════════
+         DASHBOARD STATS (NOVO)
+    ══════════════════════════════════ -->
+    <div class="dashboard-stats" id="dashboard-stats">
+      <div class="stat-box">
+        <span class="stat-value" id="stat-pacientes">--</span>
+        <span class="stat-label">Pacientes</span>
+      </div>
+      <div class="stat-box">
+        <span class="stat-value" id="stat-rotinas">--</span>
+        <span class="stat-label">Rotinas</span>
+      </div>
+      <div class="stat-box">
+        <span class="stat-value" id="stat-exercicios">--</span>
+        <span class="stat-label">Exercícios</span>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════
+         MENU PRINCIPAL
+    ══════════════════════════════════ -->
+    <div class="section-header">
+      <span class="section-title">Ações Principais</span>
+    </div>
+
+    <div class="actions-grid">
+
+      <!-- Cadastrar Pacientes -->
+      <button class="action-card card-primary" id="btn-cadastrar-pacientes"
+        onclick="goTo('/pages/adm/cadastro_paciente.html', event)" aria-label="Cadastrar Pacientes">
+        <div class="card-icon">
+          <i class="fa-solid fa-user-plus" aria-hidden="true"></i>
+        </div>
+        <span class="card-label">Cadastrar Pacientes</span>
+      </button>
+
+      <!-- Listar Pacientes -->
+      <button class="action-card card-dark" id="btn-listar-pacientes" onclick="goTo('/pages/adm/pacientes.html', event)"
+        aria-label="Listar Pacientes">
+        <div class="card-icon">
+          <i class="fa-solid fa-users" aria-hidden="true"></i>
+        </div>
+        <span class="card-label">Listar Pacientes</span>
+      </button>
+
+      <!-- Gerenciar Exercícios -->
+      <button class="action-card card-surface" id="btn-gerenciar-exercicios"
+        onclick="goTo('/pages/adm/gerenciar_exercicios.html', event)" aria-label="Gerenciar Exercícios">
+        <div class="card-icon">
+          <i class="fa-solid fa-dumbbell" aria-hidden="true"></i>
+        </div>
+        <span class="card-label">Gerenciar Exercícios</span>
+      </button>
+
+      <!-- Criar Rotina -->
+      <button class="action-card card-surface" id="btn-criar-rotina"
+        onclick="goTo('/pages/adm/cadastro_rotina.html', event)" aria-label="Criar Rotina de Treino">
+        <div class="card-icon">
+          <i class="fa-solid fa-notes-medical" aria-hidden="true"></i>
+        </div>
+        <span class="card-label">Criar Rotina de Treino</span>
+      </button>
+
+      <!-- Dicas e Vídeos – full width -->
+      <button class="action-card card-tip full-width" id="btn-dicas" onclick="goTo('/pages/adm/dicas.html', event)"
+        aria-label="Gerenciar Dicas e Vídeos">
+        <div class="card-icon">
+          <i class="fa-solid fa-video" aria-hidden="true"></i>
+        </div>
+        <div class="card-tip-text">
+          <span class="card-label">Gerenciar Dicas e Vídeos</span>
+          <span class="card-tip-sub">Publique conteúdos para os pacientes</span>
+        </div>
+        <div class="card-tip-arrow">
+          <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+        </div>
+      </button>
+
+    </div>
+
+    <!-- ══════════════════════════════
+         LOGOUT
+    ══════════════════════════════════ -->
+    <div class="section-divider"></div>
+    <div class="logout-area">
+      <button class="btn-logout" id="btn-logout" onclick="handleLogout()" aria-label="Sair do Sistema">
+        <i class="fa-solid fa-arrow-right-from-bracket" aria-hidden="true"></i>
+        Sair do Sistema
+      </button>
+    </div>
+
+  </div>
+</body>
+
+</html>

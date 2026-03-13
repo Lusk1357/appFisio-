@@ -1,0 +1,479 @@
+/* editar_perfil_paciente.css */
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+html,
+body {
+	scrollbar-width: none;
+	-ms-overflow-style: none;
+}
+
+body::-webkit-scrollbar {
+	display: none;
+}
+
+body {
+	background-color: #f4f5f9;
+	font-family: "DM Sans", sans-serif;
+	display: flex;
+	justify-content: center;
+	min-height: 100vh;
+}
+
+.app-wrapper {
+	width: 100%;
+	max-width: 480px;
+	min-height: 100vh;
+	background: #f4f5f9;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding-bottom: 120px;
+}
+
+/* ── Header ── */
+.page-header {
+	width: 100%;
+	padding: 14px 20px;
+	display: flex;
+	align-items: center;
+}
+
+.btn-back {
+	width: 36px;
+	height: 36px;
+	border: none;
+	background: transparent;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: #1a1a2e;
+	font-size: 18px;
+	border-radius: 50%;
+	transition: background 0.2s;
+}
+
+.btn-back:hover {
+	background: rgba(0, 0, 0, 0.06);
+}
+
+/* ── Hero ── */
+.profile-hero {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 16px;
+	margin-top: 40px;
+	margin-bottom: 30px;
+}
+
+.avatar-wrapper {
+	width: 110px;
+	height: 110px;
+	border-radius: 50%;
+	overflow: hidden;
+	background: #e6edff;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.avatar-placeholder {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.avatar-placeholder img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.name-edit-row {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+}
+
+.patient-name {
+	font-family: "Bebas Neue", sans-serif;
+	font-size: 32px;
+	letter-spacing: 1.5px;
+	color: #1a1a2e;
+	text-transform: uppercase;
+}
+
+.btn-edit-wrapper {
+	position: relative;
+	display: flex;
+	align-items: center;
+}
+
+.btn-edit-name {
+	background: #86a7f1;
+	border: none;
+	color: #ffffff;
+	font-size: 15px;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 34px;
+	height: 34px;
+	border-radius: 50%;
+	transition: background 0.2s, color 0.2s, transform 0.15s;
+	flex-shrink: 0;
+}
+
+.btn-edit-name:hover {
+	background: #3a6be0;
+	transform: scale(1.1);
+}
+
+.btn-edit-name:active {
+	transform: scale(0.95);
+}
+
+.editing .btn-edit-name {
+	background: #fee2e2;
+	color: #ef4444;
+}
+
+.editing .btn-edit-name:hover {
+	background: #fecaca;
+}
+
+/* ── Tooltip ── */
+.edit-tooltip {
+	position: absolute;
+	left: calc(100% + 10px);
+	top: 50%;
+	transform: translateY(-50%) scale(0.85);
+	background: #1a1a2e;
+	color: #fff;
+	font-family: "DM Sans", sans-serif;
+	font-size: 12px;
+	font-weight: 600;
+	letter-spacing: 0.4px;
+	white-space: nowrap;
+	padding: 6px 12px;
+	border-radius: 8px;
+	pointer-events: none;
+	opacity: 0;
+	transition: opacity 0.2s ease, transform 0.2s ease;
+	z-index: 10;
+}
+
+/* Seta apontando para o botão */
+.edit-tooltip::before {
+	content: "";
+	position: absolute;
+	right: 100%;
+	top: 50%;
+	transform: translateY(-50%);
+	border: 5px solid transparent;
+	border-right-color: #1a1a2e;
+}
+
+.btn-edit-wrapper:hover .edit-tooltip {
+	opacity: 1;
+	transform: translateY(-50%) scale(1);
+}
+
+/* Quando estiver em modo de edição, a tooltip muda para "Cancelar" */
+.editing .edit-tooltip {
+	background: #ef4444;
+}
+
+.editing .edit-tooltip::before {
+	border-right-color: #ef4444;
+}
+
+/* ── Formulário ── */
+.edit-form {
+	width: 100%;
+	padding: 0 24px;
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+
+.form-group {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	border-radius: 10px;
+	overflow: hidden;
+}
+
+label {
+	font-size: 14px;
+	font-weight: 700;
+	color: #ffffff;
+	background: #5b8af5;
+	padding: 8px 16px;
+	display: block;
+}
+
+.input-wrapper {
+	background: #e6edff;
+	padding: 12px 16px;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	transition: background 0.3s;
+}
+
+.btn-gerar-inline {
+	background: transparent;
+	border: none;
+	color: #5b8af5;
+	font-family: "DM Sans", sans-serif;
+	font-size: 12px;
+	font-weight: 700;
+	letter-spacing: 0.5px;
+	cursor: pointer;
+	padding: 2px 4px;
+	white-space: nowrap;
+	flex-shrink: 0;
+	transition: opacity 0.2s;
+}
+
+.btn-gerar-inline:hover {
+	opacity: 0.7;
+}
+
+.btn-gerar-inline:disabled {
+	opacity: 0.3;
+	cursor: default;
+}
+
+.input-icon {
+	flex-shrink: 0;
+}
+
+/* Modos de Estado (Read-Only vs Edit) */
+.readonly .input-wrapper {
+	background: #e2e4ea;
+}
+
+.readonly input {
+	color: #4b5563;
+}
+
+.input-row-wrapper {
+	gap: 10px;
+}
+
+.input-flex-fill {
+	flex: 2;
+}
+
+.input-flex-small {
+	flex: 1;
+	text-align: center;
+}
+
+input {
+	border: none;
+	background: transparent;
+	width: 100%;
+	font-family: "DM Sans", sans-serif;
+	font-size: 16px;
+	font-weight: 400;
+	color: #1a1a2e;
+	outline: none;
+}
+
+input::placeholder {
+	color: #9ca3af;
+}
+
+/* ── Footer ── */
+.bottom-bar {
+	display: none;
+	/* Oculto por padrão no modo leitura */
+	position: fixed;
+	bottom: 0;
+	left: 50%;
+	transform: translateX(-50%);
+	width: 100%;
+	max-width: 480px;
+	padding: 24px;
+	background: transparent;
+	/* No background on container to match image */
+}
+
+.editing .bottom-bar {
+	display: block;
+	animation: slideUpFade 0.3s ease-out forwards;
+}
+
+@keyframes slideUpFade {
+	from {
+		opacity: 0;
+		transform: translate(-50%, 20px);
+	}
+
+	to {
+		opacity: 1;
+		transform: translate(-50%, 0);
+	}
+}
+
+/* Add a line above the button container */
+.bottom-bar::before {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 24px;
+	right: 24px;
+	height: 1px;
+	background-color: rgba(0, 0, 0, 0.08);
+}
+
+.btn-save {
+	width: 100%;
+	height: 52px;
+	background: #1a1a2e;
+	color: #fff;
+	border: none;
+	border-radius: 12px;
+	font-family: "DM Sans", sans-serif;
+	font-size: 16px;
+	font-weight: 700;
+	letter-spacing: 1px;
+	cursor: pointer;
+	transition: background 0.2s, transform 0.15s;
+}
+
+.btn-save:hover {
+	background: #2d2d4e;
+}
+
+.btn-save:active {
+	transform: scale(0.98);
+}
+
+/* ── Toast ── */
+#toast-container {
+	position: fixed;
+	top: 20px;
+	right: 20px;
+	left: 20px;
+	z-index: 9999;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 10px;
+	pointer-events: none;
+}
+
+.toast {
+	min-width: 280px;
+	max-width: 400px;
+	padding: 16px 20px;
+	border-radius: 12px;
+	color: #fff;
+	font-family: "DM Sans", sans-serif;
+	font-size: 15px;
+	font-weight: 700;
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+	opacity: 0;
+	transform: translateY(-20px);
+	animation: slideDown 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.toast i {
+	font-size: 20px;
+}
+
+.toast.success {
+	background-color: #10b981;
+}
+
+.toast.error {
+	background-color: #ef4444;
+}
+
+@keyframes slideDown {
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@keyframes fadeOut {
+	to {
+		opacity: 0;
+		transform: translateY(-20px);
+	}
+}
+
+@media (min-width: 640px) {
+	body {
+		padding: 40px 20px;
+	}
+
+	.app-wrapper {
+		max-width: 650px;
+		margin: 0 auto;
+		border-radius: 24px;
+		background: #ffffff;
+		box-shadow: 0 16px 48px rgba(0, 0, 0, 0.08);
+		min-height: auto;
+		overflow: hidden;
+	}
+
+	.page-header {
+		padding: 40px 48px 10px;
+		background: #ffffff;
+		border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+	}
+
+	.form-content {
+		padding: 0 48px 48px;
+	}
+
+	.profile-hero {
+		margin-top: 20px;
+	}
+}
+
+/* ── Botão salvar unificado ── */
+.btn-submit {
+	width: 100%;
+	height: 54px;
+	background-color: #1a1a2e;
+	color: white;
+	font-family: "Bebas Neue", sans-serif;
+	font-size: 22px;
+	border: none;
+	border-radius: 12px;
+	cursor: pointer;
+	letter-spacing: 1px;
+	margin-top: 24px;
+	transition: background 0.3s, transform 0.15s;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.btn-submit:hover {
+	background-color: #2d2d4e;
+}
+
+.btn-submit:active {
+	transform: scale(0.98);
+}

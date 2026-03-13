@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Exercícios do Dia - Pro Fisio</title>
+
+  <link rel="stylesheet" href="/style/adm/exercicios_dia.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <script src="/script/adm/exercicios_dia.js" defer></script>
+</head>
+
+<body>
+  <div class="app-container">
+
+    <!-- Header -->
+    <header class="page-header">
+      <button class="btn-back" onclick="history.back()">
+        <i class="fa-solid fa-chevron-left"></i>
+      </button>
+    </header>
+
+    <!-- Avatar + Nome -->
+    <section class="profile-hero">
+      <div class="avatar-wrapper">
+        <div class="avatar-placeholder" id="avatarDisplay">
+          <i class="fa-solid fa-user"></i>
+        </div>
+      </div>
+      <h1 class="patient-name" id="patientName">—</h1>
+    </section>
+
+    <!-- Navegação de dias -->
+    <section class="day-nav-section">
+      <p class="month-year-label" id="monthYearLabel">—</p>
+      <div class="day-nav">
+        <button class="nav-btn" id="btnPrevDay"><i class="fa-solid fa-chevron-left"></i></button>
+        <span class="day-label" id="dayLabel">—</span>
+        <button class="nav-btn" id="btnNextDay"><i class="fa-solid fa-chevron-right"></i></button>
+      </div>
+    </section>
+
+    <!-- Lista de exercícios -->
+    <main class="exercises-list" id="exercisesList"></main>
+
+    <!-- Rodapé -->
+    <footer class="bottom-bar">
+      <button class="btn-save" id="btnSave">SALVAR</button>
+    </footer>
+
+  </div>
+
+  <!-- ── Pop-up: lista de exercícios ── -->
+  <div class="overlay" id="overlayExercises">
+    <div class="popup" id="popupExercises">
+      <div class="popup-header">
+        <span>Selecionar Exercício</span>
+        <button class="popup-close" id="btnCloseExercises"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div id="applyAllContainer"
+        style="padding: 12px 16px; background: #f8fafc; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; gap: 8px;">
+        <input type="checkbox" id="chkApplyAll" checked
+          style="width: 16px; height: 16px; accent-color: #5b8af5; cursor: pointer;">
+        <label for="chkApplyAll" style="font-size: 13px; font-weight: 600; color: #1a1a2e; cursor: pointer;">Aplicar a
+          todos os dias selecionados</label>
+      </div>
+      <ul class="exercise-pick-list" id="exercisePickList"></ul>
+    </div>
+  </div>
+
+  <!-- ── Pop-up: opções do exercício ── -->
+  <div class="overlay" id="overlayOptions">
+    <div class="popup" id="popupOptions">
+      <div class="popup-header">
+        <span id="optionsTitle">Opções</span>
+        <button class="popup-close" id="btnCloseOptions"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="options-list">
+        <button class="option-btn option-delete" id="optDelete"> <i class="fa-solid fa-trash"></i> APAGAR</button>
+        <button class="option-btn option-swap" id="optSwap"> <i class="fa-solid fa-shuffle"></i> TROCAR
+          EXERCÍCIO</button>
+        <button class="option-btn option-training" id="optTraining"><i class="fa-solid fa-dumbbell"></i> ADICIONAR
+          TREINO</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Pop-up: confirmação apagar ── -->
+  <div class="overlay" id="overlayConfirmDelete">
+    <div class="popup popup-confirm">
+      <p class="confirm-text">Tem certeza que deseja excluir <strong id="deleteExName"></strong>?</p>
+      <div class="confirm-btns">
+        <button class="btn-confirm-no" id="btnDeleteNo">NÃO</button>
+        <button class="btn-confirm-yes" id="btnDeleteYes">SIM</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Pop-up: confirmação trocar ── -->
+  <div class="overlay" id="overlayConfirmSwap">
+    <div class="popup popup-confirm">
+      <p class="confirm-text">Tem certeza que deseja trocar <strong id="swapOldName"></strong> por <strong
+          id="swapNewName"></strong>?</p>
+      <div class="confirm-btns">
+        <button class="btn-confirm-no" id="btnSwapNo">NÃO</button>
+        <button class="btn-confirm-yes" id="btnSwapYes">SIM</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Pop-up: Adicionar Exercício (Séries e Obs) ── -->
+  <div class="overlay" id="overlayAddOptions">
+    <div class="popup" id="popupAddOptions">
+      <div class="popup-header">
+        <span>Detalhes do Exercício</span>
+        <button class="popup-close" id="btnCloseAddOptions"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div style="padding: 16px;">
+        <div class="form-group" style="margin-bottom: 12px;">
+          <label for="addSeries"
+            style="display: block; font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 5px;">Séries /
+            Repetições</label>
+          <input type="text" id="addSeries" placeholder="Ex: 3x15"
+            style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-family: 'DM Sans', sans-serif;" />
+        </div>
+        <div class="form-group" style="margin-bottom: 16px;">
+          <label for="addObservation"
+            style="display: block; font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 5px;">Observação
+            específica (Opcional)</label>
+          <input type="text" id="addObservation" placeholder="Ex: Cuidado com o limite..."
+            style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-family: 'DM Sans', sans-serif;" />
+        </div>
+        <button id="btnConfirmAddOptions"
+          style="width: 100%; margin-top: 10px; padding: 15px; border: none; border-radius: 12px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 700; color: #fff; background: #1a1a2e; letter-spacing: 1px; cursor: pointer;">CONFIRMAR
+          INCLUSÃO</button>
+      </div>
+    </div>
+  </div>
+
+</body>
+
+</html>

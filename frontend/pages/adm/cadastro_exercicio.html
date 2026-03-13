@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cadastrar Exercício - Pro Fisio</title>
+
+    <link rel="stylesheet" href="/style/adm/cadastro_adm.css" />
+    <script src="/script/adm/cadastro_exercicio.js" defer></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+
+<body>
+    <div class="app-wrapper">
+        <header class="page-header">
+            <button onclick="back()" class="btn-back" aria-label="Voltar">
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <h1>CADASTRAR EXERCÍCIO</h1>
+            <p class="subtitle">
+                Insira as informações do novo exercício
+            </p>
+        </header>
+
+        <form>
+            <div class="form-group">
+                <label for="nome">Nome do Exercício</label>
+                <div class="input-wrapper">
+                    <input type="text" id="nome" placeholder="Ex: Alongamento de Panturrilha" />
+                    <i class="fa-solid fa-dumbbell input-icon"></i>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="categoria">Categoria</label>
+                <div class="input-wrapper">
+                    <input type="text" id="categoria" placeholder="Ex: Membros Inferiores" />
+                    <i class="fa-solid fa-tag input-icon"></i>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="observacao">Observação (Opcional)</label>
+                <div class="input-wrapper">
+                    <input type="text" id="observacao" placeholder="Ex: Mantenha a coluna reta..." />
+                    <i class="fa-solid fa-comment-medical input-icon"></i>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="videoLink">Link do Vídeo / Imagem (Opcional)</label>
+                <div class="input-wrapper">
+                    <input type="url" id="videoLink" placeholder="Ex: https://youtube.com/..." />
+                    <i class="fa-solid fa-video input-icon"></i>
+                </div>
+            </div>
+
+            <button type="button" class="btn-submit" id="btn-cadastrar">CADASTRAR EXERCÍCIO</button>
+        </form>
+    </div>
+</body>
+
+</html>

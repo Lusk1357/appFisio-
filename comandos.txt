@@ -1,0 +1,9 @@
+npx nodemon src/server.js
+
+http://localhost:3000/pages/auth/login.html
+
+npx prisma studio
+
+admin@clinica.com
+Lucas2@gmail.com
+1234567

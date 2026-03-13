@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gerenciar Exercícios - Pro Fisio</title>
+
+    <link rel="stylesheet" href="/style/adm/gerenciar_exercicios.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <script src="/script/adm/gerenciar_exercicios.js" defer></script>
+</head>
+
+<body>
+
+    <div class="app-wrapper">
+
+        <!-- Header -->
+        <header class="page-header">
+            <button class="btn-back" onclick="history.back()">
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <span class="header-title">Gerenciar Exercícios</span>
+            <button class="btn-back" onclick="window.location.href='/pages/adm/home_adm.html'" title="Página Inicial">
+                <i class="fa-solid fa-house"></i>
+            </button>
+        </header>
+
+        <!-- Título + controles -->
+        <div class="section-top">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+                <h1 class="section-title" style="margin-bottom: 0;">EXERCÍCIOS</h1>
+                <button class="btn-primary-small" onclick="window.location.href='/pages/adm/cadastro_exercicio.html'">
+                    <i class="fa-solid fa-plus"></i> Novo
+                </button>
+            </div>
+
+            <!-- Barra de busca -->
+            <div class="search-bar">
+                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                <input type="text" id="searchInput" placeholder="Buscar exercício..." />
+            </div>
+
+            <div class="filter-bar">
+                <span class="filter-label">Ordenar por:</span>
+                <div class="filter-pills" id="filterPills">
+                    <button class="pill active" data-sort="az">A–Z</button>
+                    <button class="pill" data-sort="za">Z–A</button>
+                    <button class="pill" data-sort="type">Categoria</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lista de exercícios -->
+        <main class="exercises-list" id="exercisesList">
+            <!-- Preenchida via JS -->
+        </main>
+
+        <!-- Estado vazio -->
+        <div class="empty-state" id="emptyState" style="display:none">
+            <i class="fa-solid fa-dumbbell"></i>
+            <p>Nenhum exercício cadastrado ainda.</p>
+        </div>
+
+    </div>
+
+    <!-- ═══════════════════════════════
+         MODAL DE EDIÇÃO
+    ═══════════════════════════════════ -->
+    <div class="modal-overlay" id="editModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Editar Exercício</h2>
+                <button class="modal-close-btn" id="closeEditModal">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <form id="editForm">
+                <input type="hidden" id="editId" />
+                <div class="form-group">
+                    <label for="editNome">Nome do Exercício</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="editNome" placeholder="Nome do exercício" />
+                        <i class="fa-solid fa-dumbbell input-icon"></i>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="editCategoria">Categoria</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="editCategoria" placeholder="Ex: Fortalecimento" />
+                        <i class="fa-solid fa-tag input-icon"></i>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="editObservacao">Observação (Opcional)</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="editObservacao" placeholder="Observação..." />
+                        <i class="fa-solid fa-comment-medical input-icon"></i>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="editVideoLink">Link do Vídeo (Opcional)</label>
+                    <div class="input-wrapper">
+                        <input type="url" id="editVideoLink" placeholder="https://..." />
+                        <i class="fa-solid fa-video input-icon"></i>
+                    </div>
+                </div>
+                <button type="submit" class="btn-save" id="btnSaveEdit">
+                    <i class="fa-solid fa-check"></i> SALVAR ALTERAÇÕES
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════
+         MODAL DE CONFIRMAÇÃO DE EXCLUSÃO
+    ═══════════════════════════════════ -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal-content modal-delete">
+            <div class="delete-icon-circle">
+                <i class="fa-solid fa-trash-can"></i>
+            </div>
+            <h2>Excluir Exercício?</h2>
+            <p class="delete-msg" id="deleteMsg">Tem certeza que deseja excluir este exercício? Esta ação não pode ser desfeita.</p>
+            <div class="delete-actions">
+                <button class="btn-cancel" id="cancelDelete">Cancelar</button>
+                <button class="btn-confirm-delete" id="confirmDelete">
+                    <i class="fa-solid fa-trash-can"></i> Excluir
+                </button>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

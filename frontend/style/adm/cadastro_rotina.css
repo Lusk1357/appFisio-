@@ -1,0 +1,113 @@
+/* cadastro_rotina.css */
+
+.exercises-section {
+    margin-top: 24px;
+    background: #fff;
+    border-radius: 16px;
+    padding: 20px;
+    border: 1px solid #e5e7eb;
+}
+
+.exercises-section h3 {
+    font-size: 15px;
+    color: #1a1a2e;
+    margin-bottom: 16px;
+    font-weight: 700;
+}
+
+.exercises-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 8px;
+    scrollbar-width: thin;
+}
+
+.exercise-container {
+    border: 1px solid #f1f5f9;
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 12px;
+    background: #f8fafc;
+    transition: all 0.2s ease;
+}
+
+.exercise-container:hover {
+    border-color: #5b8af5;
+    background: #fff;
+}
+
+.exercise-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    font-family: "DM Sans", sans-serif;
+}
+
+.exercise-item input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    accent-color: #5b8af5;
+    flex-shrink: 0;
+}
+
+.exercise-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.exercise-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1a1a2e;
+}
+
+.exercise-category {
+    font-size: 12px;
+    color: #64748b;
+    font-weight: 500;
+}
+
+.exercise-details-inputs {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px dashed #e2e8f0;
+}
+
+.exercise-details-inputs input {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 13px;
+    font-family: "DM Sans", sans-serif;
+    color: #1f2937;
+    transition: border-color 0.2s;
+}
+
+.exercise-details-inputs input:focus {
+    border-color: #5b8af5;
+    outline: none;
+}
+
+.empty-exercises {
+    font-size: 14px;
+    color: #9ca3af;
+    text-align: center;
+    padding: 30px 20px;
+    font-weight: 500;
+}
+
+/* =============================================
+   RESPONSIVE — TABLET & DESKTOP (≥ 640px)
+   ============================================= */
+@media (min-width: 640px) {
+    .exercises-list {
+        max-height: 500px;
+    }
+}

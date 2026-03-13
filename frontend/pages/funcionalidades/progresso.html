@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meu Progresso - Pro Fisio</title>
+
+  <link rel="stylesheet" href="/style/funcionalidades/home.css">
+  <link rel="stylesheet" href="/style/funcionalidades/treinamento.css">
+  <link rel="stylesheet" href="/style/funcionalidades/progresso.css">
+  <style>
+    .ach-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+
+    .achievement-item {
+      flex-direction: column;
+      text-align: center;
+      padding: 15px 10px;
+    }
+
+    .ach-text {
+      margin-left: 0;
+      margin-top: 10px;
+    }
+
+    @media (max-width: 400px) {
+      .ach-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .achievement-item {
+        flex-direction: row;
+        text-align: left;
+      }
+
+      .ach-text {
+        margin-left: 15px;
+        margin-top: 0;
+      }
+    }
+  </style>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <script src="/script/components.js"></script>
+  <script src="/script/funcionalidades/progresso.js" defer></script>
+  <style>
+    @keyframes slideDown {
+      from {
+        top: -100px;
+        opacity: 0;
+      }
+
+      to {
+        top: 20px;
+        opacity: 1;
+      }
+    }
+
+    @keyframes slideUp {
+      from {
+        top: 20px;
+        opacity: 1;
+      }
+
+      to {
+        top: -100px;
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app-container">
+
+    <div class="header-bg compact-header banner-header">
+      <div class="top-nav">
+        <div class="menu-left">
+          <button class="btn-back" onclick="window.location.href='/pages/funcionalidades/home.html'">
+            <i class="fa-solid fa-chevron-left" style="color: #fff; font-size: 20px;"></i>
+          </button>
+        </div>
+        <h2 class="page-title">MEU PROGRESSO</h2>
+        <i class="fa-regular fa-bell bell-icon" style="opacity: 0;"></i>
+      </div>
+
+      <div class="progress-hero">
+        <h1 id="progressoNome">...</h1>
+        <p>Acompanhe sua jornada de recuperação.</p>
+      </div>
+    </div>
+
+    <div class="main-content">
+
+      <!-- Stats Board -->
+      <div class="stats-board">
+        <div class="stat-card">
+          <i class="fa-solid fa-fire text-orange"></i>
+          <h3 id="statTotalDias">0</h3>
+          <p>Dias Treinados</p>
+        </div>
+        <div class="stat-card">
+          <i class="fa-solid fa-dumbbell text-blue"></i>
+          <h3 id="statTotalExercicios">0</h3>
+          <p>Exercícios</p>
+        </div>
+      </div>
+
+      <!-- Progress Ring -->
+      <div class="progress-section">
+        <h3 class="section-subtitle">Frequência Mensal</h3>
+        <div class="ring-container">
+          <div class="ring-circle">
+            <span id="ringPercentual">0%</span>
+          </div>
+          <p class="ring-label">Treinos concluídos este mês</p>
+        </div>
+      </div>
+
+      <!-- Conquistas -->
+      <div class="achievements-section">
+        <h3 class="section-subtitle">Conquistas</h3>
+
+        <!-- ID para controlar pelo JS -->
+        <div class="ach-grid" id="achievementsGrid">
+          <div class="achievement-item locked" data-id="primeiroTreino">
+            <div class="ach-icon"><i class="fa-solid fa-trophy"></i></div>
+            <div class="ach-text">
+              <h4>Primeiro Treino</h4>
+              <p>Inicie sua jornada no app</p>
+            </div>
+          </div>
+
+          <div class="achievement-item locked" data-id="focoSemanal">
+            <div class="ach-icon"><i class="fa-solid fa-bolt"></i></div>
+            <div class="ach-text">
+              <h4>Foco Total</h4>
+              <p>3 dias de atividades</p>
+            </div>
+          </div>
+
+          <div class="achievement-item locked" data-id="dezExercicios">
+            <div class="ach-icon"><i class="fa-solid fa-medal"></i></div>
+            <div class="ach-text">
+              <h4>Iniciante Forte</h4>
+              <p>10 exercícios concluídos</p>
+            </div>
+          </div>
+
+          <div class="achievement-item locked" data-id="guerreiro">
+            <div class="ach-icon"><i class="fa-solid fa-crown"></i></div>
+            <div class="ach-text">
+              <h4>Guerreiro da Fisio</h4>
+              <p>20 dias de treino</p>
+            </div>
+          </div>
+
+          <!-- Novas Conquistas Adicionadas -->
+          <div class="achievement-item locked" data-id="cinquentaExercicios">
+            <div class="ach-icon"><i class="fa-solid fa-fire-flame-curved"></i></div>
+            <div class="ach-text">
+              <h4>Atleta Dedicado</h4>
+              <p>50 exercícios concluídos</p>
+            </div>
+          </div>
+
+          <div class="achievement-item locked" data-id="cinquentaDias">
+            <div class="ach-icon"><i class="fa-solid fa-shield-halved"></i></div>
+            <div class="ach-text">
+              <h4>Constância de Ferro</h4>
+              <p>50 dias de treino</p>
+            </div>
+          </div>
+
+          <div class="achievement-item locked" data-id="cemExercicios">
+            <div class="ach-icon"><i class="fa-solid fa-star"></i></div>
+            <div class="ach-text">
+              <h4>Mestre do Movimento</h4>
+              <p>100 exercícios concluídos</p>
+            </div>
+          </div>
+
+          <div class="achievement-item locked" data-id="cemDias">
+            <div class="ach-icon"><i class="fa-solid fa-gem"></i></div>
+            <div class="ach-text">
+              <h4>Resiliência Pura</h4>
+              <p>100 dias ininterruptos de empenho</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Achievement Popup (Invisível por padrão) -->
+    <div id="achievementPopup" class="achievement-popup"
+      style="display: none; position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #2563eb; color: white; padding: 20px; border-radius: 16px; box-shadow: 0 10px 25px rgba(37, 99, 235, 0.4); z-index: 1000; width: 90%; max-width: 400px; animation: slideDown 0.5s ease; flex-direction: column; align-items: center; text-align: center;">
+      <i class="fa-solid fa-gem" style="font-size: 40px; color: #fbbf24; margin-bottom: 10px;"></i>
+      <h3 style="font-family: 'Bebas Neue', sans-serif; font-size: 28px; margin: 0; letter-spacing: 1px;">NOVA CONQUISTA
+        DESBLOQUEADA!</h3>
+      <p id="popupAchName" style="font-size: 16px; font-weight: bold; margin: 10px 0 5px;">Nome da conquista</p>
+      <p id="popupAchDesc" style="font-size: 14px; opacity: 0.9; margin: 0;">Descrição curta</p>
+      <div
+        style="width: 100%; background: rgba(255,255,255,0.2); height: 4px; border-radius: 2px; margin-top: 15px; overflow: hidden;">
+        <div id="popupProgress" style="width: 100%; height: 100%; background: #fbbf24; transition: width 20s linear;">
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Navigation Componentized -->
+  </div>
+</body>
+
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dicas e Vídeos - Pro Fisio Admin</title>
+
+    <link rel="stylesheet" href="/style/adm/dicas.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+
+<body>
+    <div class="app-wrapper">
+
+        <!-- Header -->
+        <header class="page-header">
+            <button class="btn-back" onclick="history.back()">
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <span class="header-title">Tela ADM</span>
+            <button class="btn-back" onclick="window.location.href='/pages/adm/home_adm.html'" title="Página Inicial">
+                <i class="fa-solid fa-house"></i>
+            </button>
+        </header>
+
+        <!-- Título + controles -->
+        <div class="section-top">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <h1 class="section-title" style="margin-bottom: 0;">DICAS E VÍDEOS</h1>
+                <button class="btn-primary-small" id="btnOpenModal">
+                    <i class="fa-solid fa-plus"></i> Novo
+                </button>
+            </div>
+            <p style="color: #6b7280; font-size: 14px; line-height: 1.4;">
+                Gerencie os vídeos e dicas que aparecem na tela inicial dos pacientes.
+            </p>
+        </div>
+
+        <!-- Grade de Dicas -->
+        <main class="tips-container">
+            <div class="tips-grid" id="tipsGrid">
+                <p style="text-align:center; margin-top: 20px; color:#6b7280">Carregando dicas...</p>
+            </div>
+        </main>
+
+    </div>
+
+    <!-- Modal Adicionar -->
+    <div class="modal-overlay" id="tipModal">
+        <div class="modal-content">
+            <h2 style="margin-bottom: 20px; font-weight: 700;">Nova Dica/Vídeo</h2>
+            <form id="tipForm">
+                <input type="hidden" id="tipId" />
+                <div class="form-group">
+                    <label>Título da Dica</label>
+                    <input type="text" id="tipTitle" required placeholder="Ex: Exercícios para lombar" />
+                </div>
+                <div class="form-group">
+                    <label>Duração (Texto)</label>
+                    <input type="text" id="tipDuration" required placeholder="Ex: 10 min" />
+                </div>
+                <div class="form-group">
+                    <label>Link da Imagem (Thumbnail)</label>
+                    <input type="url" id="tipThumb" required placeholder="https://..." />
+                </div>
+                <div class="form-group">
+                    <label>Link do Vídeo (Youtube/Opcional)</label>
+                    <input type="url" id="tipLink" placeholder="https://youtube.com/..." />
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" id="btnCancelModal">Cancelar</button>
+                    <button type="submit" class="btn-save">Salvar Dica</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="/script/adm/dicas.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,237 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+body::-webkit-scrollbar {
+  display: none;
+}
+
+body {
+  background-color: #f0f2f5;
+  font-family: "DM Sans", sans-serif;
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+  color: #1f2937;
+}
+
+.app-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- CABEÇALHO --- */
+.top-bar {
+  background-color: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.top-bar-content {
+  max-width: 600px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 25px;
+}
+.top-bar h1 {
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 30px;
+  color: #111827;
+  letter-spacing: 1px;
+  margin: 0;
+}
+.icon-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #111827;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.icon-btn:hover {
+  color: #3aa6d8;
+}
+
+/* --- CONTEÚDO PRINCIPAL --- */
+.main-content {
+  padding: 40px 20px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  flex-grow: 1;
+}
+
+.form-card {
+  width: 100%;
+  max-width: 600px;
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  padding: 40px 30px;
+  height: fit-content;
+}
+
+.form-subtitle {
+  font-size: 14px;
+  color: #6b7280;
+  font-weight: 500;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+/* --- FORMULÁRIO --- */
+.form-group {
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  font-weight: 700;
+  font-size: 14px;
+  color: #374151;
+  margin-bottom: 8px;
+}
+
+.input-wrapper {
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  position: relative;
+  transition: border-color 0.2s;
+}
+.input-wrapper:focus-within {
+  border-color: #3aa6d8;
+}
+
+input {
+  border: none;
+  background: transparent;
+  width: 100%;
+  height: 100%;
+  font-family: "DM Sans", sans-serif;
+  font-size: 15px;
+  color: #111827;
+  outline: none;
+}
+
+.toggle-password {
+  color: #9ca3af;
+  font-size: 16px;
+  cursor: pointer;
+  margin-left: 10px;
+  transition: color 0.2s;
+}
+.toggle-password:hover {
+  color: #3aa6d8;
+}
+
+/* --- BOTÃO SALVAR --- */
+.btn-save {
+  width: 100%;
+  height: 50px;
+  background-color: #2b95ce;
+  color: white;
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 22px;
+  letter-spacing: 1px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 20px;
+  transition:
+    background-color 0.2s,
+    transform 0.2s;
+}
+.btn-save:hover {
+  background-color: #1c75a6;
+  transform: translateY(-2px);
+}
+.btn-save:active {
+  transform: translateY(0);
+}
+
+/* --- TOAST (NOTIFICAÇÕES) --- */
+#toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  left: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  pointer-events: none;
+}
+.toast {
+  min-width: 280px;
+  max-width: 400px;
+  padding: 16px 20px;
+  border-radius: 12px;
+  color: #ffffff;
+  font-family: "DM Sans", sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  transform: translateY(-20px);
+  animation: slideDown 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+.toast i {
+  font-size: 20px;
+}
+.toast.success {
+  background-color: #10b981;
+}
+.toast.error {
+  background-color: #ef4444;
+}
+
+@keyframes slideDown {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+}
+
+/* --- RESPONSIVIDADE --- */
+@media (max-width: 600px) {
+  body {
+    background-color: #ffffff;
+  }
+  .main-content {
+    padding: 0;
+  }
+  .form-card {
+    border-radius: 0;
+    box-shadow: none;
+    padding: 30px 20px;
+  }
+  .top-bar-content {
+    padding: 20px;
+  }
+}

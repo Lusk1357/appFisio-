@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Perfil - Pro Fisio</title>
+
+  <link rel="stylesheet" href="/style/perfil/perfil.css" />
+  <script src="/script/components.js" defer></script>
+  <script src="/script/perfil/perfil.js" defer></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+
+<body>
+  <div class="app-container">
+    <header class="top-bar">
+      <div class="top-bar-content">
+        <button class="icon-btn" onclick="history.back()" aria-label="Voltar">
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+
+        <h1>PERFIL</h1>
+
+        <button onclick="editPerfil()" class="icon-btn" aria-label="Editar Perfil">
+          <i class="fa-regular fa-pen-to-square"></i>
+        </button>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <div class="profile-card">
+        <div class="profile-header">
+          <div class="profile-avatar-placeholder" id="profileAvatar">?</div>
+          <h2 class="profile-name" id="profileName">Carregando...</h2>
+          <p class="profile-role" id="profileRole">Paciente</p>
+        </div>
+
+        <div class="profile-stats">
+          <div class="stat-box">
+            <div class="stat-value"><span id="profileWeight">--</span><span class="stat-unit">kg</span></div>
+            <div class="stat-label">Peso</div>
+          </div>
+
+          <div class="stat-divider"></div>
+
+          <div class="stat-box">
+            <div class="stat-value"><span id="profileHeight">--</span><span class="stat-unit">cm</span></div>
+            <div class="stat-label">Altura</div>
+          </div>
+
+          <div class="stat-divider"></div>
+
+          <div class="stat-box">
+            <div class="stat-value">
+              <span id="profileAge">--</span><span class="stat-unit">anos</span>
+            </div>
+            <div class="stat-label">Idade</div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Bottom Navigation Componentized -->
+  </div>
+</body>
+
+</html>

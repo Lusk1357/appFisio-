@@ -1,0 +1,296 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* --- ROLAGEM FLUIDA --- */
+html,
+body {
+  min-height: 100vh;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+body::-webkit-scrollbar {
+  display: none;
+}
+
+body {
+  background: linear-gradient(135deg, #e0f7fa 0%, #ffffff 50%);
+  font-family: "DM Sans", sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px 0;
+}
+
+/* --- CONTAINER DINÂMICO --- */
+.app-container {
+  width: 100%;
+  max-width: 480px;
+  min-height: 70dvh;
+  padding: 32px 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  gap: 16px;
+}
+
+/* --- Cabeçalho --- */
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 24px;
+}
+
+.back-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #000;
+  transition: transform 0.2s;
+  padding: 8px 12px 8px 0;
+  margin-bottom: 12px;
+}
+
+.back-btn:hover {
+  color: #3aa6d8;
+  transform: translateX(-3px);
+}
+
+h1 {
+  font-family: "Bebas Neue", sans-serif;
+  font-size: clamp(32px, 8vw, 42px);
+  line-height: 1.1;
+  color: #000;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: #4b5563;
+  font-weight: 500;
+}
+
+/* --- Formulário --- */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-group {
+  margin-bottom: 0;
+}
+
+label {
+  display: block;
+  font-weight: 700;
+  margin-bottom: 4px;
+  color: #374151;
+  font-size: 13px;
+}
+
+.input-wrapper {
+  position: relative;
+  background-color: #f3f4f6;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  height: 50px;
+  transition: border-color 0.2s;
+}
+
+.input-wrapper:focus-within {
+  border-color: #3aa6d8;
+}
+
+input {
+  border: none;
+  background: transparent;
+  width: 100%;
+  height: 100%;
+  font-family: "DM Sans", sans-serif;
+  font-size: 14px;
+  color: #111827;
+  font-weight: 500;
+  outline: none;
+}
+
+.input-icon {
+  color: #6b7280;
+  font-size: 15px;
+}
+
+/* --- Botão Principal --- */
+.btn-login {
+  width: 100%;
+  height: 54px;
+  background-color: #104c82;
+  color: white;
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 22px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  letter-spacing: 1px;
+  margin-top: 16px;
+  margin-bottom: 8px;
+  transition: background 0.3s;
+}
+
+.btn-login:hover {
+  background-color: #0c3b66;
+}
+
+/* --- Área Social --- */
+.social-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.divider {
+  text-align: center;
+  color: #6b7280;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 1.5vh;
+}
+
+.social-btn {
+  width: 100%;
+  height: clamp(42px, 6vh, 48px);
+  border-radius: 8px;
+  font-family: "DM Sans", sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  cursor: pointer;
+  margin-bottom: 1.2vh;
+  border: none;
+}
+
+.btn-google {
+  background-color: #f3f4f6;
+  color: #374151;
+  border: 1px solid #e5e7eb;
+}
+
+.btn-facebook {
+  background-color: #4267b2;
+  color: white;
+}
+
+/* --- Rodapé --- */
+.footer-link {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 700;
+  color: #000;
+  padding-bottom: 1vh;
+}
+
+.footer-link a {
+  color: #3aa6d8;
+  text-decoration: none;
+}
+
+/* NOTIFICAÇÕES FLUTUANTES (TOAST) */
+#toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  left: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.toast {
+  min-width: 280px;
+  max-width: 400px;
+  padding: 16px 20px;
+  border-radius: 12px;
+  color: #ffffff;
+  font-family: "DM Sans", sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  transform: translateY(-20px);
+  animation: slideDown 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.toast i {
+  font-size: 20px;
+}
+
+/* Cores de Erro e Sucesso */
+.toast.success {
+  background-color: #10b981;
+}
+
+.toast.error {
+  background-color: #ef4444;
+}
+
+/* Animações */
+@keyframes slideDown {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+}
+
+/* =============================================
+   RESPONSIVE — TABLET & DESKTOP (≥ 640px)
+   ============================================= */
+@media (min-width: 640px) {
+  .app-container {
+    background: #ffffff;
+    border-radius: var(--radius-lg, 24px);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.08);
+    padding: 48px 40px;
+    margin: 40px auto;
+    min-height: auto;
+    gap: 24px;
+  }
+
+  h1 {
+    font-size: 46px;
+  }
+
+  .header {
+    margin-bottom: 24px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .app-container {
+    max-width: 540px;
+    padding: 56px 48px;
+  }
+}

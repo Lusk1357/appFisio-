@@ -1,0 +1,473 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+body::-webkit-scrollbar {
+  display: none;
+}
+
+body {
+  background-color: #f0f2f5;
+  font-family: "DM Sans", sans-serif;
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+  color: #1f2937;
+}
+
+.app-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 120px;
+}
+
+/* --- CABEÇALHO --- */
+.top-bar {
+  background-color: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.top-bar-content {
+  max-width: 600px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 25px;
+}
+
+.top-bar h1 {
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 30px;
+  color: #111827;
+  letter-spacing: 1px;
+  margin: 0;
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #111827;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.icon-btn:hover {
+  color: #3aa6d8;
+}
+
+/* --- CONTEÚDO PRINCIPAL --- */
+.main-content {
+  padding: 40px 20px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.edit-card {
+  width: 100%;
+  max-width: 600px;
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  padding: 40px 30px;
+}
+
+/* --- FOTO DE PERFIL --- */
+.profile-photo-container {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  background-color: #0b4a99;
+  margin: 0 auto 30px auto;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(11, 74, 153, 0.2);
+  transition: transform 0.2s;
+}
+
+.profile-photo-container:hover {
+  transform: scale(1.05);
+}
+
+.profile-photo-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+.camera-overlay {
+  z-index: 2;
+  color: white;
+  font-size: 32px;
+  background-color: rgba(0,
+      0,
+      0,
+      0.3);
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: opacity 0.3s;
+}
+
+.profile-photo-container:hover .camera-overlay {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+/* --- FORMULÁRIO --- */
+.form-group {
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  font-weight: 500;
+  font-size: 14px;
+  color: #4b5563;
+  margin-bottom: 8px;
+}
+
+.input-wrapper {
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  position: relative;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+
+.input-wrapper:focus-within {
+  border-color: #3aa6d8;
+  box-shadow: 0 0 0 3px rgba(58, 166, 216, 0.1);
+}
+
+input {
+  border: none;
+  background: transparent;
+  width: 100%;
+  height: 100%;
+  font-family: "DM Sans", sans-serif;
+  font-size: 15px;
+  color: #111827;
+  outline: none;
+}
+
+/* Ícones nos inputs */
+.icon-right {
+  color: #111827;
+  font-size: 14px;
+  margin-left: 10px;
+}
+
+.icon-left {
+  color: #111827;
+  font-size: 16px;
+  margin-right: 10px;
+}
+
+.icon-arrow {
+  color: #111827;
+  font-size: 14px;
+  pointer-events: none;
+}
+
+/* Troca (KG/LBS - CM/FEET) */
+.split-wrapper {
+  justify-content: space-between;
+  padding-right: 6px;
+}
+
+.unit-toggle {
+  display: flex;
+  background-color: #e5e7eb;
+  border-radius: 6px;
+  padding: 4px;
+  gap: 4px;
+}
+
+.unit-btn {
+  background: transparent;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.unit-btn.active {
+  background-color: #ffffff;
+  color: #111827;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Select de Gênero */
+.select-wrapper {
+  padding-right: 16px;
+}
+
+select {
+  border: none;
+  background: transparent;
+  width: 100%;
+  height: 100%;
+  font-family: "DM Sans", sans-serif;
+  font-size: 15px;
+  color: #111827;
+  outline: none;
+  appearance: none;
+  cursor: pointer;
+}
+
+/* --- BOTÃO SALVAR --- */
+.btn-save {
+  width: 100%;
+  height: 50px;
+  background-color: #2b95ce;
+  color: white;
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 24px;
+  letter-spacing: 1px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition:
+    background-color 0.2s,
+    transform 0.2s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-save:hover {
+  background-color: #1c75a6;
+  transform: translateY(-2px);
+}
+
+.btn-save:active {
+  transform: translateY(0);
+}
+
+/* --- NAVEGAÇÃO INFERIOR --- */
+.bottom-nav {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 500px;
+  background-color: white;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 15px 30px;
+  border-radius: 40px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  color: #9ca3af;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 700;
+  transition: color 0.2s;
+}
+
+.nav-item:hover {
+  color: #2b95ce;
+}
+
+.nav-item i {
+  font-size: 22px;
+}
+
+.nav-item.active {
+  color: #111827;
+}
+
+/* --- MEDIA QUERIES --- */
+@media (max-width: 600px) {
+  .app-container {
+    padding-bottom: 80px;
+  }
+}
+
+@media (min-width: 1024px) {
+  #editProfileForm {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 24px;
+  }
+
+  /* Make Name, Email, and Button take full width */
+  .form-group:nth-child(1),
+  .form-group:nth-child(3),
+  .btn-save {
+    grid-column: 1 / -1;
+  }
+}
+
+/* --- MODAL DE SELEÇÃO DE AVATAR --- */
+.avatar-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.avatar-modal-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.avatar-modal-content {
+  background-color: #fff;
+  width: 90%;
+  max-width: 500px;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  transform: translateY(20px);
+  transition: transform 0.3s ease;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.avatar-modal-overlay.open .avatar-modal-content {
+  transform: translateY(0);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-family: 'DM Sans', sans-serif;
+  color: #111827;
+}
+
+.close-modal-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #6b7280;
+  cursor: pointer;
+}
+
+.avatar-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 15px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-bottom: 10px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.avatar-grid::-webkit-scrollbar {
+  display: none;
+}
+
+.avatar-option {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  object-fit: cover;
+  cursor: pointer;
+  border: 3px solid transparent;
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+.avatar-option:hover {
+  transform: scale(1.05);
+}
+
+.avatar-option.selected {
+  border-color: #3aa6d8;
+  transform: scale(1.1);
+}
+
+/* --- RESPONSIVIDADE --- */
+@media (max-width: 600px) {
+  body {
+    background-color: #ffffff;
+  }
+
+  .app-container {
+    padding-bottom: 140px;
+  }
+
+  .main-content {
+    padding: 0;
+  }
+
+  .edit-card {
+    border-radius: 0;
+    box-shadow: none;
+    padding: 30px 20px;
+  }
+
+  .top-bar-content {
+    padding: 20px;
+  }
+
+  .bottom-nav {
+    bottom: 0;
+    max-width: 100%;
+    border-radius: 20px 20px 0 0;
+  }
+}

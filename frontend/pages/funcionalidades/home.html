@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Home - Pro Fisio</title>
+  <script src="/script/components.js"></script>
+  <script src="/script/funcionalidades/home.js"></script>
+  <link rel="stylesheet" href="/style/funcionalidades/home.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+
+<body>
+  <div class="menu-overlay" id="menuOverlay"></div>
+
+  <div class="side-menu" id="sideMenu">
+    <button class="close-menu-btn" id="closeMenuBtn">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+
+    <div class="side-profile">
+      <div id="sideMenuAvatar" class="avatar-placeholder">
+        <i class="fa-solid fa-user"></i>
+      </div>
+      <h2 id="sideMenuName">—</h2>
+      <p>Paciente</p>
+    </div>
+
+    <div class="side-nav-links">
+      <a href="/pages/funcionalidades/progresso.html"><i class="fa-solid fa-chart-line"></i> Meu progresso</a>
+      <a href="/pages/funcionalidades/treinamento.html"><i class="fa-solid fa-dumbbell"></i> Treinamento</a>
+      <a href="/pages/perfil/perfil.html"><i class="fa-solid fa-user-pen"></i> Editar Perfil</a>
+      <a href="/pages/funcionalidades/configs.html" class="no-border"><i class="fa-solid fa-gear"></i>
+        Configurações</a>
+    </div>
+
+    <div class="side-logout">
+      <a href="#" id="btnLogout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sair</a>
+    </div>
+  </div>
+
+  <div class="app-container">
+    <div class="header-bg">
+      <div class="top-nav">
+        <div class="menu-left">
+          <button class="menu-func" id="menuTrigger">
+            <i class="fa-solid fa-bars-staggered menu-icon"></i>
+          </button>
+          <a href="/pages/perfil/perfil.html" id="headerAvatarContainer">
+            <div class="avatar-placeholder avatar-small">
+              <i class="fa-solid fa-user"></i>
+            </div>
+          </a>
+        </div>
+        <a href="/pages/funcionalidades/notificacoes.html" style="text-decoration: none; color: inherit;">
+          <i class="fa-regular fa-bell bell-icon"></i>
+        </a>
+      </div>
+
+      <p class="greeting-small">Olá,</p>
+      <h2 class="greeting-name" id="greetingName">—</h2>
+
+      <div class="mini-stats" id="homeMiniStats" style="display: none;">
+        <div class="mini-stat-card">
+          <i class="fa-solid fa-fire" style="color: #f97316;"></i>
+          <div>
+            <span class="ms-value" id="msDiasSeguidos">0</span>
+            <span class="ms-label">Dias Consecutivos</span>
+          </div>
+        </div>
+        <div class="mini-stat-card">
+          <i class="fa-solid fa-check-double" style="color: #3b82f6;"></i>
+          <div>
+            <span class="ms-value" id="msTotalTreinos">0</span>
+            <span class="ms-label">Treinos Completos</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="main-content">
+      <div class="hero-banner">
+        <img src="/images/funcionalidades/homem-alongando.png" alt="Homem alongando" class="banner-man" />
+
+        <div class="banner-text-area">
+          <h3 class="banner-title" id="heroTitle">CARREGANDO<br />SEU TREINO...</h3>
+          <p id="heroSubtitle" style="margin-bottom: 15px; font-size: 14px; opacity: 0.9;"></p>
+          <button class="btn-start" id="btnStartWorkout" style="display: none;">Começar</button>
+        </div>
+
+        <img src="/images/funcionalidades/halteres.png" alt="Halteres" class="banner-dumbbell" />
+      </div>
+
+      <h2 class="section-title">DICAS DO SEU FÍSIO</h2>
+
+      <div class="cards-grid" id="complementaryContentList">
+        <!-- Renderizado dinamicamente via home.js -->
+        <p style="text-align: center; color: #64748b; font-size: 14px; margin-top: 20px; width: 100%;">Carregando
+          vídeos...</p>
+      </div>
+    </div>
+
+    <!-- Bottom Navigation Componentized -->
+  </div>
+</body>
+
+</html>

@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Exercícios - Pro Fisio</title>
+
+  <link rel="stylesheet" href="/style/exercicios/exercicios.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700;900&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <script src="/script/exercicios/exercicios.js" defer></script>
+</head>
+
+<body>
+  <div class="app-container">
+    <header class="top-bar">
+      <div class="top-bar-content">
+        <button class="icon-btn" onclick="history.back()" aria-label="Voltar">
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <h1>EXERCÍCIOS</h1>
+        <div style="width: 24px"></div>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <section class="calendar-section">
+        <div class="month-selector">
+          <button class="month-btn" id="prevMonth">
+            <i class="fa-solid fa-chevron-left"></i>
+          </button>
+          <div class="current-date">
+            <h3 id="monthText">Fevereiro</h3>
+            <p id="yearText">2026</p>
+          </div>
+          <button class="month-btn" id="nextMonth">
+            <i class="fa-solid fa-chevron-right"></i>
+          </button>
+        </div>
+
+        <div class="days-carousel" id="daysCarousel"></div>
+      </section>
+
+      <h3 class="section-subtitle" id="selectedDateLabel"
+        style="margin: 20px; font-family: 'Bebas Neue', sans-serif; font-size: 24px; color: #1e293b;">Hoje</h3>
+
+      <div id="startTrainingArea" style="padding: 0 20px 10px;"></div>
+
+      <div class="exercises-list" id="exercisesList" style="padding: 0 20px; padding-bottom: 100px;">
+        <!-- Renderizado no JS -->
+        <p class="empty-msg" style="text-align: center; color: #64748b; margin-top: 20px;">Carregando...</p>
+      </div>
+    </main>
+
+    <nav class="bottom-nav">
+      <div class="bottom-nav-content">
+        <a href="/pages/funcionalidades/home.html" class="nav-item">
+          <i class="fa-solid fa-house"></i>
+          <span>Home</span>
+        </a>
+        <a href="/pages/exercicios/exercicios.html" class="nav-item active">
+          <i class="fa-solid fa-dumbbell"></i>
+          <span>Exercícios</span>
+        </a>
+        <a href="/pages/perfil/perfil.html" class="nav-item">
+          <i class="fa-regular fa-user"></i>
+          <span>Meu Perfil</span>
+        </a>
+      </div>
+    </nav>
+  </div>
+</body>
+
+</html>

@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Configurações - Pro Fisio</title>
+
+  <link rel="stylesheet" href="/style/funcionalidades/configs.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <script src="/script/components.js" defer></script>
+  <script src="/script/funcionalidades/configs.js" defer></script>
+</head>
+
+<body>
+  <div class="app-container">
+    <header class="top-bar">
+      <div class="top-bar-content">
+        <button class="icon-btn" onclick="history.back()" aria-label="Voltar">
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+
+        <h1>CONFIGURAÇÕES</h1>
+
+        <div style="width: 24px"></div>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <div class="settings-container">
+        <div class="settings-list">
+          <a href="/pages/funcionalidades/notificacoes.html" class="settings-item">
+            <div class="item-left">
+              <i class="fa-regular fa-bell icon-setting"></i>
+              <span class="item-text">Notificações</span>
+            </div>
+            <i class="fa-solid fa-chevron-right icon-arrow"></i>
+          </a>
+
+          <a href="/pages/auth/alterar_senha.html" class="settings-item">
+            <div class="item-left">
+              <i class="fa-solid fa-lock icon-setting"></i>
+              <span class="item-text">Alterar senha</span>
+            </div>
+            <i class="fa-solid fa-chevron-right icon-arrow"></i>
+          </a>
+
+          <a href="#" class="settings-item" id="btnLanguage">
+            <div class="item-left">
+              <i class="fa-solid fa-globe icon-setting"></i>
+              <span class="item-text">Linguagem</span>
+            </div>
+            <div class="item-right">
+              <span class="value-text">Português</span>
+              <i class="fa-solid fa-chevron-right icon-arrow"></i>
+            </div>
+          </a>
+
+          <a href="#" class="settings-item" id="btnLogout" style="color: #ef4444;">
+            <div class="item-left">
+              <i class="fa-solid fa-arrow-right-from-bracket icon-setting" style="color: #ef4444;"></i>
+              <span class="item-text" style="font-weight: 700;">Sair da conta</span>
+            </div>
+          </a>
+        </div>
+
+        <div class="settings-footer">
+          <button class="btn-upgrade">UPGRADE PREMIUM</button>
+          <p class="version-text">Version 1.0</p>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+
+</html>

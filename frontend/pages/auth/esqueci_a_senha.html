@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Esqueci a Senha - Pro Fisio</title>
+
+  <link rel="stylesheet" href="/style/auth/esqueci_a_senha.css" />
+  <script src="/script/auth/esqueci_a_senha.js" defer></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+
+<body>
+  <div class="app-container container">
+    <div class="header">
+      <button onclick="back()" class="back-btn" aria-label="Voltar">
+        <i class="fa-solid fa-chevron-left"></i>
+      </button>
+      <h1>ESQUECEU A SENHA</h1>
+      <p class="subtitle" style="margin-bottom: 24px;">
+        Recupere sua conta informando seu Login e o Telefone cadastrado, ou entre em contato com a clínica.
+      </p>
+    </div>
+
+    <form>
+      <div class="form-group">
+        <label for="email">Login (E-mail)</label>
+        <div class="input-wrapper">
+          <input type="text" id="email" placeholder="Insira seu login" />
+          <i class="fa-solid fa-user input-icon" style="color: #9ca3af;"></i>
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-top: 16px;">
+        <label for="telefone">Telefone Cadastrado</label>
+        <div class="input-wrapper">
+          <input type="tel" id="telefone" placeholder="(00) 00000-0000" />
+          <i class="fa-solid fa-phone input-icon" style="color: #9ca3af;"></i>
+        </div>
+      </div>
+
+      <button type="button" class="btn-reform_password" id="btnRecoverParams" style="margin-top: 32px;">
+        VERIFICAR DADOS
+      </button>
+
+      <div style="text-align: center; margin: 24px 0; color: #9ca3af; font-size: 14px;">ou</div>
+
+      <a href="https://wa.me/5511999999999?text=Olá,%20esqueci%20minha%20senha%20no%20app%20Pro%20Fisio%20e%20preciso%20de%20ajuda." target="_blank" class="btn-whatsapp" style="display: flex; align-items: center; justify-content: center; width: 100%; height: 52px; background: #25D366; color: #fff; font-weight: 700; border-radius: 12px; text-decoration: none; gap: 8px;">
+        <i class="fa-brands fa-whatsapp" style="font-size: 20px;"></i>
+        FALAR COM A CLÍNICA
+      </a>
+    </form>
+  </div>
+</body>
+
+</html>

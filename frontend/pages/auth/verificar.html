@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Verificar Conta - Pro Fisio</title>
+
+  <link rel="stylesheet" href="/style/auth/verificar.css" />
+  <script src="/script/auth/verificar.js" defer></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+
+<body>
+  <button class="back-btn" aria-label="Voltar">
+    <i class="fa-solid fa-chevron-left"></i>
+  </button>
+
+  <div class="container">
+    <div class="header">
+      <h1>VERIFICAR CONTA</h1>
+      <p class="subtitle">
+        Verifique sua conta inserindo o código de verificação que enviamos
+        para
+        <strong id="userEmailDisplay">seu e-mail</strong>
+      </p>
+    </div>
+
+    <form>
+      <div class="code-container">
+        <input type="tel" class="code-input" maxlength="1" placeholder="•" />
+        <input type="tel" class="code-input" maxlength="1" placeholder="•" />
+        <input type="tel" class="code-input" maxlength="1" placeholder="•" />
+        <input type="tel" class="code-input" maxlength="1" placeholder="•" />
+      </div>
+
+      <div class="resend-container">
+        <a href="#" class="resend-link">Reenviar</a>
+      </div>
+
+      <button type="button" class="btn-reform_password">
+        ENTRAR
+      </button>
+    </form>
+  </div>
+</body>
+
+</html>

@@ -1,0 +1,358 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+body::-webkit-scrollbar {
+  display: none;
+}
+
+body {
+  background-color: #f0f2f5;
+  font-family: "DM Sans", sans-serif;
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+  color: #1f2937;
+}
+
+.app-container {
+  width: 100%;
+  max-width: 1100px;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 120px;
+}
+
+/* --- CABEÇALHO --- */
+.top-bar {
+  background-color: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.top-bar-content {
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 25px;
+}
+.top-bar h1 {
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 32px;
+  color: #111827;
+  letter-spacing: 1px;
+  margin: 0;
+}
+.icon-btn {
+  background: none;
+  border: none;
+  font-size: 22px;
+  color: #111827;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.icon-btn:hover {
+  color: #3aa6d8;
+}
+
+/* --- CONTEÚDO PRINCIPAL --- */
+.main-content {
+  padding: 30px 20px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* --- CALENDÁRIO --- */
+.calendar-section {
+  width: 100%;
+  max-width: 800px;
+  margin-bottom: 40px;
+}
+
+/* Seletor de Mês */
+.month-selector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 25px;
+  gap: 20px;
+}
+.current-date {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 120px;
+}
+.current-date h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+  line-height: 1;
+  margin-bottom: 4px;
+  transition: opacity 0.2s;
+}
+.current-date p {
+  font-size: 14px;
+  color: #6b7280;
+  font-weight: 500;
+  line-height: 1;
+  transition: opacity 0.2s;
+}
+
+.month-btn {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: #111827;
+  cursor: pointer;
+  padding: 10px;
+  transition:
+    color 0.2s,
+    transform 0.2s;
+}
+.month-btn:hover {
+  color: #3aa6d8;
+  transform: scale(1.2);
+}
+
+/* Carrossel de Dias */
+.days-carousel {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding: 10px 5px 20px 5px;
+  scroll-behavior: smooth;
+  cursor: grab;
+}
+
+.days-carousel:active {
+  cursor: grabbing;
+}
+
+/* --- BARRA DE ROLAGEM --- */
+.days-carousel::-webkit-scrollbar {
+  height: 8px;
+}
+
+.days-carousel::-webkit-scrollbar-track {
+  background: #f3f4f6;
+  border-radius: 10px;
+}
+
+.days-carousel::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1;
+  border-radius: 10px;
+}
+
+.days-carousel::-webkit-scrollbar-thumb:hover {
+  background-color: #94a3b8;
+}
+
+.day-card {
+  min-width: 65px;
+  height: 90px;
+  border-radius: 16px;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+  opacity: 0;
+  transform: translateY(20px);
+}
+.day-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: #6b7280;
+  margin-bottom: 8px;
+  transition: color 0.3s;
+}
+.day-number {
+  font-size: 18px;
+  font-weight: 900;
+  color: #111827;
+  transition: color 0.3s;
+}
+
+/* Dia Ativo */
+.day-card.active {
+  background-color: #000000;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+  transform: translateY(-5px) scale(1.05);
+}
+.day-card.active .day-name {
+  color: #ffffff;
+  opacity: 0.9;
+}
+.day-card.active .day-number {
+  color: #ffffff;
+}
+
+.day-card:hover:not(.active) {
+  background-color: #e5e7eb;
+  transform: translateY(-3px);
+}
+
+/* --- BANNER DE EXERCÍCIO --- */
+.banner-section {
+  width: 100%;
+  max-width: 800px;
+}
+
+.hero-banner {
+  background: linear-gradient(135deg, #00b4db 0%, #0083b0 100%);
+  border-radius: 20px;
+  padding: 30px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  color: white;
+  min-height: 220px;
+  box-shadow: 0 10px 30px rgba(0, 131, 176, 0.25);
+  overflow: hidden;
+}
+
+.banner-text-area {
+  flex: 1;
+  text-align: center;
+  z-index: 2;
+}
+.banner-title {
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 36px;
+  line-height: 1.1;
+  margin-bottom: 15px;
+  letter-spacing: 1px;
+}
+
+.btn-start {
+  background-color: #ffc107;
+  color: #000;
+  font-family: "DM Sans", sans-serif;
+  font-weight: 700;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition:
+    transform 0.2s,
+    background-color 0.2s;
+}
+.btn-start:hover {
+  background-color: #ffca28;
+  transform: scale(1.05);
+}
+
+.banner-man {
+  position: absolute;
+  bottom: 0;
+  left: 2%;
+  height: 115%;
+  object-fit: contain;
+  z-index: 2;
+}
+.banner-dumbbell {
+  position: absolute;
+  bottom: -10px;
+  right: 5%;
+  width: 130px;
+  opacity: 0.9;
+  z-index: 1;
+}
+
+/* Animação do Banner */
+.animate-slide-up {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.animate-slide-up.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* --- NAVEGAÇÃO INFERIOR --- */
+.bottom-nav {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 500px;
+  background-color: white;
+  border-radius: 40px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+}
+
+.bottom-nav-content {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  padding: 15px 30px;
+  width: 100%;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  color: #9ca3af;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 700;
+  transition: color 0.2s;
+}
+.nav-item:hover {
+  color: #2b95ce;
+}
+.nav-item i {
+  font-size: 22px;
+}
+.nav-item.active {
+  color: #111827;
+}
+
+/* --- RESPONSIVIDADE (CELULAR) --- */
+@media (max-width: 768px) {
+  .app-container {
+    padding-bottom: 100px;
+  }
+  .bottom-nav {
+    bottom: 0;
+    max-width: 100%;
+    border-radius: 20px 20px 0 0;
+  }
+  .hero-banner {
+    flex-direction: column;
+    text-align: center;
+    padding: 30px 20px;
+  }
+  .banner-man {
+    position: static;
+    height: 180px;
+    margin-bottom: 20px;
+  }
+  .banner-dumbbell {
+    display: none;
+  }
+}

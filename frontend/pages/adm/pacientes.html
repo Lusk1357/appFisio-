@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pacientes - Pro Fisio</title>
+
+    <link rel="stylesheet" href="/style/adm/pacientes.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <script src="/script/adm/pacientes.js" defer></script>
+</head>
+
+<body>
+
+    <div class="app-wrapper">
+
+        <!-- Header -->
+        <header class="page-header" style="justify-content: space-between;">
+            <button class="btn-back" onclick="history.back()">
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <span class="header-title">Tela ADM</span>
+            <button class="btn-back" onclick="window.location.href='/pages/adm/home_adm.html'" title="Página Inicial">
+                <i class="fa-solid fa-house"></i>
+            </button>
+        </header>
+
+        <!-- Título + controles -->
+        <div class="section-top">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+                <h1 class="section-title" style="margin-bottom: 0;">PACIENTES</h1>
+                <button class="btn-primary-small" onclick="window.location.href='/pages/adm/cadastro_paciente.html'">
+                    <i class="fa-solid fa-plus"></i> Novo
+                </button>
+            </div>
+            <div class="filter-bar">
+                <span class="filter-label">Ordenar por:</span>
+                <div class="filter-pills" id="filterPills">
+                    <button class="pill active" data-sort="az">A–Z</button>
+                    <button class="pill" data-sort="za">Z–A</button>
+                    <button class="pill" data-sort="recent">Recentes</button>
+                    <button class="pill" data-sort="oldest">Antigos</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Grade de pacientes -->
+        <main class="patients-grid" id="patientsGrid">
+            <!-- Preenchida via JS -->
+        </main>
+
+        <!-- Ver mais -->
+        <div class="load-more-wrapper" id="loadMoreWrapper" style="display:none">
+            <button class="btn-load-more" id="btnLoadMore">VER MAIS</button>
+        </div>
+
+        <!-- Estado vazio -->
+        <div class="empty-state" id="emptyState" style="display:none">
+            <i class="fa-regular fa-user-slash"></i>
+            <p>Nenhum paciente cadastrado ainda.</p>
+        </div>
+
+        <!-- Botão inferior -->
+        <footer class="bottom-bar">
+            <button class="btn-next-steps" onclick="window.location.href='/pages/adm/perfil_paciente.html'">
+                ACESSAR FICHA
+            </button>
+        </footer>
+
+    </div>
+
+</body>
+
+</html>

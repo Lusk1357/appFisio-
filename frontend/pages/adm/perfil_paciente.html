@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Perfil do Paciente - Pro Fisio</title>
+
+  <link rel="stylesheet" href="/style/adm/perfil_paciente.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <script src="/script/adm/perfil_paciente.js" defer></script>
+</head>
+
+<body>
+  <div class="app-container">
+
+    <!-- Header -->
+    <header class="page-header" style="justify-content: space-between;">
+      <button class="btn-back" onclick="history.back()">
+        <i class="fa-solid fa-chevron-left"></i>
+      </button>
+      <button class="btn-back" onclick="window.location.href='/pages/adm/home_adm.html'" title="Página Inicial">
+        <i class="fa-solid fa-house"></i>
+      </button>
+    </header>
+
+    <!-- Avatar + Nome -->
+    <section class="profile-hero">
+      <div class="avatar-wrapper">
+        <div class="avatar-placeholder" id="avatarDisplay">
+          <i class="fa-solid fa-user"></i>
+        </div>
+      </div>
+      <h1 class="patient-name" id="patientName">—</h1>
+      <span class="patient-email" id="patientEmail"></span>
+    </section>
+
+    <!-- Informações Clínicas / Contato -->
+    <section class="patient-details">
+      <div class="detail-card">
+        <div class="detail-icon"><i class="fa-solid fa-cake-candles"></i></div>
+        <div class="detail-info">
+          <span class="detail-label">Idade</span>
+          <span class="detail-value" id="patientAge">—</span>
+        </div>
+      </div>
+      <div class="detail-card">
+        <div class="detail-icon"><i class="fa-solid fa-weight-scale"></i></div>
+        <div class="detail-info">
+          <span class="detail-label">Peso</span>
+          <span class="detail-value" id="patientWeight">—</span>
+        </div>
+      </div>
+      <div class="detail-card">
+        <div class="detail-icon"><i class="fa-solid fa-ruler-vertical"></i></div>
+        <div class="detail-info">
+          <span class="detail-label">Altura</span>
+          <span class="detail-value" id="patientHeight">—</span>
+        </div>
+      </div>
+      <div class="detail-card full-width">
+        <div class="detail-icon"><i class="fa-solid fa-phone"></i></div>
+        <div class="detail-info">
+          <span class="detail-label">Contato</span>
+          <span class="detail-value" id="patientPhone">—</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Ações -->
+    <section class="actions">
+      <button class="btn-action btn-edit" onclick="goTo('/pages/adm/editar_perfil_paciente.html')">
+        <i class="fa-solid fa-pen"></i> Editar Perfil
+      </button>
+      <button class="btn-action btn-exercises" onclick="goTo('/pages/adm/calendario.html')">
+        <i class="fa-solid fa-plus"></i> Exercícios
+      </button>
+      <button class="btn-action btn-delete" onclick="deletePatient()">
+        <i class="fa-solid fa-trash"></i> Excluir Paciente
+      </button>
+    </section>
+
+    <!-- Observações do Paciente -->
+    <section class="patient-notes">
+      <div class="notes-header">
+        <h3><i class="fa-solid fa-clipboard"></i> Observações Clínicas</h3>
+        <button id="btnSaveNotes" class="btn-save-notes" onclick="savePatientNotes()">Salvar</button>
+      </div>
+      <textarea id="patientNotesInput" class="notes-textarea"
+        placeholder="Adicione notas, histórico de lesões, ou observações importantes sobre este paciente..."></textarea>
+    </section>
+
+  </div>
+
+  <!-- Modal de confirmação de exclusão -->
+  <div id="deleteModal" class="modal-overlay" aria-modal="true" role="dialog" aria-labelledby="modalTitle">
+    <div class="modal-card">
+      <div class="modal-icon-wrap">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+      </div>
+      <h2 class="modal-title" id="modalTitle">Excluir Paciente?</h2>
+      <p class="modal-body">
+        Tem certeza que deseja excluir <strong id="modalPatientName"></strong>?
+      </p>
+      <p class="modal-warning">
+        <i class="fa-solid fa-circle-info"></i>
+        <span>Isto apagará permanentemente todo o histórico de exercícios, agendamentos, notas e login. Esta ação
+          <strong>NÃO</strong> pode ser desfeita.</span>
+      </p>
+      <div class="modal-actions">
+        <button class="modal-btn modal-btn-cancel" onclick="closeDeleteModal()">Cancelar</button>
+        <button class="modal-btn modal-btn-confirm" id="btnConfirmDelete" onclick="confirmDelete()">
+          <i class="fa-solid fa-trash"></i> Excluir
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast de notificação -->
+  <div id="appToast" class="app-toast" role="alert" aria-live="polite">
+    <i id="appToastIcon" class="fa-solid fa-check-circle"></i>
+    <span id="appToastMsg"></span>
+  </div>
+
+</body>
+
+</html>

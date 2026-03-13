@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Resultado - Pro Fisio</title>
+  <link rel="stylesheet" href="/style/exercicios/resultado.css" />
+  <script src="/script/exercicios/resultado.js" defer></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+
+<body>
+  <div class="app-container">
+    <div class="result-card">
+      <header class="top-bar">
+        <button class="back-btn" id="backBtn" aria-label="Voltar">
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <h1>RESULTADO</h1>
+        <div style="width: 40px"></div>
+      </header>
+
+      <main class="content-body">
+        <div class="workout-info">
+          <h2 class="workout-title">Exercícios</h2>
+          <p class="workout-date" id="completionDate">Feito em 24/02/2026</p>
+          <p class="workout-step" id="workoutStep">Exercício —/—</p>
+        </div>
+
+        <h3 class="section-title">Sumário</h3>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <span class="stat-label">Tempo Total</span>
+            <span class="stat-value" id="statTempo">00:00 min</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Total de calorias</span>
+            <span class="stat-value" id="statCalorias">0 kcal</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Total de exercícios</span>
+            <span class="stat-value" id="statExercicios">0 feitos</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Peso total</span>
+            <span class="stat-value">59kg</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Batimentos por minuto</span>
+            <span class="stat-value">- bpm</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Intensidade</span>
+            <span class="stat-value">Moderada</span>
+          </div>
+        </div>
+      </main>
+
+      <footer class="bottom-action-bar">
+        <button class="btn-save" id="saveBtn">Salvar</button>
+      </footer>
+    </div>
+  </div>
+</body>
+
+</html>
