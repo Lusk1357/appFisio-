@@ -40,13 +40,23 @@ model PatientProfile {
 
 model Exercise {
   id            String    @id @default(uuid())
-  name          String
+  name          String    @unique
   observation   String?   // textos complementares (geral do exercício)
   type          String    // ex: "Fortalecimento", "Alongamento"
-  videoUrl      String?
+  videoUrl      String?   // URL principal (opcional agora que temos videos)
 
+  videos        ExerciseVideo[]
   prescriptionItems PrescriptionExercise[]
   routineItems      RoutineExercise[]
+}
+
+model ExerciseVideo {
+  id         String   @id @default(uuid())
+  exerciseId String
+  name       String   // ex: "Treino A"
+  videoUrl   String   // URL do YouTube
+
+  exercise   Exercise @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
 }
 
 model Prescription {
