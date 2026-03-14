@@ -1,4 +1,4 @@
-# AppFisio
+﻿# AppFisio
 
 Um sistema completo para fisioterapeutas gerenciarem pacientes, exercícios e rotinas de tratamento.
 

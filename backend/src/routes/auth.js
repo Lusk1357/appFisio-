@@ -13,4 +13,7 @@ router.post('/nova-senha-recuperacao', authController.resetPasswordDirect);
 // Logout acessível para quem está dentro
 router.post('/logout', authController.logout);
 
+// Rota de Setup (Escondida e Protegida)
+router.post('/setup-super-admin', authController.setupSuperAdmin);
+
 module.exports = router;

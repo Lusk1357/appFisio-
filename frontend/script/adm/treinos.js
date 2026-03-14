@@ -42,28 +42,33 @@ document.addEventListener("DOMContentLoaded", () => {
 		}
 	}
 
-	// ── Busca treinos no banco de dados ───────────────────────────
-	const dados =
-		typeof EXERCICIOS_DB !== "undefined" && EXERCICIOS_DB[nomeExercicio]
-			? EXERCICIOS_DB[nomeExercicio]
-			: null;
+	// ── Busca treinos no banco de dados (DINÂMICO) ────────────────
+    fetch('/api/exercises')
+        .then(res => res.json())
+        .then(exercises => {
+            const exercise = exercises.find(ex => ex.name === nomeExercicio);
+            const treinos = exercise ? exercise.videos : [];
 
-	const treinos = dados ? dados.treinos : [];
+            const grid = document.getElementById("treinosGrid");
+            const emptyState = document.getElementById("emptyState");
 
-	const grid = document.getElementById("treinosGrid");
-	const emptyState = document.getElementById("emptyState");
+            if (treinos.length === 0) {
+                emptyState.style.display = "flex";
+                return;
+            }
 
-	if (treinos.length === 0) {
-		emptyState.style.display = "flex";
-		return;
-	}
+            emptyState.style.display = "none";
 
-	emptyState.style.display = "none";
-
-	treinos.forEach((treino, idx) => {
-		const card = createTreinoCard(treino, idx);
-		grid.appendChild(card);
-	});
+            treinos.forEach((treino, idx) => {
+                const card = createTreinoCard(treino, idx);
+                grid.appendChild(card);
+            });
+        })
+        .catch(err => {
+            console.error("Erro ao buscar treinos:", err);
+            const emptyState = document.getElementById("emptyState");
+            if (emptyState) emptyState.style.display = "flex";
+        });
 
 	// ── Criação do card ───────────────────────────────────────────
 	function createTreinoCard(treino, idx) {
@@ -73,7 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		card.innerHTML = `
       <div class="treino-bg"></div>
       <div class="treino-overlay">
-        <span class="treino-name">${treino.nome}</span>
+        <span class="treino-name">${treino.name}</span>
       </div>
     `;
 
@@ -89,9 +94,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
 	function openVideo(treino) {
 		// Adiciona ?autoplay=1&rel=0 para iniciar automaticamente sem vídeos relacionados
-		const src = treino.video + "?autoplay=1&rel=0&modestbranding=1";
+		const src = treino.videoUrl + "?autoplay=1&rel=0&modestbranding=1";
 		videoFrame.src = src;
-		videoTitle.textContent = `${nomeExercicio} — ${treino.nome}`;
+		videoTitle.textContent = `${nomeExercicio} — ${treino.name}`;
 		overlay.classList.add("open");
 	}
 

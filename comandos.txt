@@ -4,6 +4,8 @@ http://localhost:3000/pages/auth/login.html
 
 npx prisma studio
 
+FISIO_ADMIN_SETUP_2026
+
 admin@clinica.com
-Lucas2@gmail.com
+lucas.177
 1234567

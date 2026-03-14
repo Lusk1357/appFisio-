@@ -10,3 +10,5 @@ build/
 backend/node_modules/
 frontend/node_modules/
 backend/.env
+*.db
+*.db-journal

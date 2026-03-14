@@ -32,7 +32,9 @@ exports.createExercise = async (req, res) => {
 // Listar todos os exercícios (Admins e Pacientes podem ver o catálogo)
 exports.getAllExercises = async (req, res) => {
     try {
-        const exercises = await prisma.exercise.findMany();
+        const exercises = await prisma.exercise.findMany({
+            include: { videos: true }
+        });
         res.status(200).json(exercises);
     } catch (error) {
         console.error("Erro ao listar exercícios:", error);
