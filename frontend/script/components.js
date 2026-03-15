@@ -43,6 +43,51 @@ function renderBottomNav(currentPage) {
 }
 
 /**
+ * Retorna as iniciais de um nome (até 2 letras).
+ * @param {string} name 
+ * @returns {string}
+ */
+function getInitials(name) {
+  if (!name) return "?";
+  return name
+    .split(" ")
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((w) => w[0].toUpperCase())
+    .join("");
+}
+
+/**
+ * Gera o HTML para o avatar (imagem ou iniciais).
+ * @param {string} name - Nome do usuário
+ * @param {string|null} avatarUrl - Nome do arquivo da imagem ou null
+ * @param {object} options - Opções de estilo { size, fontSize, border, bgColor }
+ * @returns {string} HTML string
+ */
+function getAvatarHTML(name, avatarUrl, options = {}) {
+  const size = options.size || "44px";
+  const fontSize = options.fontSize || "16px";
+  const border = options.border || "none";
+  const bgColor = options.bgColor || "#5b8af5";
+
+  if (avatarUrl) {
+    return `<img src="/images/avatars/${avatarUrl}" 
+      style="width: ${size}; height: ${size}; border-radius: 50%; object-fit: cover; border: ${border}; display: block;" 
+      alt="Avatar de ${name}"
+      onerror="this.parentElement.innerHTML='${getInitials(name)}'; this.parentElement.style.background='${bgColor}';">`;
+  } else {
+    const initials = getInitials(name);
+    return `
+      <div style="width: ${size}; height: ${size}; border-radius: 50%; background: ${bgColor}; 
+        display: flex; align-items: center; justify-content: center; border: ${border};
+        color: #fff; font-family: 'Bebas Neue', sans-serif; font-size: ${fontSize}; letter-spacing: 1px;">
+        ${initials}
+      </div>
+    `;
+  }
+}
+
+/**
  * Adiciona uma conquista (notificação) ao histórico do paciente no LocalStorage.
  * Se a conquista já existir (pelo título), ela não será duplicada a menos que force=true.
  */

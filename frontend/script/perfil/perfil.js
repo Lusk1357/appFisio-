@@ -27,14 +27,11 @@ async function loadProfile() {
         const profile = data.patientProfile || {};
         const apiAvatar = profile.avatar;
 
-        if (apiAvatar) {
-            profileAvatarDiv.innerHTML = `<img src="/images/avatars/${apiAvatar}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block;" alt="Avatar">`;
-            // Remover estilos de placeholder que podem causar conflito visual
-            profileAvatarDiv.style.backgroundColor = "transparent";
-            profileAvatarDiv.style.display = "block";
-        } else {
-            profileAvatarDiv.innerText = data.name.charAt(0).toUpperCase();
-        }
+        profileAvatarDiv.innerHTML = getAvatarHTML(data.name, apiAvatar, { size: "100%", fontSize: "40px" });
+        profileAvatarDiv.style.background = "none"; // Reset default background if using initials or image
+        profileAvatarDiv.style.display = "flex";
+        profileAvatarDiv.style.alignItems = "center";
+        profileAvatarDiv.style.justifyContent = "center";
 
         // Atualizar papel (role)
         document.getElementById("profileRole").innerText = data.role === "ADMIN" ? "Fisioterapeuta" : "Paciente";

@@ -1,8 +1,10 @@
-require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const path = require('path');
+
+// Carrega variáveis de ambiente de um caminho absoluto para evitar problemas de diretório
+require('dotenv').config({ path: path.join(__dirname, '../.env') });
 
 const authRoutes = require('./routes/auth');
 const exerciseRoutes = require('./routes/exercises');
@@ -11,6 +13,8 @@ const prescriptionRoutes = require('./routes/prescriptions');
 const tipRoutes = require('./routes/tips');
 
 const app = express();
+
+console.log(`[Config] Master Key carregada: ${process.env.MASTER_KEY ? 'Sim (mascarada: ' + process.env.MASTER_KEY.substring(0, 3) + '...)' : 'Não carregada'}`);
 
 app.use(express.json());
 app.use(cookieParser());

@@ -30,35 +30,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Avatar Logic
   const storedAvatar = localStorage.getItem("proFisioAvatar");
-  let renderAvatar = '';
-  const initials = loggedUser.nome
-    .split(" ")
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((w) => w[0].toUpperCase())
-    .join("");
-
-  if (storedAvatar) {
-    renderAvatar = `<img src="/images/avatars/${storedAvatar}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;" alt="Avatar">`;
-  } else {
-    renderAvatar = `<span style="font-family:'Bebas Neue',sans-serif;color:#fff;font-size:24px;letter-spacing:1px">${initials}</span>`;
-  }
-
+  
   // Preencher Avatares
   if (sideMenuAvatar) {
-    sideMenuAvatar.innerHTML = renderAvatar;
-    sideMenuAvatar.style.background = "#5b8af5";
-    sideMenuAvatar.style.width = "70px";
-    sideMenuAvatar.style.height = "70px";
-    sideMenuAvatar.style.borderRadius = "50%";
-    sideMenuAvatar.style.display = "flex";
-    sideMenuAvatar.style.alignItems = "center";
-    sideMenuAvatar.style.justifyContent = "center";
+    sideMenuAvatar.innerHTML = getAvatarHTML(loggedUser.nome, storedAvatar, { size: "70px", fontSize: "28px" });
     sideMenuAvatar.style.margin = "0 auto 10px auto";
+    sideMenuAvatar.style.display = "flex";
+    sideMenuAvatar.style.justifyContent = "center";
   }
 
   if (headerAvatarContainer) {
-    headerAvatarContainer.innerHTML = `<div style="background:#5b8af5; width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; border:2px solid #fff;">${renderAvatar.replace("24px", "16px")}</div>`;
+    headerAvatarContainer.innerHTML = getAvatarHTML(loggedUser.nome, storedAvatar, { size: "44px", fontSize: "16px", border: "2px solid #fff" });
   }
 
   // ── Inicialização do Dashboard ────────────────────────────────────

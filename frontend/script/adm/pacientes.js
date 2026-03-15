@@ -63,15 +63,7 @@
 		return sorted;
 	}
 
-	function getInitials(nome) {
-		if (!nome) return "?";
-		return nome
-			.split(" ")
-			.filter(Boolean)
-			.slice(0, 2)
-			.map((w) => w[0].toUpperCase())
-			.join("");
-	}
+	// getInitials removido, usamos o do components.js
 
 	// ── Render ─────────────────────────────────────────────────────
 	async function render() {
@@ -141,11 +133,7 @@
 		const avatar = document.createElement("div");
 		avatar.className = "patient-avatar-placeholder";
 
-		if (paciente.patientProfile && paciente.patientProfile.avatar) {
-			avatar.innerHTML = `<img src="/images/avatars/${paciente.patientProfile.avatar}" alt="${paciente.name}" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">`;
-		} else {
-			avatar.textContent = getInitials(paciente.name);
-		}
+		avatar.innerHTML = getAvatarHTML(paciente.name, paciente.patientProfile?.avatar);
 
 		clickableArea.appendChild(avatar);
 
