@@ -1,5 +1,8 @@
 /* home_adm.js */
 
+// Proteção de rota
+verificarAcesso("ADMIN");
+
 document.addEventListener("DOMContentLoaded", () => {
 	// Puxar dados do usuário e atualizar interface
 	fetchUserData();
