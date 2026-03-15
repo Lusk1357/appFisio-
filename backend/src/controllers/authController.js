@@ -1,4 +1,4 @@
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { PrismaClient } = require('@prisma/client');
 
@@ -246,6 +246,11 @@ exports.setupSuperAdmin = async (req, res) => {
         });
     } catch (error) {
         console.error("SetupSuperAdmin Error:", error);
-        res.status(500).json({ erro: "Erro interno no servidor ao configurar administrador." });
+        // Retornar o erro real (mas seguro) para ajudar no debug
+        res.status(500).json({ 
+            erro: "Erro interno no servidor ao configurar administrador.",
+            detalhes: error.message,
+            stack: process.env.NODE_ENV === "development" ? error.stack : undefined
+        });
     }
 };
