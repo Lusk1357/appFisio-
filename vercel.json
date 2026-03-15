@@ -1,15 +1,5 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "backend/src/server.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "frontend/**",
-      "use": "@vercel/static"
-    }
-  ],
   "rewrites": [
     {
       "source": "/api/(.*)",
@@ -23,5 +13,10 @@
       "source": "/((?!api/).*)",
       "destination": "/frontend/$1"
     }
-  ]
+  ],
+  "functions": {
+    "backend/src/server.js": {
+      "includeFiles": "backend/prisma/**"
+    }
+  }
 }
