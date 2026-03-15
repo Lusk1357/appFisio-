@@ -24,7 +24,7 @@ Um sistema completo para fisioterapeutas gerenciarem pacientes, exercícios e ro
 6. Cadastrar um adm: http://localhost:3000/pages/secret-setup/index.html` (chave mestra em comandos)
 
 ### Frontend
-Basta abrir o arquivo `frontend/pages/intro/primeira_pagina.html` no seu navegador ou usar uma extensão como Live Server.
+acessar `http://localhost:3000/pages/auth/login.html`
 
 ---
 *Desenvolvido para facilitar o acompanhamento fisioterapêutico.*
