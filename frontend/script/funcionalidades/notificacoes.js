@@ -2,50 +2,94 @@ document.addEventListener("DOMContentLoaded", () => {
     const notificationsContainer = document.getElementById("notificationsContainer");
     const emptyMsg = document.getElementById("emptyNotifications");
 
-    // Recupere as conquistas (ou crie um array vazio se não houver)
-    const conquistasJSON = localStorage.getItem("proFisioAchievements");
-    let conquistasData = [];
+    const btnMarkReadAll = document.getElementById("btnMarkReadAll");
+    const btnClearAll = document.getElementById("btnClearAll");
 
-    // Formato esperado de cada conquista salva:
-    // {
-    //    title: "Primeiro Passo!",
-    //    description: "Você completou seu primeiro treino...",
-    //    icon: "fa-medal",
-    //    timestamp: 167888888888, // Opcional
-    //    alert: true // Opcional, para deixar ícone colorido
-    // }
-
-    if (conquistasJSON) {
+    async function loadNotifications() {
         try {
-            conquistasData = JSON.parse(conquistasJSON);
+            const res = await fetch("/api/conquistas/me", { credentials: "include" });
+            if (res.ok) {
+                const conquistasData = await res.json();
+                renderNotifications(conquistasData);
+            } else {
+                if (emptyMsg) emptyMsg.style.display = "block";
+            }
         } catch (e) {
-            console.error("Erro ao ler conquistas do LocalStorage:", e);
+            console.error("Erro ao buscar conquistas da API:", e);
+            if (emptyMsg) emptyMsg.style.display = "block";
         }
     }
 
-    if (conquistasData.length === 0) {
-        // Mostra estado vazio
-        if (emptyMsg) emptyMsg.style.display = "block";
-    } else {
-        // Esconde o vazio
+    async function markAllAsRead() {
+        try {
+            const res = await fetch("/api/conquistas/read-all", { 
+                method: "PUT",
+                credentials: "include" 
+            });
+            if (res.ok) {
+                loadNotifications();
+            }
+        } catch (e) {
+            console.error("Erro ao marcar lidas:", e);
+        }
+    }
+
+    async function clearAll() {
+        if (!confirm("Deseja apagar todas as notificações?")) return;
+        try {
+            const res = await fetch("/api/conquistas/clear-all", { 
+                method: "DELETE",
+                credentials: "include" 
+            });
+            if (res.ok) {
+                loadNotifications();
+            }
+        } catch (e) {
+            console.error("Erro ao limpar notificações:", e);
+        }
+    }
+
+    async function deleteItem(id) {
+        try {
+            const res = await fetch(`/api/conquistas/${id}`, { 
+                method: "DELETE",
+                credentials: "include" 
+            });
+            if (res.ok) {
+                loadNotifications();
+            }
+        } catch (e) {
+            console.error("Erro ao deletar item:", e);
+        }
+    }
+
+    function renderNotifications(conquistasData) {
+        if (!conquistasData || conquistasData.length === 0) {
+            if (emptyMsg) {
+                emptyMsg.style.display = "block";
+                emptyMsg.textContent = "Nenhuma notificação encontrada.";
+            }
+            notificationsContainer.innerHTML = "";
+            return;
+        }
+
         if (emptyMsg) emptyMsg.style.display = "none";
+        notificationsContainer.innerHTML = "";
 
-        // Inverte a ordem para mostrar os mais recentes primeiro
-        const conquistasOrder = [...conquistasData].reverse();
-
-        // Renderiza cada conquista ganha no layout limpo
-        conquistasOrder.forEach(item => {
+        // Mostra os mais recentes primeiro
+        conquistasData.forEach(item => {
             const hasAlertClass = item.alert ? 'alert' : '';
+            const unreadClass = item.read === false ? 'unread' : '';
             const iconClass = item.icon || 'fa-info-circle';
-            const title = item.title || 'Conquista!';
+            const title = capitalizeName(item.title || 'Conquista!');
             const desc = item.description || '';
 
             // Formatando o tempo aproximado
             let timeStr = "Recentemente";
             if (item.timestamp) {
-                const diffMinutos = Math.floor((Date.now() - item.timestamp) / 60000);
+                const diffMinutos = Math.floor((Date.now() - new Date(item.timestamp)) / 60000);
                 if (diffMinutos < 60) {
-                    timeStr = diffMinutos === 0 ? "Agora mesmo" : `${diffMinutos} min atrás`;
+                    timeStr = diffMinutos <= 0 ? "Agora mesmo" : `${diffMinutos} min atrás`;
                 } else {
                     const diffHoras = Math.floor(diffMinutos / 60);
                     if (diffHoras < 24) {
@@ -58,7 +102,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             const html = `
-                <div class="notification-item">
+                <div class="notification-item ${unreadClass}">
                     <div class="icon-wrapper ${hasAlertClass}">
                         <i class="fa-solid ${iconClass}"></i>
                     </div>
@@ -67,10 +111,21 @@ document.addEventListener("DOMContentLoaded", () => {
                         <p>${desc}</p>
                         <span class="time">${timeStr}</span>
                     </div>
+                    <button class="btn-delete-item" onclick="event.stopPropagation(); window.deleteNotification('${item.id}')" title="Excluir">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
                 </div>
             `;
 
             notificationsContainer.insertAdjacentHTML('beforeend', html);
         });
     }
+
+    // Expondo para o escopo global para o onclick funcional
+    window.deleteNotification = (id) => deleteItem(id);
+
+    if (btnMarkReadAll) btnMarkReadAll.onclick = markAllAsRead;
+    if (btnClearAll) btnClearAll.onclick = clearAll;
+
+    loadNotifications();
 });

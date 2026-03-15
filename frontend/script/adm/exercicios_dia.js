@@ -3,19 +3,35 @@
 document.addEventListener("DOMContentLoaded", () => {
 	const STORAGE_KEY = "pacientesProFisio";
 
-	// ── Catálogo de exercícios do BD ────────────────────────────────
+	// ── Catálogo de exercícios e rotinas do BD ────────────────────
 	let CATALOGO = [];
+	let ROTINAS = [];
 
 	async function loadCatalogo() {
 		try {
 			const res = await fetch("/api/exercicios", { credentials: "include" });
 			const data = await res.json();
-			CATALOGO = data; // Array of objects: { id, name, type, series, observation }
+			CATALOGO = data; 
 		} catch (e) {
 			console.error("Erro ao puxar exercícios da API", e);
 		}
 	}
-	loadCatalogo();
+
+	async function loadRotinas() {
+		try {
+			const res = await fetch("/api/rotinas", { credentials: "include" });
+			const data = await res.json();
+			ROTINAS = data;
+		} catch (e) {
+			console.error("Erro ao puxar rotinas da API", e);
+		}
+	}
+
+	async function initData() {
+		await Promise.all([loadCatalogo(), loadRotinas()]);
+		renderExercises();
+	}
+	initData();
 
 	// ── Lê contexto ───────────────────────────────────────────────
 	const rawPac = sessionStorage.getItem("pacienteSelecionado");
@@ -293,8 +309,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 		// Carrega rotinas criadas (se não estiver no modo "Trocar")
 		if (swappingIndex === null) {
-			const rotinas = JSON.parse(localStorage.getItem("rotinasProFisio")) || [];
-			if (rotinas.length > 0) {
+			if (ROTINAS.length > 0) {
 				const labelR = document.createElement("li");
 				labelR.textContent = "─ ROTINAS SALVAS ─";
 				labelR.style.background = "transparent";
@@ -302,33 +317,25 @@ document.addEventListener("DOMContentLoaded", () => {
 				labelR.style.pointerEvents = "none";
 				ul.appendChild(labelR);
 
-				rotinas.forEach(rotina => {
+				ROTINAS.forEach(rotina => {
 					const li = document.createElement("li");
-					li.innerHTML = `🌟 <strong>Rotina:</strong> ${rotina.nome}`;
-					li.style.background = "#eef2ff"; // cor mais suave
+					li.innerHTML = `🌟 <strong>Rotina:</strong> ${rotina.name}`;
+					li.style.background = "#eef2ff"; 
 					li.addEventListener("click", () => {
 						const chkApplyAll = document.getElementById("chkApplyAll");
 						const applyToAll = chkApplyAll && chkApplyAll.checked;
 
-						// Mapeia e injeta séries/obs da rotina
-						const exObjs = rotina.lista_exercicios_ids
-							.map(item => {
-								// item = { id, series, observation }
-								// Compatibiliza com rotinas criadas no formato antigo (só string id)
-								const searchId = typeof item === "string" ? item : item.id;
-								const catObj = CATALOGO.find(cat => cat.id.toString() === searchId.toString());
-
-								if (catObj) {
-									return {
-										...catObj,
-										series: item.series || "3x15",
-										observation: item.observation !== undefined ? item.observation : (catObj.observation || null),
-										restTime: item.restTime || 60
-									};
-								}
-								return null;
-							})
-							.filter(Boolean);
+						// Mapeia e injeta exercícios do template
+						const exObjs = rotina.exercises.map(re => {
+							return {
+								id: re.exercise.id,
+								name: re.exercise.name,
+								type: re.exercise.type,
+								series: re.series || "3x15",
+								observation: re.observation || re.exercise.observation || null,
+								restTime: re.restTime || 60
+							};
+						});
 
 						const targetDays = applyToAll ? ctx.dias : [diaInfo];
 						targetDays.forEach(d => {
@@ -342,7 +349,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 						closeOverlay("overlayExercises");
 						renderExercises();
-						showToast("success", `Rotina "${rotina.nome}" aplicada com detalhes configurados!`);
+						showToast("success", `Rotina "${rotina.name}" aplicada com sucesso!`);
 					});
 					ul.appendChild(li);
 				});

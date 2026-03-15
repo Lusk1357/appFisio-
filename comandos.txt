@@ -7,5 +7,7 @@ npx prisma studio
 FISIO_ADMIN_SETUP_2026
 
 admin@clinica.com
-lucas.177
 1234567
+
+lucas.pereira989
+lucas4353

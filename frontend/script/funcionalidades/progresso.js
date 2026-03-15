@@ -11,32 +11,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Header Info
   const progressoNome = document.getElementById("progressoNome");
-  progressoNome.textContent = `Olá, ${loggedUser.nome.split(" ")[0]}!`;
+  const capitalized = capitalizeName(loggedUser.nome.split(" ")[0]);
+  progressoNome.textContent = `Olá, ${capitalized}!`;
 
-  // ── Busca dados reais de progresso da API ─────────────────────
-  let stats = {
-    totalExercicios: 0,
-    exerciciosConcluidos: 0,
-    diasTreinados: 0,
-    diasComTreinoCompleto: 0,
-    tempoTotalMinutos: 0,
-    totalPrescricoes: 0,
-    mesAtualTotal: 0,
-    mesAtualConcluidos: 0,
-    mesAtualDiasAtribuidos: 0,
-    mesAtualDiasConcluidos: 0
-  };
-
-  try {
-    const response = await fetch("/api/prescricoes/me/stats", {
-      credentials: "include"
-    });
-    if (response.ok) {
-      stats = await response.json();
-    }
-  } catch (e) {
-    console.error("Erro ao buscar progresso:", e);
-  }
+  // ── Busca dados reais de progresso e Verifica Conquistas ──────
+  const stats = await checkMilestones();
+  if (!stats) return;
 
   // ── Set UI Stats ──────────────────────────────────────────────
   const statTotalDias = document.getElementById("statTotalDias");
@@ -64,73 +44,37 @@ document.addEventListener("DOMContentLoaded", async () => {
     ringCircle.style.background = `conic-gradient(#5b8af5 ${perc}%, #f1f5f9 0)`;
   }, 100);
 
-  // ── Sistema de Conquistas ─────────────────────────────────────
-  // Puxa histórico de conquistas já exibidas do storage (para não dar popup toda hora)
-  let unlockedAchievements = JSON.parse(localStorage.getItem("unlockedAchievements") || "[]");
-  let newlyUnlocked = null; // Guarda a primeira nova conquista pra dar foco nela
+  // ── Atualiza a UI das Conquistas (Locked/Unlocked) ────────────
+  async function updateAchievementsUI(stats) {
+    const rules = [
+      { id: "primeiroTreino", cond: stats.exerciciosConcluidos > 0, bg: "#dcfce7", color: "#16a34a" },
+      { id: "focoSemanal", cond: stats.diasTreinados >= 3, bg: "#dbeafe", color: "#2563eb" },
+      { id: "dezExercicios", cond: stats.exerciciosConcluidos >= 10, bg: "#fef9c3", color: "#ca8a04" },
+      { id: "guerreiro", cond: stats.diasTreinados >= 20, bg: "#f3e8ff", color: "#9333ea" },
+      { id: "cinquentaExercicios", cond: stats.exerciciosConcluidos >= 50, bg: "#ffedd5", color: "#ea580c" },
+      { id: "cinquentaDias", cond: stats.diasTreinados >= 50, bg: "#e0e7ff", color: "#4f46e5" },
+      { id: "cemExercicios", cond: stats.exerciciosConcluidos >= 100, bg: "#fef3c7", color: "#d97706" },
+      { id: "cemDias", cond: stats.diasTreinados >= 100, bg: "#ecfeff", color: "#0891b2" },
+      { id: "tempoSaude", cond: stats.tempoTotalMinutos >= 60, bg: "#ccfbf1", color: "#0d9488" },
+      { id: "superDedicado", cond: stats.tempoTotalMinutos >= 300, bg: "#fae8ff", color: "#c026d3" },
+      { id: "perseveranca", cond: stats.diasComTreinoCompleto >= 5, bg: "#fef3c7", color: "#d97706" },
+      { id: "mestreSemana", cond: stats.mesAtualDiasConcluidos >= 7, bg: "#dcfce7", color: "#15803d" }
+    ];
 
-  function checkAndUnlock(dataId, condition, name, desc, iconBg, iconColor) {
-    const el = document.querySelector(`.achievement-item[data-id="${dataId}"]`);
-    if (el && condition) {
-      el.classList.remove("locked");
-      el.querySelector(".ach-icon").style.background = iconBg;
-      el.querySelector(".ach-icon").style.color = iconColor;
-
-      if (!unlockedAchievements.includes(dataId)) {
-        unlockedAchievements.push(dataId);
-        if (!newlyUnlocked) newlyUnlocked = { id: dataId, name, desc }; // Salva pra exibir no popup
+    rules.forEach(rule => {
+      const el = document.querySelector(`.achievement-item[data-id="${rule.id}"]`);
+      if (el && rule.cond) {
+        el.classList.remove("locked");
+        const iconEl = el.querySelector(".ach-icon");
+        if (iconEl) {
+          iconEl.style.background = rule.bg;
+          iconEl.style.color = rule.color;
+        }
       }
-    }
+    });
   }
 
-  // Define as regras das conquistas
-  checkAndUnlock("primeiroTreino", stats.exerciciosConcluidos > 0, "Primeiro Treino", "Inicie sua jornada no app", "#dcfce7", "#16a34a");
-  checkAndUnlock("focoSemanal", stats.diasTreinados >= 3, "Foco Total", "3 dias de atividades", "#dbeafe", "#2563eb");
-  checkAndUnlock("dezExercicios", stats.exerciciosConcluidos >= 10, "Iniciante Forte", "10 exercícios concluídos", "#fef9c3", "#ca8a04");
-  checkAndUnlock("guerreiro", stats.diasTreinados >= 20, "Guerreiro da Fisio", "20 dias de treino", "#f3e8ff", "#9333ea");
-
-  // Novas Conquistas
-  checkAndUnlock("cinquentaExercicios", stats.exerciciosConcluidos >= 50, "Atleta Dedicado", "50 exercícios concluídos", "#ffedd5", "#ea580c");
-  checkAndUnlock("cinquentaDias", stats.diasTreinados >= 50, "Constância de Ferro", "50 dias de treino", "#e0e7ff", "#4f46e5");
-  checkAndUnlock("cemExercicios", stats.exerciciosConcluidos >= 100, "Mestre do Movimento", "100 exercícios concluídos", "#fef3c7", "#d97706");
-  checkAndUnlock("cemDias", stats.diasTreinados >= 100, "Resiliência Pura", "100 dias ininterruptos de empenho", "#ecfeff", "#0891b2");
-
-  // Salva de volta no storage local
-  localStorage.setItem("unlockedAchievements", JSON.stringify(unlockedAchievements));
-
-  // Gerencia o Popup de "Nova Conquista" após o treino
-  if (sessionStorage.getItem("justFinishedWorkout") === "true") {
-    sessionStorage.removeItem("justFinishedWorkout"); // Limpa o flag
-
-    if (newlyUnlocked) {
-      // Mostra o popup
-      const popup = document.getElementById("achievementPopup");
-      const pName = document.getElementById("popupAchName");
-      const pDesc = document.getElementById("popupAchDesc");
-      const pProg = document.getElementById("popupProgress");
-
-      pName.innerText = newlyUnlocked.name;
-      pDesc.innerText = newlyUnlocked.desc;
-      popup.style.display = "flex";
-
-      // Anima barra de progresso do popup (20s)
-      setTimeout(() => {
-        pProg.style.width = "0%";
-      }, 100);
-
-      // Esconde automaticamente depois de 20 segundos
-      setTimeout(() => {
-        popup.style.animation = "slideUp 0.5s ease forwards";
-        setTimeout(() => popup.style.display = "none", 500);
-      }, 20000);
-
-      // Permite fechar clicando
-      popup.addEventListener("click", () => {
-        popup.style.animation = "slideUp 0.5s ease forwards";
-        setTimeout(() => popup.style.display = "none", 500);
-      });
-    }
-  }
+  await updateAchievementsUI(stats);
 
   // ── Função Animação UI ────────────────────────────────────────
   function animateValue(obj, start, end, duration) {

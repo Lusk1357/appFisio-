@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "sqlite"
-  url      = "file:./dev.db"
+  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -17,6 +17,20 @@ model User {
 
   patientProfile PatientProfile?
   prescriptions  Prescription[]
+  achievements   Achievement[]
+}
+
+model Achievement {
+  id          String   @id @default(uuid())
+  userId      String
+  title       String
+  description String
+  icon        String
+  alert       Boolean  @default(false)
+  read        Boolean  @default(false)
+  timestamp   DateTime @default(now())
+
+  user        User     @relation(fields: [userId], references: [id])
 }
 
 model PatientProfile {

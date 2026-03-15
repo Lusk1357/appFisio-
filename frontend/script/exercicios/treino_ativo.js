@@ -311,17 +311,12 @@ document.addEventListener("DOMContentLoaded", () => {
         headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify({ prescriptionExerciseIds: ids })
+      }).then(() => {
+        // Agora sim verifica conquistas, após o banco ser atualizado
+        if (typeof checkMilestones === 'function') {
+          checkMilestones();
+        }
       }).catch(err => console.error("Erro ao marcar conclusão:", err));
-    }
-
-    // Tentar adicionar conquista (ela só é adicionada 1x caso não exista)
-    if (typeof addAchievement === 'function') {
-      addAchievement(
-        "Primeiro Passo!",
-        "Você completou seu primeiro treino de fisioterapia. O caminho para a recuperação começou.",
-        "fa-medal",
-        true // Alert true para ficar douradinho/vermelho
-      );
     }
 
     sessionStorage.removeItem("treinoAtivo");
