@@ -18,30 +18,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const loggedUser = JSON.parse(loggedUserJSON);
 
-  // Puxa as informações de exibir
-  const sideMenuName = document.getElementById("sideMenuName");
-  const greetingName = document.getElementById("greetingName");
-  const sideMenuAvatar = document.getElementById("sideMenuAvatar");
-  const headerAvatarContainer = document.getElementById("headerAvatarContainer");
+  // Preencher Informações via API (mais confiável que localStorage)
+  async function loadUserInfo() {
+    try {
+      const res = await fetch("/api/pacientes/me", { credentials: "include" });
+      if (res.ok) {
+        const data = await res.json();
+        const fullName = capitalizeName(data.name);
+        const firstName = fullName.split(" ")[0];
+        if (sideMenuName) sideMenuName.textContent = firstName;
+        if (greetingName) greetingName.textContent = firstName + "!";
+        
+        const avatarUrl = data.patientProfile?.avatar || null;
 
-  const firstName = loggedUser.nome.split(" ")[0];
-  if (sideMenuName) sideMenuName.textContent = firstName;
-  if (greetingName) greetingName.textContent = firstName + "!";
-
-  // Avatar Logic
-  const storedAvatar = localStorage.getItem("proFisioAvatar");
-  
-  // Preencher Avatares
-  if (sideMenuAvatar) {
-    sideMenuAvatar.innerHTML = getAvatarHTML(loggedUser.nome, storedAvatar, { size: "70px", fontSize: "28px" });
-    sideMenuAvatar.style.margin = "0 auto 10px auto";
-    sideMenuAvatar.style.display = "flex";
-    sideMenuAvatar.style.justifyContent = "center";
+        if (sideMenuAvatar) {
+          sideMenuAvatar.innerHTML = getAvatarHTML(fullName, avatarUrl, { size: "70px", fontSize: "28px" });
+        }
+        if (headerAvatarContainer) {
+          headerAvatarContainer.innerHTML = getAvatarHTML(fullName, avatarUrl, { size: "44px", fontSize: "16px", border: "2px solid #fff" });
+        }
+      }
+    } catch (e) {
+      console.error("Erro ao carregar dados do usuário na Home:", e);
+    }
   }
 
-  if (headerAvatarContainer) {
-    headerAvatarContainer.innerHTML = getAvatarHTML(loggedUser.nome, storedAvatar, { size: "44px", fontSize: "16px", border: "2px solid #fff" });
-  }
+  loadUserInfo();
 
   // ── Inicialização do Dashboard ────────────────────────────────────
   async function initDashboard() {

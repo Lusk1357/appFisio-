@@ -73,9 +73,11 @@ async function fetchUserData() {
 		document.querySelector(".hero-user-name").textContent = user.name;
 		document.querySelector(".hero-user-role").textContent = user.role;
 
-		// Atualizar o avatar com a inicial do nome
-		const avatar = document.querySelector(".hero-avatar");
-		avatar.innerHTML = `<span>${user.name.charAt(0).toUpperCase()}</span>`;
+		// Atualizar o avatar com a inicial do nome usando o componente padronizado
+		const avatarContainer = document.querySelector(".hero-avatar");
+		if (avatarContainer) {
+			avatarContainer.innerHTML = getAvatarHTML(user.name, null, { size: "44px", fontSize: "20px" });
+		}
 
 	} catch (err) {
 		console.error("Erro ao carregar dados do usuário:", err);

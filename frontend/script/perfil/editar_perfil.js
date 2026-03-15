@@ -125,13 +125,6 @@ document.addEventListener("DOMContentLoaded", () => {
         selectedAvatarName = p.avatar;
         profilePreview.src = `/images/avatars/${p.avatar}`;
         profilePreview.style.display = "block";
-      } else {
-        const storedAvatar = localStorage.getItem("proFisioAvatar");
-        if (storedAvatar) {
-          selectedAvatarName = storedAvatar;
-          profilePreview.src = `/images/avatars/${storedAvatar}`;
-          profilePreview.style.display = "block";
-        }
       }
     } catch (e) {
       console.error(e);
@@ -174,9 +167,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const user = JSON.parse(loggedUserJSON);
         user.nome = payload.name;
         localStorage.setItem("userProFisio", JSON.stringify(user));
-      }
-      if (payload.avatar) {
-        localStorage.setItem("proFisioAvatar", payload.avatar);
       }
 
       saveBtn.innerHTML = '<i class="fa-solid fa-check"></i> SALVO!';

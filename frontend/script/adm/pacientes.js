@@ -3,7 +3,6 @@
    ============================== */
 
 (function () {
-	const STORAGE_KEY = "pacientesProFisio";
 	const PAGE_SIZE = 6;
 
 	let currentSort = "az";
@@ -133,13 +132,14 @@
 		const avatar = document.createElement("div");
 		avatar.className = "patient-avatar-placeholder";
 
-		avatar.innerHTML = getAvatarHTML(paciente.name, paciente.patientProfile?.avatar);
+		const capitalizedName = capitalizeName(paciente.name);
+		avatar.innerHTML = getAvatarHTML(capitalizedName, paciente.patientProfile?.avatar, { size: "100%", fontSize: "28px" });
 
 		clickableArea.appendChild(avatar);
 
 		const nameEl = document.createElement("span");
 		nameEl.className = "patient-name";
-		nameEl.textContent = paciente.name;
+		nameEl.textContent = capitalizeName(paciente.name);
 		clickableArea.appendChild(nameEl);
 
 		card.appendChild(clickableArea);

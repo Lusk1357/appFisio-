@@ -11,6 +11,7 @@ const exerciseRoutes = require('./routes/exercises');
 const patientRoutes = require('./routes/patients');
 const prescriptionRoutes = require('./routes/prescriptions');
 const tipRoutes = require('./routes/tips');
+const achievementRoutes = require('./routes/achievementRoutes');
 
 const app = express();
 
@@ -35,6 +36,7 @@ app.use('/api/pacientes', patientRoutes);
 app.use('/api/prescricoes', prescriptionRoutes);
 app.use('/api/rotinas', require('./routes/routines')); // Nova rota para os templates de Rotinas
 app.use('/api/tips', tipRoutes);
+app.use('/api/conquistas', achievementRoutes);
 
 // SERVINDO O FRONTEND: Resolve o problema do "file://"
 // Agora o frontend e a API rodam debaixo do mesmo teto (http://localhost:3000)
