@@ -213,6 +213,7 @@ exports.setupSuperAdmin = async (req, res) => {
         // 1. Validação da Chave Mestra
         if (!masterKey || masterKey.trim() !== SECRET_MASTER_KEY.trim()) {
             console.warn(`Acesso negado: Chave Mestra incorreta.`);
+            console.warn(`Recebida: "${masterKey ? masterKey.substring(0, 3) + '...' : 'null'}" | Esperada: "${SECRET_MASTER_KEY.substring(0, 3)}..."`);
             return res.status(403).json({ erro: "Chave Mestra inválida ou não fornecida." });
         }
 

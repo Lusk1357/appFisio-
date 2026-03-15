@@ -168,6 +168,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (!res.ok) throw new Error("Erro na atualização");
 
+      // Atualizar LocalStorage para sincronizar Home/Menu Lateral
+      const loggedUserJSON = localStorage.getItem("userProFisio");
+      if (loggedUserJSON) {
+        const user = JSON.parse(loggedUserJSON);
+        user.nome = payload.name;
+        localStorage.setItem("userProFisio", JSON.stringify(user));
+      }
+      if (payload.avatar) {
+        localStorage.setItem("proFisioAvatar", payload.avatar);
+      }
+
       saveBtn.innerHTML = '<i class="fa-solid fa-check"></i> SALVO!';
       saveBtn.style.backgroundColor = "#10b981";
 

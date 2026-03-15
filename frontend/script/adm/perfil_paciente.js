@@ -32,17 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	// Avatar: se tiver foto usa img, senão mostra iniciais
 	const avatarEl = document.getElementById("avatarDisplay");
 	if (avatarEl) {
-		if (profile.avatar) {
-			avatarEl.innerHTML = `<img src="/images/avatars/${profile.avatar}" alt="${paciente.name}" />`;
-		} else {
-			const initials = (paciente.name || "")
-				.split(" ")
-				.filter(Boolean)
-				.slice(0, 2)
-				.map((w) => w[0].toUpperCase())
-				.join("");
-			avatarEl.innerHTML = `<span style="font-family:'Bebas Neue',sans-serif;font-size:36px;color:#7aa3ec;letter-spacing:2px">${initials}</span>`;
-		}
+		avatarEl.innerHTML = getAvatarHTML(paciente.name, profile.avatar, { size: "100%", fontSize: "36px" });
 	}
 
 	// Observações Clínicas

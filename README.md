@@ -1,4 +1,4 @@
-﻿# AppFisio
+# AppFisio
 
 Um sistema completo para fisioterapeutas gerenciarem pacientes, exercícios e rotinas de tratamento.
 
@@ -20,11 +20,11 @@ Um sistema completo para fisioterapeutas gerenciarem pacientes, exercícios e ro
 2. Instale as dependências: `npm install`
 3. Configure o arquivo `.env`
 4. Execute as migrações: `npx prisma migrate dev`
-5. Inicie o servidor: `npx nodemon src/server.js
-6. Cadastrar um adm: http://localhost:3000/pages/secret-setup/index.html` (chave mestra em comandos)
+5. Inicie o servidor: `npx nodemon src/server.js`
+6. Cadastrar um adm: `http://localhost:3000/pages/secret-setup/index.html` (chave mestra em `comandos.txt`)
 
 ### Frontend
-acessar `http://localhost:3000/pages/auth/login.html`
+Acessar `http://localhost:3000/pages/auth/login.html`
 
 ---
 *Desenvolvido para facilitar o acompanhamento fisioterapêutico.*
