@@ -20,7 +20,8 @@ Um sistema completo para fisioterapeutas gerenciarem pacientes, exercícios e ro
 2. Instale as dependências: `npm install`
 3. Configure o arquivo `.env`
 4. Execute as migrações: `npx prisma migrate dev`
-5. Inicie o servidor: `npm start` (ou `node src/index.js`) ou 'npx nodemon src/server.js'
+5. Inicie o servidor: `npx nodemon src/server.js
+6. Cadastrar um adm: http://localhost:3000/pages/secret-setup/index.html` (chave mestra em comandos)
 
 ### Frontend
 Basta abrir o arquivo `frontend/pages/intro/primeira_pagina.html` no seu navegador ou usar uma extensão como Live Server.
