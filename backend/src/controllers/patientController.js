@@ -1,6 +1,6 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 // Listar todos os usuários que são "PATIENT" (APENAS ADM)
 exports.getAllPatients = async (req, res) => {
