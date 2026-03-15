@@ -1,0 +1,13 @@
+{
+  "name": "app-fisio-root",
+  "version": "1.0.0",
+  "description": "Root configuration for Vercel deployment of appFisio",
+  "scripts": {
+    "build": "cd backend && npm install && npx prisma generate",
+    "vercel-build": "npm run build"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "@prisma/client": "^6.19.2"
+  }
+}

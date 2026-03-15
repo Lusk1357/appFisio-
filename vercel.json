@@ -13,15 +13,15 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "backend/src/server.js"
+      "destination": "/backend/src/server.js"
     },
     {
       "source": "/",
-      "destination": "frontend/pages/intro/primeira_pagina.html"
+      "destination": "/frontend/pages/intro/primeira_pagina.html"
     },
     {
-      "source": "/(.*)",
-      "destination": "frontend/$1"
+      "source": "/((?!api/).*)",
+      "destination": "/frontend/$1"
     }
   ]
 }

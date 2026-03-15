@@ -3,8 +3,10 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const path = require('path');
 
-// Carrega variáveis de ambiente de um caminho absoluto para evitar problemas de diretório
-require('dotenv').config({ path: path.join(__dirname, '../.env') });
+// Carrega variáveis de ambiente SOMENTE em desenvolvimento
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config({ path: path.join(__dirname, '../.env') });
+}
 
 const authRoutes = require('./routes/auth');
 const exerciseRoutes = require('./routes/exercises');
@@ -13,12 +15,31 @@ const prescriptionRoutes = require('./routes/prescriptions');
 const tipRoutes = require('./routes/tips');
 const achievementRoutes = require('./routes/achievementRoutes');
 
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
+
 const app = express();
 
-console.log(`[Config] Master Key carregada: ${process.env.MASTER_KEY ? 'Sim (mascarada: ' + process.env.MASTER_KEY.substring(0, 3) + '...)' : 'Não carregada'}`);
+console.log(`[Config] NODE_ENV: ${process.env.NODE_ENV}`);
+console.log(`[Config] DATABASE_URL detectada: ${process.env.DATABASE_URL ? 'Sim' : 'Não'}`);
+console.log(`[Config] Master Key detectada: ${process.env.MASTER_KEY ? 'Sim' : 'Não'}`);
 
 app.use(express.json());
 app.use(cookieParser());
+
+// Endpoint de Diagnóstico do Banco
+app.get('/api/db-check', async (req, res) => {
+    try {
+        await prisma.$queryRaw`SELECT 1`;
+        res.json({ status: 'Conectado ao Banco com sucesso!', database: 'PostgreSQL/Neon' });
+    } catch (error) {
+        console.error('Erro de conexão ao banco:', error);
+        res.status(500).json({ 
+            erro: 'Falha ao conectar no banco de dados.', 
+            detalhes: error.message 
+        });
+    }
+});
 
 // Configuração do CORS para permitir requisições do frontend e aceitar Cookies
 app.use(cors({
