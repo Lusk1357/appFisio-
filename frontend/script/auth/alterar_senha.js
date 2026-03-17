@@ -72,12 +72,37 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // Nota: No futuro, chamaremos POST /api/auth/alterar-senha
-    // Por hora, apenas simulamos a troca
-    showToast("success", "Senha alterada com sucesso!");
+    // Chama a API real para alterar a senha
+    const btn = form.querySelector('button[type="submit"]');
+    const originalText = btn.textContent;
+    btn.textContent = "SALVANDO...";
+    btn.disabled = true;
 
-    setTimeout(() => {
-      window.location.href = "/pages/auth/login.html";
-    }, 2000);
+    fetch('/api/auth/alterar-senha', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ senhaAtual: currentPass, novaSenha: newPass })
+    })
+    .then(res => res.json().then(data => ({ ok: res.ok, data })))
+    .then(({ ok, data }) => {
+      if (!ok) {
+        showToast("error", data.erro || "Erro ao alterar a senha.");
+        return;
+      }
+
+      showToast("success", "Senha alterada com sucesso!");
+      setTimeout(() => {
+        window.location.href = "/pages/auth/login.html";
+      }, 2000);
+    })
+    .catch(err => {
+      console.error("Erro ao alterar senha:", err);
+      showToast("error", "Erro de conexão com o servidor.");
+    })
+    .finally(() => {
+      btn.textContent = originalText;
+      btn.disabled = false;
+    });
   });
 });

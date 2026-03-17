@@ -163,13 +163,13 @@ document.addEventListener("DOMContentLoaded", () => {
           card.innerHTML = `
             ${index === 0 ? '<i class="fa-solid fa-star heart-icon" style="color: #fbbf24"></i>' : ''}
             ${index === 1 ? '<i class="fa-solid fa-fire heart-icon" style="color: #ef4444"></i>' : ''}
-            <img src="${dica.thumbnail}" alt="${dica.title}" onerror="this.src='https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80'" class="card-img"/>
+            <img src="${window.escapeHTML(dica.thumbnail)}" alt="${window.escapeHTML(dica.title)}" onerror="this.src='https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80'" class="card-img"/>
             <div class="card-info">
-              <h3 class="card-title">${dica.title}</h3>
+              <h3 class="card-title">${window.escapeHTML(dica.title)}</h3>
               <div class="card-meta">
                 <span>Dica de Físio</span>
                 <span>|</span>
-                <span><i class="fa-regular fa-clock"></i> ${dica.duration}</span>
+                <span><i class="fa-regular fa-clock"></i> ${window.escapeHTML(dica.duration)}</span>
               </div>
             </div>
           `;

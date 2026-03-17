@@ -6,6 +6,10 @@ const prisma = new PrismaClient();
 console.log("[Auth] Prisma Client inicializado");
 const JWT_SECRET = process.env.JWT_SECRET || "SUPER_SECRET_PRO_FISIO_KEY_123";
 
+if (process.env.NODE_ENV === 'production' && !process.env.JWT_SECRET) {
+    throw new Error('FATAL ERROR: JWT_SECRET is not defined in the production environment. Using a fallback key is unsafe.');
+}
+
 // Registro -> Hashing de Senha Segura
 exports.register = async (req, res) => {
     try {
@@ -88,8 +92,7 @@ exports.login = async (req, res) => {
         res.cookie("authToken", token, {
             httpOnly: true, // Continua não sendo acessível pro JS (Blindado)
             secure: process.env.NODE_ENV === "production",
-            // Removemos os hacks de 'sameSite: none' e deixamos o padrão (Lax),
-            // pois agora o HTML e a API vêm originados da mesmissima casa "localhost:3000".
+            sameSite: 'Lax', // Previne CSRF enviando cookies apenas em origens seguras/do mesmo site
             maxAge: 7 * 24 * 60 * 60 * 1000 // 7 dias
         });
 
@@ -117,8 +120,8 @@ exports.verifyRecoveryData = async (req, res) => {
     try {
         const { email, telefone } = req.body;
 
-        if (!email || !telefone) {
-            return res.status(400).json({ erro: "E-mail e telefone são obrigatórios." });
+        if (!email) {
+            return res.status(400).json({ erro: "E-mail é obrigatório." });
         }
 
         // 1. Busca o usuário
@@ -127,17 +130,28 @@ exports.verifyRecoveryData = async (req, res) => {
             include: { patientProfile: true }
         });
 
-        if (!user || user.role !== 'PATIENT' || !user.patientProfile) {
+        if (!user) {
             return res.status(404).json({ erro: "Dados incorretos ou não encontrados." });
         }
 
-        // 2. Limpa tudo que não for número do telefone do banco e do que foi enviado
-        const phoneDb = (user.patientProfile.telefone || "").replace(/\D/g, '');
-        const phoneInput = telefone.replace(/\D/g, '');
+        // 2. Verificação de telefone (apenas para pacientes)
+        if (user.role === 'PATIENT') {
+            if (!telefone) {
+                return res.status(400).json({ erro: "Telefone é obrigatório para pacientes." });
+            }
 
-        if (!phoneDb || phoneDb !== phoneInput) {
-            return res.status(401).json({ erro: "Dados incorretos. Verifique o telefone informado." });
+            if (!user.patientProfile) {
+                return res.status(404).json({ erro: "Dados incorretos ou não encontrados." });
+            }
+
+            const phoneDb = (user.patientProfile.telefone || "").replace(/\D/g, '');
+            const phoneInput = telefone.replace(/\D/g, '');
+
+            if (!phoneDb || phoneDb !== phoneInput) {
+                return res.status(401).json({ erro: "Dados incorretos. Verifique o telefone informado." });
+            }
         }
+        // Para ADMIN: não exige telefone
 
         // 3. Sucesso! Gera um Token Temporário de 15 minutos especializado para "Reset"
         const tokenPayload = {
@@ -200,6 +214,46 @@ exports.resetPasswordDirect = async (req, res) => {
         res.status(500).json({ erro: "Erro interno ao redefinir a senha." });
     }
 };
+// ── Alterar Senha (Usuário Logado — Paciente ou Admin) ──
+exports.changePassword = async (req, res) => {
+    try {
+        const { senhaAtual, novaSenha } = req.body;
+        const userId = req.user.id; // Vem do token JWT (middleware verificarToken)
+
+        if (!senhaAtual || !novaSenha) {
+            return res.status(400).json({ erro: "Senha atual e nova senha são obrigatórias." });
+        }
+
+        if (novaSenha.length < 4) {
+            return res.status(400).json({ erro: "A nova senha deve ter pelo menos 4 caracteres." });
+        }
+
+        // 1. Busca o usuário
+        const user = await prisma.user.findUnique({ where: { id: userId } });
+        if (!user) {
+            return res.status(404).json({ erro: "Usuário não encontrado." });
+        }
+
+        // 2. Verifica se a senha atual está correta
+        const senhaCorreta = await bcrypt.compare(senhaAtual, user.passwordHash);
+        if (!senhaCorreta) {
+            return res.status(401).json({ erro: "A senha atual está incorreta." });
+        }
+
+        // 3. Hash da nova senha e salva
+        const novoHash = await bcrypt.hash(novaSenha, 10);
+        await prisma.user.update({
+            where: { id: userId },
+            data: { passwordHash: novoHash }
+        });
+
+        res.status(200).json({ sucesso: true, mensagem: "Senha alterada com sucesso!" });
+    } catch (error) {
+        console.error("changePassword Error:", error);
+        res.status(500).json({ erro: "Erro interno ao alterar a senha." });
+    }
+};
+
 // ── Setup de Administrador Seguro (Protegido por Master Key) ──
 exports.setupSuperAdmin = async (req, res) => {
     try {

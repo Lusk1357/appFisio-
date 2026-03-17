@@ -156,8 +156,8 @@ document.addEventListener("DOMContentLoaded", () => {
                             ${iconType}
                         </div>
                         <div class="exercise-details">
-                            <h4>${ex.name}</h4>
-                            <p><i class="fa-solid fa-list-ol"></i> ${seriesReal} ${ex.type ? `• ${ex.type}` : ''}</p>
+                            <h4>${window.escapeHTML(ex.name)}</h4>
+                            <p><i class="fa-solid fa-list-ol"></i> ${window.escapeHTML(seriesReal)} ${ex.type ? `• ${window.escapeHTML(ex.type)}` : ''}</p>
                         </div>
                         <div class="exercise-status">
                             ${htmlStatus}

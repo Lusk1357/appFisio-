@@ -35,18 +35,25 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     async function clearAll() {
-        if (!confirm("Deseja apagar todas as notificações?")) return;
-        try {
-            const res = await fetch("/api/conquistas/clear-all", { 
-                method: "DELETE",
-                credentials: "include" 
-            });
-            if (res.ok) {
-                loadNotifications();
+        window.showCustomConfirm(
+            "Limpar Notificações", 
+            "Deseja realmente apagar todas as notificações? Esta ação não pode ser desfeita.", 
+            async () => {
+                try {
+                    const res = await fetch("/api/conquistas/clear-all", { 
+                        method: "DELETE",
+                        credentials: "include" 
+                    });
+                    if (res.ok) {
+                        loadNotifications();
+                        if (window.showToast) window.showToast("success", "Notificações limpas!");
+                    }
+                } catch (e) {
+                    console.error("Erro ao limpar notificações:", e);
+                    if (window.showToast) window.showToast("error", "Erro ao limpar.");
+                }
             }
-        } catch (e) {
-            console.error("Erro ao limpar notificações:", e);
-        }
+        );
     }
 
     async function deleteItem(id) {
@@ -81,8 +88,8 @@ document.addEventListener("DOMContentLoaded", () => {
             const hasAlertClass = item.alert ? 'alert' : '';
             const unreadClass = item.read === false ? 'unread' : '';
             const iconClass = item.icon || 'fa-info-circle';
-            const title = capitalizeName(item.title || 'Conquista!');
-            const desc = item.description || '';
+            const title = window.escapeHTML(capitalizeName(item.title || 'Conquista!'));
+            const desc = window.escapeHTML(item.description || '');
 
             // Formatando o tempo aproximado
             let timeStr = "Recentemente";

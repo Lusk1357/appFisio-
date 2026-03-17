@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 	// ── Toggle Editar ─────────────────────────────────────────────
 	const btnEditName = document.getElementById("btnEditName");
-	const appContainer = document.querySelector(".app-container");
+	const appContainer = document.querySelector(".app-wrapper");
 
 	if (btnEditName) {
 		btnEditName.addEventListener("click", () => {

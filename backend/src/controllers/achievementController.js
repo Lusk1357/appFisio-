@@ -5,7 +5,10 @@ const prisma = new PrismaClient();
 exports.getMyAchievements = async (req, res) => {
     try {
         const achievements = await prisma.achievement.findMany({
-            where: { userId: req.user.id },
+            where: { 
+                userId: req.user.id,
+                icon: { not: 'DELETED' } // Oculta as apagadas logichemente
+            },
             orderBy: { timestamp: 'desc' }
         });
         res.status(200).json(achievements);
@@ -76,7 +79,11 @@ exports.deleteAchievement = async (req, res) => {
             return res.status(404).json({ erro: "Notificação não encontrada." });
         }
 
-        await prisma.achievement.delete({ where: { id } });
+        // Exclusão Lógica: Marca a conquista como deletada para não ser recriada
+        await prisma.achievement.update({ 
+            where: { id },
+            data: { icon: 'DELETED' }
+        });
         res.status(200).json({ sucesso: true });
     } catch (error) {
         console.error("Erro ao excluir conquista:", error);
@@ -87,8 +94,10 @@ exports.deleteAchievement = async (req, res) => {
 // Exclui TODAS as conquistas do usuário
 exports.deleteAllAchievements = async (req, res) => {
     try {
-        await prisma.achievement.deleteMany({
-            where: { userId: req.user.id }
+        // Exclusão Lógica: Marca todas as conquistas atuais como deletadas
+        await prisma.achievement.updateMany({
+            where: { userId: req.user.id },
+            data: { icon: 'DELETED' }
         });
         res.status(200).json({ sucesso: true });
     } catch (error) {
