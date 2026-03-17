@@ -9,11 +9,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 	// Buscar estatísticas (simulado pro dashboard)
 	fetchDashboardStats();
-
-	// Monitorar status de conexão (Online/Offline)
-	window.addEventListener("online", updateConnectionStatus);
-	window.addEventListener("offline", updateConnectionStatus);
-	updateConnectionStatus(); // Checagem inicial
 });
 
 // Reseta os botões caso o usuário volte na página (Back/Forward Cache)
@@ -40,22 +35,6 @@ function resetAllButtons() {
 		logoutBtn.style.pointerEvents = "auto";
 		logoutBtn.style.opacity = "1";
 		logoutBtn.innerHTML = `<i class="fa-solid fa-arrow-right-from-bracket" aria-hidden="true"></i> Sair do Sistema`;
-	}
-}
-
-function updateConnectionStatus() {
-	const chip = document.querySelector(".hero-chip");
-	const chipText = chip.childNodes[2]; // O nó de texto depois do span.chip-dot
-	const dot = document.querySelector(".chip-dot");
-
-	if (navigator.onLine) {
-		dot.style.background = "#4ade80"; // Verde
-		dot.style.boxShadow = "0 0 6px #4ade80";
-		if (chipText) chipText.textContent = " Sistema Ativo";
-	} else {
-		dot.style.background = "#ef4444"; // Vermelho
-		dot.style.boxShadow = "0 0 6px #ef4444";
-		if (chipText) chipText.textContent = " Sem Conexão";
 	}
 }
 
