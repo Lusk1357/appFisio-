@@ -1,5 +1,4 @@
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
+const prisma = require('../utils/prisma');
 
 // ADM Atribui uma nova sessão de treinos a um paciente
 exports.createPrescription = async (req, res) => {

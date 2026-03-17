@@ -1,5 +1,4 @@
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
+const prisma = require('../utils/prisma');
 const bcrypt = require('bcryptjs');
 
 // Listar todos os usuários que são "PATIENT" (APENAS ADM)

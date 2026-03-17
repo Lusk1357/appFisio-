@@ -13,7 +13,12 @@ function errorHandler(err, req, res, next) {
     
     res.status(statusCode).json({
         erro: err.message || "Erro interno do servidor",
-        detalhes: process.env.NODE_ENV === "development" ? err : undefined
+        detalhes: process.env.NODE_ENV === "development" ? {
+            name: err.name,
+            message: err.message,
+            stack: err.stack,
+            ...err // Spread remaining properties if any
+        } : undefined
     });
 }
 
