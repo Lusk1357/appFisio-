@@ -59,8 +59,9 @@
             </div>
           </a>
         </div>
-        <a href="/pages/funcionalidades/notificacoes.html" style="text-decoration: none; color: inherit;">
+        <a href="/pages/funcionalidades/notificacoes.html" style="text-decoration: none; color: inherit; position: relative;">
           <i class="fa-regular fa-bell bell-icon"></i>
+          <span id="notifBadge" style="display:none; position:absolute; top:-4px; right:-6px; background:#ef4444; color:#fff; font-size:10px; font-weight:700; min-width:16px; height:16px; border-radius:50%; display:none; align-items:center; justify-content:center; line-height:1; padding:2px;">0</span>
         </a>
       </div>
 
@@ -87,15 +88,11 @@
 
     <div class="main-content">
       <div class="hero-banner">
-        <img src="/images/funcionalidades/homem-alongando.png" alt="Homem alongando" class="banner-man" />
-
         <div class="banner-text-area">
           <h3 class="banner-title" id="heroTitle">CARREGANDO<br />SEU TREINO...</h3>
           <p id="heroSubtitle" style="margin-bottom: 15px; font-size: 14px; opacity: 0.9;"></p>
           <button class="btn-start" id="btnStartWorkout" style="display: none;">Começar</button>
         </div>
-
-        <img src="/images/funcionalidades/halteres.png" alt="Halteres" class="banner-dumbbell" />
       </div>
 
       <h2 class="section-title">DICAS DO SEU FÍSIO</h2>

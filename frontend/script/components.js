@@ -1,3 +1,287 @@
+// ── Sistema de UI Global (Modais e Toasts) ──
+(function injectGlobalStyles() {
+  if (document.getElementById("pro-fisio-global-styles")) return;
+  const style = document.createElement("style");
+  style.id = "pro-fisio-global-styles";
+  style.textContent = `
+    /* Overlay com Glassmorphism */
+    .pf-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.4);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      padding: 24px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .pf-modal-overlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+    
+    /* Card do Modal */
+    .pf-modal-card {
+      background: #ffffff;
+      border-radius: 28px;
+      padding: 35px 30px;
+      width: 100%;
+      max-width: 400px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.18);
+      transform: translateY(30px) scale(0.95);
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .pf-modal-overlay.active .pf-modal-card {
+      transform: translateY(0) scale(1);
+    }
+
+    /* Ícone */
+    .pf-modal-icon-wrap {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      margin-bottom: 5px;
+    }
+    .pf-modal-icon-danger { background: #fee2e2; color: #ef4444; }
+    .pf-modal-icon-warning { background: #fef3c7; color: #f59e0b; }
+    .pf-modal-icon-info { background: #e0f2fe; color: #0ea5e9; }
+    .pf-modal-icon-success { background: #dcfce7; color: #22c55e; }
+
+    /* Texto */
+    .pf-modal-title {
+      font-family: "Bebas Neue", sans-serif;
+      font-size: 32px;
+      letter-spacing: 1px;
+      color: #0f172a;
+      text-align: center;
+      margin: 0;
+      line-height: 1;
+    }
+    .pf-modal-body {
+      font-family: "DM Sans", sans-serif;
+      font-size: 16px;
+      color: #475569;
+      text-align: center;
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    /* Botões */
+    .pf-modal-actions {
+      display: flex;
+      gap: 12px;
+      width: 100%;
+      margin-top: 10px;
+    }
+    .pf-modal-btn {
+      flex: 1;
+      height: 54px;
+      border: none;
+      border-radius: 16px;
+      font-family: "DM Sans", sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .pf-modal-btn:active { transform: scale(0.96); }
+    .pf-modal-btn-cancel {
+      background: #f1f5f9;
+      color: #64748b;
+    }
+    .pf-modal-btn-cancel:hover { background: #e2e8f0; }
+    .pf-modal-btn-confirm {
+      background: #2563eb;
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+    }
+    .pf-modal-btn-confirm:hover {
+      filter: brightness(1.1);
+      box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
+    }
+    .pf-modal-btn-danger {
+      background: #ef4444;
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
+    }
+
+    /* Toasts */
+    .pf-toast-container {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      z-index: 10001;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 24px;
+      border-radius: 100px;
+      background: #0f172a;
+      color: #fff;
+      font-family: "DM Sans", sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      opacity: 0;
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      pointer-events: none;
+      white-space: nowrap;
+    }
+    .pf-toast-container.active {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+    .pf-toast-success i { color: #22c55e; }
+    .pf-toast-error i { color: #ef4444; }
+    .pf-toast-warning i { color: #f59e0b; }
+  `;
+  document.head.appendChild(style);
+})();
+
+/**
+ * Exibe um modal customizado de confirmação ou alerta.
+ * @param {Object} options { title, message, type, confirmText, cancelText, confirmColor, onConfirm }
+ */
+window.showCustomModal = function(options) {
+  const { 
+    title = "Confirmação", 
+    message = "", 
+    type = "info", // info, success, warning, danger
+    confirmText = "OK", 
+    cancelText = "Cancelar",
+    confirmColor = "#2563eb",
+    showCancel = true,
+    onConfirm = null 
+  } = options;
+
+  // Limpa modais existentes
+  const existing = document.getElementById("pf-modal-root");
+  if (existing) existing.remove();
+
+  const iconMap = {
+    info: { icon: "fa-circle-info", class: "pf-modal-icon-info" },
+    success: { icon: "fa-circle-check", class: "pf-modal-icon-success" },
+    warning: { icon: "fa-triangle-exclamation", class: "pf-modal-icon-warning" },
+    danger: { icon: "fa-trash-can", class: "pf-modal-icon-danger" }
+  };
+  const iconData = iconMap[type] || iconMap.info;
+
+  const modalHTML = `
+    <div id="pf-modal-root" class="pf-modal-overlay">
+      <div class="pf-modal-card">
+        <div class="pf-modal-icon-wrap ${iconData.class}">
+          <i class="fa-solid ${iconData.icon}"></i>
+        </div>
+        <h3 class="pf-modal-title">${title}</h3>
+        <p class="pf-modal-body">${message}</p>
+        <div class="pf-modal-actions">
+          ${showCancel ? `<button class="pf-modal-btn pf-modal-btn-cancel" id="pf-btn-cancel">${cancelText}</button>` : ""}
+          <button class="pf-modal-btn pf-modal-btn-confirm" id="pf-btn-confirm" style="background: ${confirmColor}">${confirmText}</button>
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.body.insertAdjacentHTML("beforeend", modalHTML);
+  const overlay = document.getElementById("pf-modal-root");
+  const btnConfirm = document.getElementById("pf-btn-confirm");
+  const btnCancel = document.getElementById("pf-btn-cancel");
+
+  // Anima entrada
+  setTimeout(() => overlay.classList.add("active"), 10);
+
+  const closeModal = () => {
+    overlay.classList.remove("active");
+    setTimeout(() => overlay.remove(), 300);
+  };
+
+  btnConfirm.onclick = () => {
+    closeModal();
+    if (onConfirm) onConfirm();
+  };
+
+  if (btnCancel) {
+    btnCancel.onclick = closeModal;
+  }
+
+  // Fecha ao clicar fora do card
+  overlay.onclick = (e) => {
+    if (e.target === overlay && showCancel) closeModal();
+  };
+};
+
+/**
+ * Versão simplificada para confirmação tipo "Deseja apagar?"
+ */
+window.showCustomConfirm = function(title, message, onConfirm, type = "danger") {
+  window.showCustomModal({
+    title,
+    message,
+    type,
+    confirmText: "Sim, Confirmar",
+    confirmColor: type === "danger" ? "#ef4444" : "#2563eb",
+    onConfirm
+  });
+};
+
+/**
+ * Toast global de feedback rápido
+ */
+window.showToast = function(type, message) {
+  const existing = document.getElementById("pf-toast-root");
+  if (existing) existing.remove();
+
+  const iconMap = {
+    success: "fa-circle-check",
+    error: "fa-circle-xmark",
+    warning: "fa-triangle-exclamation"
+  };
+
+  const toastHTML = `
+    <div id="pf-toast-root" class="pf-toast-container pf-toast-${type}">
+      <i class="fa-solid ${iconMap[type] || "fa-info-circle"}"></i>
+      <span>${message}</span>
+    </div>
+  `;
+
+  document.body.insertAdjacentHTML("beforeend", toastHTML);
+  const toast = document.getElementById("pf-toast-root");
+  
+  setTimeout(() => toast.classList.add("active"), 10);
+  
+  setTimeout(() => {
+    toast.classList.remove("active");
+    setTimeout(() => toast.remove(), 400);
+  }, 3500);
+};
+
+/**
+ * Sanitiza strings para prevenir ataques XSS ao injetar via innerHTML.
+ * Converte caracteres perigosos em entidades HTML.
+ * @param {string} str 
+ * @returns {string}
+ */
+window.escapeHTML = function(str) {
+  if (!str) return "";
+  const temp = document.createElement("div");
+  temp.textContent = str;
+  return temp.innerHTML;
+};
+
 // frontend/script/components.js
 
 /**

@@ -1,5 +1,10 @@
 const jwt = require("jsonwebtoken");
 
+const JWT_SECRET = process.env.JWT_SECRET || "SUPER_SECRET_PRO_FISIO_KEY_123";
+if (process.env.NODE_ENV === 'production' && !process.env.JWT_SECRET) {
+    throw new Error('FATAL ERROR: JWT_SECRET is not defined in the production environment. Using a fallback key is unsafe.');
+}
+
 function verificarToken(req, res, next) {
     // 1. O token viaja em segurança invisível dentro do cookie
     const token = req.cookies.authToken;
@@ -11,8 +16,7 @@ function verificarToken(req, res, next) {
 
     try {
         // 3. O Prisma confere a chave primária
-        const secret = process.env.JWT_SECRET || "SUPER_SECRET_PRO_FISIO_KEY_123";
-        const payload = jwt.verify(token, secret);
+        const payload = jwt.verify(token, JWT_SECRET);
 
         // 4. Salva o usuário no request para os próximos controladores saberem quem é
         req.user = payload;
