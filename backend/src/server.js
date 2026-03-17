@@ -22,6 +22,9 @@ const prisma = require('./utils/prisma');
 
 const app = express();
 
+// Trust the Vercel reverse proxy (needed for express-rate-limit to get the real IP)
+app.set('trust proxy', 1);
+
 console.log(`[Config] NODE_ENV: ${process.env.NODE_ENV}`);
 console.log(`[Config] DATABASE_URL detectada: ${process.env.DATABASE_URL ? 'Sim' : 'Não'}`);
 console.log(`[Config] Master Key detectada: ${process.env.MASTER_KEY ? 'Sim' : 'Não'}`);
@@ -65,7 +68,7 @@ const allowedOrigins = [
     'http://localhost:3000',
     'http://localhost:5500', 
     'http://127.0.0.1:5500',
-    // Adicionar aqui domínios Vercel conforme necessário
+    'https://app-fisio-six.vercel.app' // Vercel Production Domain
 ];
 
 app.use(cors({
