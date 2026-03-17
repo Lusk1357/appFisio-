@@ -1,9 +1,6 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { PrismaClient } = require('@prisma/client');
-
-const prisma = new PrismaClient();
-console.log("[Auth] Prisma Client inicializado");
+const prisma = require('../utils/prisma');
 const JWT_SECRET = process.env.JWT_SECRET || "SUPER_SECRET_PRO_FISIO_KEY_123";
 
 if (process.env.NODE_ENV === 'production' && !process.env.JWT_SECRET) {

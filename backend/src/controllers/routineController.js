@@ -1,5 +1,4 @@
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
+const prisma = require('../utils/prisma');
 
 // ADMIN cria um novo template de rotina
 exports.createRoutine = async (req, res) => {

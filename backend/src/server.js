@@ -18,8 +18,7 @@ const tipRoutes = require('./routes/tips');
 const achievementRoutes = require('./routes/achievementRoutes');
 const errorHandler = require('./middlewares/errorHandler');
 
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
+const prisma = require('./utils/prisma');
 
 const app = express();
 
