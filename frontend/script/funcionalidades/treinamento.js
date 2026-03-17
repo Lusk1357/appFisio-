@@ -137,6 +137,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         restTime: associacao.restTime || 60,
                         type: ex.type || "",
                         videoUrl: ex.videoUrl || "",
+                        imageUrl: ex.imageUrl || "",
                         completed: isCompleted
                     });
 

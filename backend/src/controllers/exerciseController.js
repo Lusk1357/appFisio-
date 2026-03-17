@@ -2,7 +2,7 @@ const prisma = require('../utils/prisma');
 
 exports.createExercise = async (req, res) => {
     try {
-        const { name, observation, type, videoUrl } = req.body;
+        const { name, observation, type, videoUrl, bodyCategory, equipments, imageUrl } = req.body;
 
         if (!name || !type) {
             return res.status(400).json({ erro: "Nome e Categoria são obrigatórios." });
@@ -11,9 +11,11 @@ exports.createExercise = async (req, res) => {
         const newExercise = await prisma.exercise.create({
             data: {
                 name,
-                observation,
+                observation: observation || null,
                 type,
-                videoUrl
+                videoUrl: videoUrl || null,
+                equipments: equipments || null,
+                imageUrl: imageUrl || null
             }
         });
 
@@ -43,7 +45,6 @@ exports.getAllExercises = async (req, res) => {
 
 // Deletar um exercício (Apenas ADMIN)
 exports.deleteExercise = async (req, res) => {
-
     try {
         const { id } = req.params;
 
@@ -62,7 +63,7 @@ exports.deleteExercise = async (req, res) => {
 exports.updateExercise = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, observation, type, videoUrl } = req.body;
+        const { name, observation, type, videoUrl, bodyCategory, equipments, imageUrl } = req.body;
 
         if (!name || !type) {
             return res.status(400).json({ erro: "Nome e Categoria são obrigatórios." });
@@ -70,7 +71,14 @@ exports.updateExercise = async (req, res) => {
 
         const updated = await prisma.exercise.update({
             where: { id },
-            data: { name, observation, type, videoUrl }
+            data: {
+                name,
+                observation: observation || null,
+                type,
+                videoUrl: videoUrl || null,
+                equipments: equipments || null,
+                imageUrl: imageUrl || null
+            }
         });
 
         res.status(200).json({

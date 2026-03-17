@@ -94,8 +94,15 @@
                 <div class="form-group">
                     <label for="editCategoria">Categoria</label>
                     <div class="input-wrapper">
-                        <input type="text" id="editCategoria" placeholder="Ex: Fortalecimento" />
+                        <input type="text" id="editCategoria" placeholder="Ex: Joelho, Fisioterapia" />
                         <i class="fa-solid fa-tag input-icon"></i>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="editEquipamentos">Equipamentos (Opcional)</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="editEquipamentos" placeholder="Ex: Halteres, Faixa Elástica" />
+                        <i class="fa-solid fa-box-open input-icon"></i>
                     </div>
                 </div>
                 <div class="form-group">
@@ -103,6 +110,17 @@
                     <div class="input-wrapper">
                         <input type="text" id="editObservacao" placeholder="Observação..." />
                         <i class="fa-solid fa-comment-medical input-icon"></i>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="editImageUrl">URL da Imagem (Opcional)</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="editImageUrl" placeholder="Ex: /images/exercises/ex_1080.png" />
+                        <i class="fa-solid fa-image input-icon"></i>
+                    </div>
+                    <!-- Preview de imagem ao vivo -->
+                    <div id="editImagePreview" style="margin-top:8px; display:none; text-align:center;">
+                        <img id="editImgTag" src="" alt="Prévia" style="max-height:80px; border-radius:10px; border:1px solid #e2e8f0;" />
                     </div>
                 </div>
                 <div class="form-group">

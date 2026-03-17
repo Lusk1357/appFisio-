@@ -22,9 +22,12 @@ const tipSchema = z.object({
 
 const exerciseSchema = z.object({
     name: z.string().min(3, "Nome do exercício deve ter no mínimo 3 caracteres").max(255),
-    description: z.string().max(1000).optional(),
-    videoUrl: z.string().max(255).optional(),
-    instructions: z.string().max(2000).optional() // String formatada em JSON
+    type: z.string().min(1, "Categoria é obrigatória").max(100),
+    observation: z.string().max(5000).optional().nullable(),
+    videoUrl: z.string().max(500).optional().nullable(),
+    bodyCategory: z.string().max(255).optional().nullable(),
+    equipments: z.string().max(255).optional().nullable(),
+    imageUrl: z.string().max(500).optional().nullable()
 });
 
 const routineSchema = z.object({

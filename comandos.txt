@@ -2,6 +2,8 @@ npx nodemon src/server.js
 
 http://localhost:3000/pages/auth/login.html
 
+https://www.physiotherapyexercises.com/home/gallery
+
 npx prisma studio
 
 FISIO_ADMIN_SETUP_2026

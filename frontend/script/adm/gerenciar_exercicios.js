@@ -20,7 +20,11 @@
     const editId = document.getElementById("editId");
     const editNome = document.getElementById("editNome");
     const editCategoria = document.getElementById("editCategoria");
+    const editEquipamentos = document.getElementById("editEquipamentos");
     const editObservacao = document.getElementById("editObservacao");
+    const editImageUrl = document.getElementById("editImageUrl");
+    const editImgTag = document.getElementById("editImgTag");
+    const editImagePreview = document.getElementById("editImagePreview");
     const editVideoLink = document.getElementById("editVideoLink");
     const btnSaveEdit = document.getElementById("btnSaveEdit");
 
@@ -29,6 +33,23 @@
     const deleteMsg = document.getElementById("deleteMsg");
     const cancelDelete = document.getElementById("cancelDelete");
     const confirmDelete = document.getElementById("confirmDelete");
+
+    // ── Preview de imagem ao vivo ──────────────────────────────
+    if (editImageUrl) {
+        editImageUrl.addEventListener("input", () => {
+            let val = editImageUrl.value.trim();
+            if (val) {
+                // Ensure absolute path by prepending slash if it's relative
+                if (!val.startsWith('http') && !val.startsWith('/')) {
+                    val = '/' + val;
+                }
+                editImgTag.src = val;
+                editImagePreview.style.display = "block";
+            } else {
+                editImagePreview.style.display = "none";
+            }
+        });
+    }
 
     // ── Toast ──────────────────────────────────────────────────
     function showToast(type, message) {
@@ -117,22 +138,17 @@
             card.className = "exercise-card";
             card.style.animationDelay = `${index * 0.04}s`;
 
-            const isForte = ex.type && ex.type.toLowerCase().includes("fortalecimento");
-            const typeIcon = isForte
-                ? '<i class="fa-solid fa-dumbbell"></i>'
-                : '<i class="fa-solid fa-person-walking"></i>';
-
-            const typeColor = isForte ? "#3b82f6" : "#10b981";
+            // Imagem ou ícone padrão
+            const imageBlock = ex.imageUrl
+                ? `<img src="${ex.imageUrl.startsWith('/') ? ex.imageUrl : '/' + ex.imageUrl}" alt="${ex.name}" style="width:52px;height:64px;object-fit:cover;border-radius:10px;border:1px solid #e2e8f0;flex-shrink:0;" onerror="this.style.display='none'">`
+                : `<div class="card-icon-circle" style="background:#3b82f615;color:#3b82f6;flex-shrink:0;"><i class="fa-solid fa-person-walking"></i></div>`;
 
             card.innerHTML = `
                 <div class="card-left">
-                    <div class="card-icon-circle" style="background: ${typeColor}15; color: ${typeColor};">
-                        ${typeIcon}
-                    </div>
+                    ${imageBlock}
                     <div class="card-info">
                         <h3 class="card-name">${ex.name}</h3>
                         <span class="card-type">${ex.type || "Sem categoria"}</span>
-                        ${ex.observation ? `<span class="card-obs"><i class="fa-solid fa-comment-dots"></i> ${ex.observation}</span>` : ""}
                     </div>
                 </div>
                 <div class="card-actions">
@@ -168,6 +184,20 @@
         editCategoria.value = ex.type || "";
         editObservacao.value = ex.observation || "";
         editVideoLink.value = ex.videoUrl || "";
+        editEquipamentos.value = ex.equipments || "";
+        editImageUrl.value = ex.imageUrl || "";
+
+        // Mostra preview da imagem se disponível
+        if (ex.imageUrl && editImgTag) {
+            let val = ex.imageUrl;
+            if (!val.startsWith('http') && !val.startsWith('/')) {
+                val = '/' + val;
+            }
+            editImgTag.src = val;
+            editImagePreview.style.display = "block";
+        } else if (editImagePreview) {
+            editImagePreview.style.display = "none";
+        }
 
         editModal.classList.add("active");
     }
@@ -189,6 +219,8 @@
         const type = editCategoria.value.trim();
         const observation = editObservacao.value.trim() || null;
         const videoUrl = editVideoLink.value.trim() || null;
+        const equipments = editEquipamentos ? (editEquipamentos.value.trim() || null) : null;
+        const imageUrl = editImageUrl ? (editImageUrl.value.trim() || null) : null;
 
         if (!name || !type) {
             showToast("error", "Nome e categoria são obrigatórios.");
@@ -203,7 +235,7 @@
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 credentials: "include",
-                body: JSON.stringify({ name, type, observation, videoUrl })
+                body: JSON.stringify({ name, type, observation, videoUrl, equipments, imageUrl })
             });
 
             const data = await res.json();

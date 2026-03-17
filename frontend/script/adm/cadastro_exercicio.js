@@ -33,7 +33,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const nomeVal = document.getElementById("nome").value.trim();
         const categoriaVal = document.getElementById("categoria").value.trim();
+        const equipamentosVal = document.getElementById("equipamentos")?.value.trim() || "";
         const observacaoVal = document.getElementById("observacao").value.trim();
+        const imageUrlVal = document.getElementById("imageUrl")?.value.trim() || "";
         const videoLinkVal = document.getElementById("videoLink").value.trim();
 
         if (!nomeVal || !categoriaVal) {
@@ -52,7 +54,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 body: JSON.stringify({
                     name: nomeVal,
                     type: categoriaVal,
+                    equipments: equipamentosVal || null,
                     observation: observacaoVal || null,
+                    imageUrl: imageUrlVal || null,
                     videoUrl: videoLinkVal || null
                 })
             });
@@ -79,6 +83,11 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 });
+
+function back() {
+    window.history.back();
+}
+
 
 function back() {
     window.history.back();

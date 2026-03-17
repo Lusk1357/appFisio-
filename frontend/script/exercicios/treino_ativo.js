@@ -203,7 +203,8 @@ document.addEventListener("DOMContentLoaded", () => {
     updatePills(index);
 
     if (isNewExercise) {
-      loadMedia(ex.videoUrl);
+      // Prioriza videoUrl; se não houver, usa a imageUrl do exercício
+      loadMedia(ex.videoUrl || ex.imageUrl);
     }
 
     updateNextButtonText();

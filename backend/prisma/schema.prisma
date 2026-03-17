@@ -58,7 +58,10 @@ model Exercise {
   name          String    @unique
   observation   String?   // textos complementares (geral do exercício)
   type          String    // ex: "Fortalecimento", "Alongamento"
+  bodyCategory  String?   // Parte do corpo extraída do scraper
+  equipments    String?   // Equipamentos necessários extraídos
   videoUrl      String?   // URL principal (opcional agora que temos videos)
+  imageUrl      String?   // URL da imagem scrapeada
 
   videos        ExerciseVideo[]
   prescriptionItems PrescriptionExercise[]
