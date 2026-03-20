@@ -1,131 +1,148 @@
 <!doctype html>
 <html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Treino Ativo - Pro Fisio</title>
+    <link rel="stylesheet" href="/frontend/style/exercicios/treino_ativo.css" />
+    <script src="/script/components.js"></script>
+    <script src="/script/exercicios/treino_ativo.js?v=2.2" defer></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="app-container" data-version="2.1-contain-howto">
+      <div class="detail-card">
+        <header class="image-header" id="mediaContainer">
+          <button class="back-btn" id="backBtn" aria-label="Voltar">
+            <i class="fa-solid fa-chevron-left"></i>
+          </button>
+          <button
+            class="mute-btn"
+            id="muteBtn"
+            aria-label="Mudo/Som"
+            style="display: none"
+          >
+            <i class="fa-solid fa-volume-xmark"></i>
+          </button>
+        </header>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Treino Ativo - Pro Fisio</title>
-  <link rel="stylesheet" href="/style/exercicios/treino_ativo.css" />
-  <script src="/script/components.js"></script>
-  <script src="/script/exercicios/treino_ativo.js?v=2.2" defer></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&display=swap"
-    rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-</head>
+        <div class="progress-bar-area" id="progressPillsContainer"></div>
 
-<body>
-  <div class="app-container" data-version="2.1-contain-howto">
-    <div class="detail-card">
+        <main class="content-body">
+          <div class="content-scroll">
+            <div class="exercise-info">
+              <span class="step-text" id="exerciseStep">Exercício 0/0</span>
+              <h1 class="exercise-title" id="exerciseTitle">
+                NOME DO EXERCÍCIO
+              </h1>
+            </div>
 
-      <!-- ── Cabeçalho: Mídia ── -->
-      <header class="image-header" id="mediaContainer" style="position: relative;">
-        <button class="back-btn" id="backBtn" aria-label="Voltar" style="z-index: 10;">
-          <i class="fa-solid fa-chevron-left"></i>
-        </button>
-        <button class="mute-btn" id="muteBtn" aria-label="Mudo/Som" style="z-index: 10; display:none;">
-          <i class="fa-solid fa-volume-xmark"></i>
-        </button>
-        <!-- Mídia injetada via JS aqui -->
-      </header>
+            <div class="exercise-details-box">
+              <h3 class="details-series-row">
+                <i class="fa-solid fa-list-ol" style="color: #5b8af5"></i>
+                Séries: <span id="exerciseSeries" class="series-value">-</span>
+              </h3>
+              <p
+                id="exerciseObservation"
+                class="obs-text"
+                style="display: none"
+              ></p>
+            </div>
 
-      <!-- ── Barra de progresso (pills) ── -->
-      <div class="progress-bar-area" id="progressPillsContainer">
-        <!-- Pills injetadas via JS -->
-      </div>
+            <div class="how-to-section" id="howToSection" style="display: none">
+              <button class="how-to-toggle" id="howToToggle" type="button">
+                <i class="fa-solid fa-clipboard-list"></i>
+                <span>Como Executar</span>
+                <i
+                  class="fa-solid fa-chevron-down how-to-chevron"
+                  id="howToChevron"
+                ></i>
+              </button>
+              <div class="how-to-body" id="howToBody">
+                <p id="exerciseHowTo" class="how-to-text"></p>
+              </div>
+            </div>
 
-      <main class="content-body">
-        <div class="content-scroll">
-          <div class="exercise-info">
-            <span class="step-text" id="exerciseStep">Exercício 0/0</span>
-            <h1 class="exercise-title" id="exerciseTitle">NOME DO EXERCÍCIO</h1>
-          </div>
-
-          <div class="exercise-details-box">
-            <h3 class="details-series-row">
-              <i class="fa-solid fa-list-ol" style="color: #5b8af5;"></i>
-              Séries: <span id="exerciseSeries" class="series-value">-</span>
-            </h3>
-            <p id="exerciseObservation" class="obs-text" style="display: none;"></p>
-          </div>
-
-          <!-- ── Como Executar ── -->
-          <div class="how-to-section" id="howToSection" style="display:none;">
-            <button class="how-to-toggle" id="howToToggle" type="button">
-              <i class="fa-solid fa-clipboard-list"></i>
-              <span>Como Executar</span>
-              <i class="fa-solid fa-chevron-down how-to-chevron" id="howToChevron"></i>
-            </button>
-            <div class="how-to-body" id="howToBody">
-              <p id="exerciseHowTo" class="how-to-text"></p>
+            <div class="timer-section">
+              <div class="circular-timer">
+                <div class="timer-text" id="currentTimer">00:00</div>
+                <div class="timer-label">Cronômetro Livre</div>
+              </div>
             </div>
           </div>
-        </div><!-- end content-scroll -->
+          <footer class="bottom-action-bar" id="bottomBar">
+            <button class="btn-pause" id="pauseBtn">
+              <i class="fa-solid fa-pause"></i> Pausar
+            </button>
+            <button class="btn-next" id="nextBtn">
+              <i class="fa-solid fa-person-running"></i> PRÓXIMO
+            </button>
+          </footer>
+        </main>
+      </div>
+    </div>
 
-        <div class="timer-section">
-          <div class="circular-timer">
-            <div class="timer-text" id="currentTimer">00:00</div>
-            <div class="timer-label">Cronômetro Livre</div>
+    <div class="rest-overlay" id="restOverlay">
+      <div class="rest-card">
+        <div class="rest-icon"><i class="fa-solid fa-person-walking"></i></div>
+        <h2 class="rest-title">DESCANSE!</h2>
+        <p class="rest-subtitle" id="restNextLabel">
+          Próximo: <strong id="restNextName">—</strong>
+        </p>
+        <div class="rest-timer-ring">
+          <svg viewBox="0 0 120 120" class="rest-svg">
+            <circle cx="60" cy="60" r="52" class="rest-circle-bg" />
+            <circle
+              cx="60"
+              cy="60"
+              r="52"
+              class="rest-circle-fg"
+              id="restCircle"
+            />
+          </svg>
+          <div class="rest-timer-num" id="restTimer">30</div>
+        </div>
+        <button class="btn-skip-rest" id="btnSkipRest">
+          <i class="fa-solid fa-forward-fast"></i> Pular descanso
+        </button>
+      </div>
+    </div>
+
+    <div
+      class="completion-overlay"
+      id="completionOverlay"
+      style="display: none"
+    >
+      <div class="completion-card">
+        <div class="confetti-area" id="confettiArea"></div>
+        <div class="completion-medal"><i class="fa-solid fa-medal"></i></div>
+        <h2 class="completion-title">TREINO CONCLUÍDO!</h2>
+        <div class="completion-stats">
+          <div class="stat-item">
+            <span class="stat-icon"><i class="fa-solid fa-dumbbell"></i></span>
+            <span class="stat-value" id="statExercicios">0</span>
+            <span class="stat-label">exercícios</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-icon"><i class="fa-solid fa-clock"></i></span>
+            <span class="stat-value" id="statTempo">00:00</span>
+            <span class="stat-label">tempo total</span>
           </div>
         </div>
-
-        <footer class="bottom-action-bar" id="bottomBar">
-          <button class="btn-pause" id="pauseBtn">
-            <i class="fa-solid fa-pause"></i> Pausar
-          </button>
-          <button class="btn-next" id="nextBtn">
-            <i class="fa-solid fa-person-running"></i> PRÓXIMO
-          </button>
-        </footer>
-      </main>
-    </div>
-  </div>
-
-  <!-- ── Overlay: Descanso ── -->
-  <div class="rest-overlay" id="restOverlay">
-    <div class="rest-card">
-      <div class="rest-icon"><i class="fa-solid fa-person-walking"></i></div>
-      <h2 class="rest-title">DESCANSE!</h2>
-      <p class="rest-subtitle" id="restNextLabel">Próximo: <strong id="restNextName">—</strong></p>
-      <div class="rest-timer-ring">
-        <svg viewBox="0 0 120 120" class="rest-svg">
-          <circle cx="60" cy="60" r="52" class="rest-circle-bg" />
-          <circle cx="60" cy="60" r="52" class="rest-circle-fg" id="restCircle" />
-        </svg>
-        <div class="rest-timer-num" id="restTimer">30</div>
+        <ul class="completion-list" id="completionList"></ul>
+        <button class="btn-finish" id="btnFinish">
+          <i class="fa-solid fa-house"></i> Voltar ao início
+        </button>
       </div>
-      <button class="btn-skip-rest" id="btnSkipRest">
-        <i class="fa-solid fa-forward-fast"></i> Pular descanso
-      </button>
     </div>
-  </div>
-
-  <!-- ── Overlay: Conclusão ── -->
-  <div class="completion-overlay" id="completionOverlay" style="display:none;">
-    <div class="completion-card">
-      <div class="confetti-area" id="confettiArea"></div>
-      <div class="completion-medal"><i class="fa-solid fa-medal"></i></div>
-      <h2 class="completion-title">TREINO CONCLUÍDO!</h2>
-      <div class="completion-stats">
-        <div class="stat-item">
-          <span class="stat-icon"><i class="fa-solid fa-dumbbell"></i></span>
-          <span class="stat-value" id="statExercicios">0</span>
-          <span class="stat-label">exercícios</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-icon"><i class="fa-solid fa-clock"></i></span>
-          <span class="stat-value" id="statTempo">00:00</span>
-          <span class="stat-label">tempo total</span>
-        </div>
-      </div>
-      <ul class="completion-list" id="completionList"></ul>
-      <button class="btn-finish" id="btnFinish">
-        <i class="fa-solid fa-house"></i> Voltar ao início
-      </button>
-    </div>
-  </div>
-
-</body>
-
+  </body>
 </html>
