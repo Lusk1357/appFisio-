@@ -4,39 +4,67 @@ const prisma = require('../utils/prisma');
 exports.createPrescription = async (req, res) => {
     try {
         const { patientId, assignedDay, exercises } = req.body;
-        // exercises é uma array de IDs dos exercícios
-
-        if (!patientId || !assignedDay || !exercises || exercises.length === 0) {
-            return res.status(400).json({ erro: "Paciente, Data e Pelo menos 1 Exercício são obrigatórios." });
+        // exercises é uma array de objetos {id, series, observation, restTime} ou IDs
+        
+        if (!patientId || !assignedDay || !exercises) {
+            return res.status(400).json({ erro: "Paciente, Data e exercícios (mesmo que vazio) são obrigatórios." });
         }
 
-        const prescription = await prisma.prescription.create({
-            data: {
+        const targetDate = new Date(assignedDay);
+        const startDate = new Date(targetDate);
+        startDate.setHours(0, 0, 0, 0);
+        const endDate = new Date(targetDate);
+        endDate.setHours(23, 59, 59, 999);
+
+        // 1. LIMPAR: Remove prescrições existentes para este paciente neste dia exato
+        // Como o schema não tem Cascade Delete no PrescriptionExercise, limpamos manualmente primeiro
+        const existingPrescriptions = await prisma.prescription.findMany({
+            where: {
                 patientId: patientId,
-                adminId: req.user.id, // Pego do Guardião que validou a rota!
-                assignedDay: new Date(assignedDay)
-            }
+                assignedDay: { gte: startDate, lte: endDate }
+            },
+            select: { id: true }
         });
 
-        // Agora amarramos as dezenas de exercícios (Tabela N pra N)
-        const exercisePromises = exercises.map(ex => {
-            return prisma.prescriptionExercise.create({
+        const prescriptionIds = existingPrescriptions.map(p => p.id);
+
+        if (prescriptionIds.length > 0) {
+            await prisma.prescriptionExercise.deleteMany({
+                where: { prescriptionId: { in: prescriptionIds } }
+            });
+            await prisma.prescription.deleteMany({
+                where: { id: { in: prescriptionIds } }
+            });
+        }
+
+        // 2. CRIAR: Se houver exercícios, cria a nova prescrição
+        if (exercises.length > 0) {
+            const prescription = await prisma.prescription.create({
                 data: {
-                    prescriptionId: prescription.id,
-                    exerciseId: ex.id || ex, // Fallback caso mande apenas ID antigo
-                    series: ex.series || "3x15",
-                    observation: ex.observation || null,
-                    restTime: ex.restTime !== undefined ? Number(ex.restTime) : 60
+                    patientId: patientId,
+                    adminId: req.user.id,
+                    assignedDay: targetDate
                 }
             });
-        });
 
-        await Promise.all(exercisePromises);
+            const exercisePromises = exercises.map(ex => {
+                return prisma.prescriptionExercise.create({
+                    data: {
+                        prescriptionId: prescription.id,
+                        exerciseId: ex.id || ex,
+                        series: ex.series || "3x15",
+                        observation: ex.observation || null,
+                        restTime: ex.restTime !== undefined ? Number(ex.restTime) : 60
+                    }
+                });
+            });
+
+            await Promise.all(exercisePromises);
+        }
 
         res.status(201).json({
             sucesso: true,
-            mensagem: "Rotina atribuída com sucesso!",
-            prescriptionId: prescription.id
+            mensagem: exercises.length > 0 ? "Prescrição atualizada com sucesso!" : "Dia limpo com sucesso!",
         });
     } catch (error) {
         console.error("Erro ao prescrever:", error);

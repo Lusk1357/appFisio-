@@ -1,8 +1,15 @@
 npx nodemon src/server.js
 
-http://localhost:3000/pages/auth/login.html
+node scrape_pt.js
 
 npx prisma studio
+
+http://localhost:3000/pages/auth/login.html
+
+https://www.physiotherapyexercises.com/home/gallery
+https://portuguese.physiotherapyexercises.com/home/gallery
+
+
 
 FISIO_ADMIN_SETUP_2026
 
@@ -10,4 +17,4 @@ admin@clinica.com
 1234567
 
 lucas.pereira989
-lucas4353
+lucas435

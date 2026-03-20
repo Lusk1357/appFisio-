@@ -40,8 +40,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  if (btnReform) {
-    btnReform.addEventListener("click", (e) => {
+  const form = document.querySelector("form");
+  if (form) {
+    form.addEventListener("submit", (e) => {
       e.preventDefault();
 
       const emailInput = document.getElementById("email");

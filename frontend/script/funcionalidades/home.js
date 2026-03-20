@@ -10,6 +10,11 @@ document.addEventListener("DOMContentLoaded", () => {
     );
   }
 
+  const sideMenuName = document.getElementById("sideMenuName");
+  const greetingName = document.getElementById("greetingName");
+  const sideMenuAvatar = document.getElementById("sideMenuAvatar");
+  const headerAvatarContainer = document.getElementById("headerAvatarContainer");
+
   const loggedUserJSON = localStorage.getItem("userProFisio");
   if (!loggedUserJSON) {
     window.location.replace("/pages/auth/login.html");
@@ -90,9 +95,11 @@ document.addEventListener("DOMContentLoaded", () => {
                   prescriptionExerciseId: associacao.id,
                   id: ex.id,
                   name: ex.name,
-                  series: associacao.series || "3x15",
+                  series: associacao.series || ex.series || "3x15",
                   observation: associacao.observation || ex.observation || "",
-                  restTime: associacao.restTime || 60,
+                  howToExecute: ex.howToExecute,
+                  imageUrl: ex.imageUrl,
+                  restTime: associacao.restTime || ex.restTime || 60,
                   type: ex.type || "",
                   videoUrl: ex.videoUrl || "",
                   completed: false
@@ -114,10 +121,12 @@ document.addEventListener("DOMContentLoaded", () => {
           btnStartWorkout.style.display = "inline-block";
           btnStartWorkout.innerText = "Começar Treino";
           btnStartWorkout.onclick = () => {
-            sessionStorage.setItem("treinoAtivo", JSON.stringify({
+            const trainingSession = {
               date: dateStr,
               exercises: pendentes
-            }));
+            };
+            console.log("Iniciando Treino pela Home (v2.2):", trainingSession);
+            sessionStorage.setItem("treinoAtivo", JSON.stringify(trainingSession));
             window.location.href = "/pages/exercicios/treino_ativo.html";
           };
         } else {

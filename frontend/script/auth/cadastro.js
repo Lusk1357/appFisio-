@@ -27,7 +27,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 4000);
   }
 
-  btnRegister.addEventListener("click", async () => {
+    const form = document.querySelector("form");
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
     const nameInput = document.getElementById("name");
     const telInput = document.getElementById("tel");
     const emailInput = document.getElementById("email");

@@ -140,6 +140,19 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("tipId").value = "";
     });
 
+    // ── Atalho: Esc para fechar modal ou voltar ─────────────────
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+            if (tipModal.classList.contains("active")) {
+                tipModal.classList.remove("active");
+                tipForm.reset();
+                document.getElementById("tipId").value = "";
+            } else if (!document.getElementById("pf-modal-root")) {
+                history.back();
+            }
+        }
+    });
+
     // Init
     loadTips();
 });

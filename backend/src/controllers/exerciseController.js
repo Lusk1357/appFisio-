@@ -1,8 +1,30 @@
 const prisma = require('../utils/prisma');
+const fs = require('fs');
+const path = require('path');
+
+// Listar imagens locais disponíveis em /public/images/exercises/
+exports.listLocalImages = async (req, res) => {
+    try {
+        const imagesDir = path.join(__dirname, '../../../frontend/public/images/exercises');
+        if (!fs.existsSync(imagesDir)) {
+            return res.status(200).json([]);
+        }
+        const files = fs.readdirSync(imagesDir)
+            .filter(f => /\.(png|jpg|jpeg|gif|webp|svg)$/i.test(f))
+            .map(f => ({
+                name: f,
+                path: `/public/images/exercises/${f}`
+            }));
+        res.status(200).json(files);
+    } catch (error) {
+        console.error("Erro ao listar imagens:", error);
+        res.status(500).json({ erro: "Erro ao listar imagens locais." });
+    }
+};
 
 exports.createExercise = async (req, res) => {
     try {
-        const { name, observation, type, videoUrl } = req.body;
+        const { name, observation, type, videoUrl, bodyCategory, equipments, imageUrl, howToExecute } = req.body;
 
         if (!name || !type) {
             return res.status(400).json({ erro: "Nome e Categoria são obrigatórios." });
@@ -11,9 +33,13 @@ exports.createExercise = async (req, res) => {
         const newExercise = await prisma.exercise.create({
             data: {
                 name,
-                observation,
+                observation: observation || null,
                 type,
-                videoUrl
+                howToExecute: howToExecute || null,
+                bodyCategory: bodyCategory || null,
+                videoUrl: videoUrl || null,
+                equipments: equipments || null,
+                imageUrl: imageUrl || null
             }
         });
 
@@ -43,7 +69,6 @@ exports.getAllExercises = async (req, res) => {
 
 // Deletar um exercício (Apenas ADMIN)
 exports.deleteExercise = async (req, res) => {
-
     try {
         const { id } = req.params;
 
@@ -62,7 +87,7 @@ exports.deleteExercise = async (req, res) => {
 exports.updateExercise = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, observation, type, videoUrl } = req.body;
+        const { name, observation, type, videoUrl, bodyCategory, equipments, imageUrl, howToExecute } = req.body;
 
         if (!name || !type) {
             return res.status(400).json({ erro: "Nome e Categoria são obrigatórios." });
@@ -70,7 +95,16 @@ exports.updateExercise = async (req, res) => {
 
         const updated = await prisma.exercise.update({
             where: { id },
-            data: { name, observation, type, videoUrl }
+            data: {
+                name,
+                observation: observation || null,
+                type,
+                howToExecute: howToExecute || null,
+                bodyCategory: bodyCategory || null,
+                videoUrl: videoUrl || null,
+                equipments: equipments || null,
+                imageUrl: imageUrl || null
+            }
         });
 
         res.status(200).json({

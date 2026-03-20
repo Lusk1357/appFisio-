@@ -71,6 +71,18 @@
         <label for="chkApplyAll" style="font-size: 13px; font-weight: 600; color: #1a1a2e; cursor: pointer;">Aplicar a
           todos os dias selecionados</label>
       </div>
+
+      <div class="popup-filter-container" style="padding: 12px 16px; border-bottom: 1px solid #e2e8f0;">
+        <div class="popup-search-box">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" id="popupSearchExercise" placeholder="Pesquisar exercício pelo nome..." />
+        </div>
+        <div class="popup-category-filters" id="popupCategoryFilters">
+          <span class="popup-category-chip active" data-category="all">Todos</span>
+          <!-- Categorias dinâmicas aqui -->
+        </div>
+      </div>
+
       <ul class="exercise-pick-list" id="exercisePickList"></ul>
     </div>
   </div>
@@ -84,10 +96,8 @@
       </div>
       <div class="options-list">
         <button class="option-btn option-delete" id="optDelete"> <i class="fa-solid fa-trash"></i> APAGAR</button>
-        <button class="option-btn option-swap" id="optSwap"> <i class="fa-solid fa-shuffle"></i> TROCAR
-          EXERCÍCIO</button>
-        <button class="option-btn option-training" id="optTraining"><i class="fa-solid fa-dumbbell"></i> ADICIONAR
-          TREINO</button>
+        <button class="option-btn option-swap" id="optSwap"> <i class="fa-solid fa-shuffle"></i> TROCAR EXERCÍCIO</button>
+        <button class="option-btn" id="optEdit" style="background: #f1f5f9; color: #475569;"><i class="fa-solid fa-pen-to-square"></i> EDITAR DETALHES</button>
       </div>
     </div>
   </div>

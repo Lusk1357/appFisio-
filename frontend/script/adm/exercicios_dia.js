@@ -30,8 +30,107 @@ document.addEventListener("DOMContentLoaded", () => {
 	async function initData() {
 		await Promise.all([loadCatalogo(), loadRotinas()]);
 		renderExercises();
+        renderPopupFilters();
+        setupPopupFilters();
 	}
 	initData();
+
+    // ── Lógica de Filtros do Popup ────────────────────────────────
+    function renderPopupFilters() {
+        const filtersContainer = document.getElementById("popupCategoryFilters");
+        if (!filtersContainer) return;
+        
+        filtersContainer.innerHTML = '<span class="popup-category-chip active" data-category="all">Todos</span>';
+        const categories = [...new Set(CATALOGO.map(ex => ex.type).filter(Boolean))].sort();
+        
+        categories.forEach(cat => {
+            const chip = document.createElement("span");
+            chip.className = "popup-category-chip";
+            chip.dataset.category = cat;
+            chip.textContent = cat;
+            filtersContainer.appendChild(chip);
+        });
+    }
+
+    function setupPopupFilters() {
+        const searchInput = document.getElementById("popupSearchExercise");
+        const filtersContainer = document.getElementById("popupCategoryFilters");
+        if (!searchInput || !filtersContainer) return;
+
+        searchInput.addEventListener("input", applyPopupFilters);
+
+        filtersContainer.addEventListener("click", (e) => {
+            if (e.target.classList.contains("popup-category-chip")) {
+                const chips = filtersContainer.querySelectorAll(".popup-category-chip");
+                chips.forEach(c => c.classList.remove("active"));
+                e.target.classList.add("active");
+                applyPopupFilters();
+            }
+        });
+    }
+
+    function applyPopupFilters() {
+        const searchInput = document.getElementById("popupSearchExercise");
+        const activeChip = document.querySelector(".popup-category-chip.active");
+        if (!searchInput || !activeChip) return;
+
+        const term = searchInput.value.toLowerCase().trim();
+        const activeCategory = activeChip.dataset.category;
+        const items = document.querySelectorAll("#exercisePickList li");
+
+        items.forEach(li => {
+            if (li.style.pointerEvents === "none") return;
+            
+            const isRoutine = li.innerHTML.includes("🌟");
+            const text = li.textContent.replace("🌟 Rotina:", "").trim();
+
+            if (isRoutine) {
+                const matchesSearch = li.textContent.toLowerCase().includes(term);
+                const matchesCategory = activeCategory === "all"; 
+                if (matchesSearch && matchesCategory) li.classList.remove("hidden");
+                else li.classList.add("hidden");
+            } else {
+                const exObj = CATALOGO.find(ex => ex.name === li.textContent);
+                const matchesSearch = li.textContent.toLowerCase().includes(term);
+                const matchesCategory = activeCategory === "all" || (exObj && exObj.type === activeCategory);
+                if (matchesSearch && matchesCategory) li.classList.remove("hidden");
+                else li.classList.add("hidden");
+            }
+        });
+
+        // Ocultar labels vazios
+        const labels = document.querySelectorAll("#exercisePickList li[style*='pointer-events: none']");
+        labels.forEach(label => {
+            let next = label.nextElementSibling;
+            let hasVisible = false;
+            while (next && next.style.pointerEvents !== "none") {
+                if (!next.classList.contains("hidden")) {
+                    hasVisible = true;
+                    break;
+                }
+                next = next.nextElementSibling;
+            }
+            if (hasVisible) label.classList.remove("hidden");
+            else label.classList.add("hidden");
+        });
+
+        // Mensagem de "Nenhum resultado para o filtro"
+        let noResultsMsg = document.getElementById("noFilterResults");
+        const anyVisible = Array.from(items).some(li => li.style.pointerEvents !== "none" && !li.classList.contains("hidden"));
+        
+        if (!anyVisible && CATALOGO.length > 0) {
+            if (!noResultsMsg) {
+                noResultsMsg = document.createElement("p");
+                noResultsMsg.id = "noFilterResults";
+                noResultsMsg.style = "padding: 20px; text-align: center; color: #64748b; font-size: 14px;";
+                noResultsMsg.textContent = "Nenhum exercício encontrado com esse filtro.";
+                document.getElementById("exercisePickList").appendChild(noResultsMsg);
+            }
+            noResultsMsg.style.display = "block";
+        } else if (noResultsMsg) {
+            noResultsMsg.style.display = "none";
+        }
+    }
 
 	// ── Lê contexto ───────────────────────────────────────────────
 	const rawPac = sessionStorage.getItem("pacienteSelecionado");
@@ -236,38 +335,37 @@ document.addEventListener("DOMContentLoaded", () => {
 	document.getElementById("btnSave").addEventListener("click", salvar);
 
 	function updateSaveBtn() {
-		const temAlgum = ctx.dias.some((d) => exerciciosPorDia[d].length > 0);
-		document.getElementById("btnSave").disabled = !temAlgum;
+		// O botão de salvar deve estar sempre habilitado para permitir limpar dias
+		document.getElementById("btnSave").disabled = false;
 	}
 
 	async function salvar() {
 		const promessas = [];
 		ctx.dias.forEach((d) => {
 			const exerciciosDoDia = exerciciosPorDia[d];
-			if (exerciciosDoDia.length > 0) {
-				// Formata ISO date do dia correspondente
-				const dataAtribuida = new Date(ctx.ano, ctx.mes, d);
-				const arrayIds = exerciciosDoDia.map(ex => {
-					return {
-						id: ex.id,
-						series: ex.series,
-						observation: ex.observation,
-						restTime: ex.restTime
-					};
-				});
+			
+            // Formata ISO date do dia correspondente
+            const dataAtribuida = new Date(ctx.ano, ctx.mes, d);
+            const arrayIds = exerciciosDoDia.map(ex => {
+                return {
+                    id: ex.id,
+                    series: ex.series,
+                    observation: ex.observation,
+                    restTime: ex.restTime
+                };
+            });
 
-				const req = fetch("/api/prescricoes/admin", {
-					method: "POST",
-					headers: { "Content-Type": "application/json" },
-					credentials: "include",
-					body: JSON.stringify({
-						patientId: paciente.id,
-						assignedDay: dataAtribuida.toISOString(),
-						exercises: arrayIds
-					})
-				});
-				promessas.push(req);
-			}
+            const req = fetch("/api/prescricoes/admin", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",
+                body: JSON.stringify({
+                    patientId: paciente.id,
+                    assignedDay: dataAtribuida.toISOString(),
+                    exercises: arrayIds
+                })
+            });
+            promessas.push(req);
 		});
 
 		try {
@@ -292,6 +390,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
 		const ul = document.getElementById("exercisePickList");
 		ul.innerHTML = "";
+
+        // Resetar campos de filtro ao abrir
+        const searchInput = document.getElementById("popupSearchExercise");
+        if (searchInput) searchInput.value = "";
+        const chips = document.querySelectorAll(".popup-category-chip");
+        chips.forEach(c => c.classList.remove("active"));
+        if (chips[0]) chips[0].classList.add("active");
 
 		const applyAllContainer = document.getElementById("applyAllContainer");
 		if (swappingIndex !== null) {
@@ -381,10 +486,14 @@ document.addEventListener("DOMContentLoaded", () => {
 					closeOverlay("overlayExercises");
 					openOverlay("overlayConfirmSwap");
 				} else {
-					pendingAddPayload = { isRoutine: false, exObj: exObj };
+					pendingAddPayload = { isRoutine: false, exObj: exObj, isNewAdd: true };
 					document.getElementById("addSeries").value = "3x15";
 					document.getElementById("addRestTime").value = "60";
 					document.getElementById("addObservation").value = exObj.observation || ""; // default from DB
+
+                    // Garante que o texto do botão esteja correto para inclusão
+                    document.getElementById("btnConfirmAddOptions").textContent = "CONFIRMAR INCLUSÃO";
+
 					closeOverlay("overlayExercises");
 					openOverlay("overlayAddOptions");
 				}
@@ -454,7 +563,26 @@ document.addEventListener("DOMContentLoaded", () => {
 	// TROCAR
 	document.getElementById("optSwap").addEventListener("click", () => {
 		closeOverlay("overlayOptions");
+        // Quando for trocar, ao escolher o próximo exercício, o texto do botão deve ser o padrão
+        document.getElementById("btnConfirmAddOptions").textContent = "CONFIRMAR INCLUSÃO";
 		openPickList(activeExerciseIndex);
+	});
+
+	// EDITAR DETALHES (Séries, etc)
+	document.getElementById("optEdit").addEventListener("click", () => {
+		const dia = ctx.dias[currentDayIndex];
+		const exObj = exerciciosPorDia[dia][activeExerciseIndex];
+		
+		pendingAddPayload = { isRoutine: false, exObj: exObj, isEdit: true };
+		document.getElementById("addSeries").value = exObj.series || "3x15";
+		document.getElementById("addRestTime").value = exObj.restTime || "60";
+		document.getElementById("addObservation").value = exObj.observation || "";
+
+        // Altera o texto do botão no modal para "SALVAR ALTERAÇÕES"
+        document.getElementById("btnConfirmAddOptions").textContent = "SALVAR ALTERAÇÕES";
+		
+		closeOverlay("overlayOptions");
+		openOverlay("overlayAddOptions");
 	});
 
 	document.getElementById("btnSwapNo").addEventListener("click", () => {
@@ -470,41 +598,49 @@ document.addEventListener("DOMContentLoaded", () => {
 		renderExercises();
 	});
 
-	// ADICIONAR TREINO
-	document.getElementById("optTraining").addEventListener("click", () => {
-		const dia = ctx.dias[currentDayIndex];
-		const nomeExercicio = exerciciosPorDia[dia][activeExerciseIndex];
-		closeOverlay("overlayOptions");
-		sessionStorage.setItem(
-			"treinoContexto",
-			JSON.stringify({
-				nomeExercicio, // ← nome passado diretamente
-				exercicioIndex: activeExerciseIndex,
-				dia,
-				ano: ctx.ano,
-				mes: ctx.mes,
-			}),
-		);
-		window.location.href = "/pages/adm/treinos.html";
-	});
 
-	// CONFIRMAR ADIÇÃO (SÉRIES E OBS)
+	// CONFIRMAR ADIÇÃO OU EDIÇÃO (SÉRIES E OBS)
 	document.getElementById("btnConfirmAddOptions").addEventListener("click", () => {
+		const isEdit = pendingAddPayload && pendingAddPayload.isEdit;
 		const series = document.getElementById("addSeries").value.trim();
 		const restTime = parseInt(document.getElementById("addRestTime").value.trim()) || 60;
 		const obs = document.getElementById("addObservation").value.trim();
-		const diaInfo = ctx.dias[currentDayIndex];
-		const chkApplyAll = document.getElementById("chkApplyAll");
-		const applyToAll = chkApplyAll && chkApplyAll.checked;
-		const targetDays = applyToAll ? ctx.dias : [diaInfo];
 
+		if (!series) {
+			showToast("error", "Informe as séries/repetições.");
+			return;
+		}
+
+		const dia = ctx.dias[currentDayIndex];
+		const diaInfo = ctx.dias[currentDayIndex];
 		const exObj = pendingAddPayload.exObj;
-		targetDays.forEach(d => {
-			const diaList = exerciciosPorDia[d];
-			if (!diaList.some(item => item.id === exObj.id)) {
-				diaList.push({ ...exObj, series, observation: obs, restTime: restTime });
+
+		if (isEdit) {
+			// MODO EDIÇÃO: Apenas altera o item no dia atual (índice ativo)
+			exerciciosPorDia[dia][activeExerciseIndex] = { ...exObj, series, observation: obs, restTime: restTime };
+			showToast("success", "Detalhes atualizados!");
+		} else {
+			// MODO ADIÇÃO/TROCA
+			const chkApplyAll = document.getElementById("chkApplyAll");
+			const applyToAll = chkApplyAll && chkApplyAll.checked;
+			const swappingIndex = (pendingAddPayload && pendingAddPayload.swappingIndex !== undefined) ? pendingAddPayload.swappingIndex : activeExerciseIndex;
+
+			const isSwap = swappingIndex !== null && swappingIndex !== undefined && !pendingAddPayload.isNewAdd;
+
+			if (isSwap) {
+				// Modo TROCAR: substitui o item na posição original
+				exerciciosPorDia[dia][swappingIndex] = { ...exObj, series, observation: obs, restTime: restTime };
+			} else {
+				// Modo ADICIONAR: Nova entrada
+				const targetDays = applyToAll ? ctx.dias : [diaInfo];
+				targetDays.forEach(d => {
+					const diaList = exerciciosPorDia[d];
+					if (!diaList.some(item => item.id === exObj.id)) {
+						diaList.push({ ...exObj, series, observation: obs, restTime: restTime });
+					}
+				});
 			}
-		});
+		}
 
 		closeOverlay("overlayAddOptions");
 		renderExercises();
@@ -542,9 +678,27 @@ document.addEventListener("DOMContentLoaded", () => {
 		document.getElementById(id).classList.remove("open");
 	}
 
-	function dayKey(ano, mes, dia) {
+    function dayKey(ano, mes, dia) {
 		return `${ano}-${String(mes + 1).padStart(2, "0")}-${String(dia).padStart(2, "0")}`;
 	}
+
+	// ── Atalho: Esc para fechar overlays ou voltar ───────────────
+	document.addEventListener("keydown", (e) => {
+		if (e.key === "Escape") {
+			const activeOverlay = document.querySelector(".overlay.open");
+			if (activeOverlay) {
+				const id = activeOverlay.id;
+				if (id === "overlayAddOptions") {
+					closeOverlay(id);
+					openOverlay("overlayExercises");
+				} else {
+					closeOverlay(id);
+				}
+			} else if (!document.getElementById("pf-modal-root")) {
+				history.back();
+			}
+		}
+	});
 });
 
 // ── Toast ─────────────────────────────────────────────────────────

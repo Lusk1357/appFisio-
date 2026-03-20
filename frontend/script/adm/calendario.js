@@ -170,6 +170,15 @@ document.addEventListener("DOMContentLoaded", () => {
 	function monthKey(y, m) {
 		return `${y}-${String(m + 1).padStart(2, "0")}`;
 	}
+
+	// ── Atalho: Esc para voltar ───────────────────────────────────
+	document.addEventListener("keydown", (e) => {
+		if (e.key === "Escape") {
+			if (!document.getElementById("pf-modal-root")) {
+				history.back();
+			}
+		}
+	});
 });
 
 // ── Toast ─────────────────────────────────────────────────────────

@@ -94,8 +94,36 @@
                 <div class="form-group">
                     <label for="editCategoria">Categoria</label>
                     <div class="input-wrapper">
-                        <input type="text" id="editCategoria" placeholder="Ex: Fortalecimento" />
+                        <select id="editCategoria">
+                            <option value="" disabled>Selecione a categoria...</option>
+                            <option value="Cervical / Pescoço">Cervical / Pescoço</option>
+                            <option value="Ombro / Braço">Ombro / Braço</option>
+                            <option value="Cotovelo / Antebraço">Cotovelo / Antebraço</option>
+                            <option value="Punho / Mão">Punho / Mão</option>
+                            <option value="Coluna Lombar">Coluna Lombar</option>
+                            <option value="Coluna Torácica">Coluna Torácica</option>
+                            <option value="Core / Abdômen">Core / Abdômen</option>
+                            <option value="Quadril / Coxa">Quadril / Coxa</option>
+                            <option value="Joelho / Perna">Joelho / Perna</option>
+                            <option value="Tornozelo / Pé">Tornozelo / Pé</option>
+                            <option value="Respiratório">Respiratório</option>
+                            <option value="Geral / Funcional">Geral / Funcional</option>
+                        </select>
                         <i class="fa-solid fa-tag input-icon"></i>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="editComoExecutar">Como Executar</label>
+                    <div class="input-wrapper">
+                        <textarea id="editComoExecutar" rows="4" placeholder="Descreva o passo a passo..."></textarea>
+                        <i class="fa-solid fa-clipboard-list input-icon" style="top:14px;"></i>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="editEquipamentos">Equipamentos (Opcional)</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="editEquipamentos" placeholder="Ex: Halteres, Faixa Elástica" />
+                        <i class="fa-solid fa-box-open input-icon"></i>
                     </div>
                 </div>
                 <div class="form-group">
@@ -103,6 +131,33 @@
                     <div class="input-wrapper">
                         <input type="text" id="editObservacao" placeholder="Observação..." />
                         <i class="fa-solid fa-comment-medical input-icon"></i>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Imagem do Exercício (Opcional)</label>
+                    <div class="image-mode-toggle">
+                        <button type="button" class="toggle-btn active" data-mode="local" id="editBtnModoLocal">
+                            <i class="fa-solid fa-folder-open"></i> Imagem Local
+                        </button>
+                        <button type="button" class="toggle-btn" data-mode="url" id="editBtnModoUrl">
+                            <i class="fa-solid fa-link"></i> URL Externa
+                        </button>
+                    </div>
+                    <!-- Modo Local -->
+                    <div class="input-wrapper" id="editImagemLocalWrapper">
+                        <select id="editImagemLocalSelect">
+                            <option value="" disabled selected>Carregando imagens...</option>
+                        </select>
+                        <i class="fa-solid fa-image input-icon"></i>
+                    </div>
+                    <!-- Modo URL -->
+                    <div class="input-wrapper" id="editImagemUrlWrapper" style="display:none;">
+                        <input type="text" id="editImageUrl" placeholder="Ex: https://exemplo.com/imagem.png" />
+                        <i class="fa-solid fa-link input-icon"></i>
+                    </div>
+                    <!-- Preview -->
+                    <div id="editImagePreview" style="margin-top:8px; display:none; text-align:center;">
+                        <img id="editImgTag" src="" alt="Prévia" style="max-height:80px; border-radius:10px; border:1px solid #e2e8f0;" />
                     </div>
                 </div>
                 <div class="form-group">

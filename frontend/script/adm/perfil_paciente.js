@@ -155,6 +155,19 @@ document.addEventListener("DOMContentLoaded", () => {
 	}
 });
 
+// ── Atalho: Esc para fechar modal ou voltar ───────────────────────
+document.addEventListener("keydown", (e) => {
+	if (e.key === "Escape") {
+		const deleteModal = document.getElementById("deleteModal");
+		if (deleteModal && deleteModal.classList.contains("active")) {
+			const modalFunc = window.closeDeleteModal || closeDeleteModal;
+			modalFunc();
+		} else if (!document.getElementById("pf-modal-root")) {
+			history.back();
+		}
+	}
+});
+
 async function confirmDelete() {
 	const raw = sessionStorage.getItem("pacienteSelecionado");
 	if (!raw) return;

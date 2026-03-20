@@ -9,6 +9,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const exerciseTitle = document.getElementById("exerciseTitle");
   const exerciseSeries = document.getElementById("exerciseSeries");
   const exerciseObservation = document.getElementById("exerciseObservation");
+  const exerciseHowTo = document.getElementById("exerciseHowTo");
+  const howToSection = document.getElementById("howToSection");
+  const howToToggle = document.getElementById("howToToggle");
+  const howToBody = document.getElementById("howToBody");
+  const howToChevron = document.getElementById("howToChevron");
   const mediaContainer = document.getElementById("mediaContainer");
   const pillsContainer = document.getElementById("progressPillsContainer");
 
@@ -33,6 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   const treino = JSON.parse(treinoJSON);
+  console.log("Treino Ativo Carregado (v2.2):", treino);
   const exercises = treino.exercises.filter(e => !e.completed);
 
   if (exercises.length === 0) {
@@ -57,6 +63,16 @@ document.addEventListener("DOMContentLoaded", () => {
   restCircle.style.strokeDashoffset = 0;
 
   const startTime = Date.now();
+
+  // ── Accordion Como Executar ───────────────────────────────────
+  let howToOpen = false;
+  if (howToToggle) {
+    howToToggle.addEventListener("click", () => {
+      howToOpen = !howToOpen;
+      howToBody.style.display = howToOpen ? "block" : "none";
+      if (howToChevron) howToChevron.style.transform = howToOpen ? "rotate(180deg)" : "";
+    });
+  }
 
   // ── Helpers ───────────────────────────────────────────────────
   function formatTime(s) {
@@ -136,7 +152,8 @@ document.addEventListener("DOMContentLoaded", () => {
   function appendImg(src, fallback) {
     const img = document.createElement("img");
     img.className = "header-img";
-    img.style.objectFit = "cover";
+    img.style.objectFit = "contain";
+    img.style.background = "#eef2ff";
     if (fallback) img.onerror = () => { if (img.src !== fallback) img.src = fallback; };
     img.src = src;
     mediaContainer.appendChild(img);
@@ -198,12 +215,29 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
+    // Como Executar
+    if (howToSection && exerciseHowTo) {
+      if (ex.howToExecute) {
+        exerciseHowTo.innerText = ex.howToExecute;
+        howToSection.style.display = "block";
+        // Reset accordion to closed on new exercise
+        if (isNewExercise) {
+          howToOpen = false;
+          howToBody.style.display = "none";
+          if (howToChevron) howToChevron.style.transform = "";
+        }
+      } else {
+        howToSection.style.display = "none";
+      }
+    }
+
     secondsElapsed = 0;
     currentTimerDisplay.innerText = formatTime(0);
     updatePills(index);
 
     if (isNewExercise) {
-      loadMedia(ex.videoUrl);
+      // Prioriza videoUrl; se não houver, usa a imageUrl do exercício
+      loadMedia(ex.videoUrl || ex.imageUrl);
     }
 
     updateNextButtonText();

@@ -20,15 +20,98 @@
     const editId = document.getElementById("editId");
     const editNome = document.getElementById("editNome");
     const editCategoria = document.getElementById("editCategoria");
+    const editComoExecutar = document.getElementById("editComoExecutar");
+    const editEquipamentos = document.getElementById("editEquipamentos");
     const editObservacao = document.getElementById("editObservacao");
+    const editImageUrl = document.getElementById("editImageUrl");
+    const editImgTag = document.getElementById("editImgTag");
+    const editImagePreview = document.getElementById("editImagePreview");
     const editVideoLink = document.getElementById("editVideoLink");
     const btnSaveEdit = document.getElementById("btnSaveEdit");
+
+    // Dual-mode imagem no modal de edição
+    const editBtnModoLocal = document.getElementById("editBtnModoLocal");
+    const editBtnModoUrl = document.getElementById("editBtnModoUrl");
+    const editImagemLocalWrapper = document.getElementById("editImagemLocalWrapper");
+    const editImagemUrlWrapper = document.getElementById("editImagemUrlWrapper");
+    const editImagemLocalSelect = document.getElementById("editImagemLocalSelect");
+    let editImageMode = "local";
 
     // Modal de exclusão
     const deleteModal = document.getElementById("deleteModal");
     const deleteMsg = document.getElementById("deleteMsg");
     const cancelDelete = document.getElementById("cancelDelete");
     const confirmDelete = document.getElementById("confirmDelete");
+
+    // ── Carregar imagens locais ────────────────────────────────
+    let localImages = [];
+    async function loadLocalImages() {
+        try {
+            const res = await fetch("/api/exercicios/imagens", { method: "GET", credentials: "include" });
+            if (!res.ok) throw new Error();
+            localImages = await res.json();
+            populateLocalSelect();
+        } catch (e) {
+            console.error("Erro ao carregar imagens:", e);
+        }
+    }
+
+    function populateLocalSelect(currentVal) {
+        if (!editImagemLocalSelect) return;
+        editImagemLocalSelect.innerHTML = '<option value="" disabled selected>Selecione uma imagem...</option>';
+        if (localImages.length === 0) {
+            editImagemLocalSelect.innerHTML += '<option value="" disabled>Nenhuma imagem disponível</option>';
+        } else {
+            localImages.forEach(img => {
+                const opt = document.createElement("option");
+                opt.value = img.path;
+                opt.textContent = img.name;
+                if (currentVal && img.path === currentVal) opt.selected = true;
+                editImagemLocalSelect.appendChild(opt);
+            });
+        }
+    }
+
+    // ── Toggle de modo de imagem (edição) ─────────────────────
+    function setEditImageMode(mode) {
+        editImageMode = mode;
+        if (mode === "local") {
+            editBtnModoLocal.classList.add("active");
+            editBtnModoUrl.classList.remove("active");
+            editImagemLocalWrapper.style.display = "";
+            editImagemUrlWrapper.style.display = "none";
+        } else {
+            editBtnModoUrl.classList.add("active");
+            editBtnModoLocal.classList.remove("active");
+            editImagemLocalWrapper.style.display = "none";
+            editImagemUrlWrapper.style.display = "";
+        }
+        updateEditPreview();
+    }
+
+    if (editBtnModoLocal) editBtnModoLocal.addEventListener("click", () => setEditImageMode("local"));
+    if (editBtnModoUrl) editBtnModoUrl.addEventListener("click", () => setEditImageMode("url"));
+
+    function getEditImageUrl() {
+        if (editImageMode === "local") {
+            return editImagemLocalSelect ? editImagemLocalSelect.value : "";
+        } else {
+            return editImageUrl ? editImageUrl.value.trim() : "";
+        }
+    }
+
+    function updateEditPreview() {
+        const val = getEditImageUrl();
+        if (val && editImgTag) {
+            editImgTag.src = val.startsWith('http') || val.startsWith('/') ? val : '/' + val;
+            editImagePreview.style.display = "block";
+        } else if (editImagePreview) {
+            editImagePreview.style.display = "none";
+        }
+    }
+
+    if (editImagemLocalSelect) editImagemLocalSelect.addEventListener("change", updateEditPreview);
+    if (editImageUrl) editImageUrl.addEventListener("input", updateEditPreview);
 
     // ── Toast ──────────────────────────────────────────────────
     function showToast(type, message) {
@@ -117,22 +200,17 @@
             card.className = "exercise-card";
             card.style.animationDelay = `${index * 0.04}s`;
 
-            const isForte = ex.type && ex.type.toLowerCase().includes("fortalecimento");
-            const typeIcon = isForte
-                ? '<i class="fa-solid fa-dumbbell"></i>'
-                : '<i class="fa-solid fa-person-walking"></i>';
-
-            const typeColor = isForte ? "#3b82f6" : "#10b981";
+            // Imagem ou ícone padrão
+            const imageBlock = ex.imageUrl
+                ? `<img src="${ex.imageUrl.startsWith('/') ? ex.imageUrl : '/' + ex.imageUrl}" alt="${ex.name}" style="width:52px;height:64px;object-fit:cover;border-radius:10px;border:1px solid #e2e8f0;flex-shrink:0;" onerror="this.style.display='none'">`
+                : `<div class="card-icon-circle" style="background:#3b82f615;color:#3b82f6;flex-shrink:0;"><i class="fa-solid fa-person-walking"></i></div>`;
 
             card.innerHTML = `
                 <div class="card-left">
-                    <div class="card-icon-circle" style="background: ${typeColor}15; color: ${typeColor};">
-                        ${typeIcon}
-                    </div>
+                    ${imageBlock}
                     <div class="card-info">
                         <h3 class="card-name">${ex.name}</h3>
                         <span class="card-type">${ex.type || "Sem categoria"}</span>
-                        ${ex.observation ? `<span class="card-obs"><i class="fa-solid fa-comment-dots"></i> ${ex.observation}</span>` : ""}
                     </div>
                 </div>
                 <div class="card-actions">
@@ -166,8 +244,24 @@
         editId.value = ex.id;
         editNome.value = ex.name || "";
         editCategoria.value = ex.type || "";
+        if (editComoExecutar) editComoExecutar.value = ex.howToExecute || "";
         editObservacao.value = ex.observation || "";
         editVideoLink.value = ex.videoUrl || "";
+        editEquipamentos.value = ex.equipments || "";
+
+        // Detectar se imagem é local ou URL e configurar modo correto
+        const imgUrl = ex.imageUrl || "";
+        const isLocal = imgUrl.startsWith('/public/images/exercises/');
+        if (isLocal) {
+            populateLocalSelect(imgUrl);
+            if (editImageUrl) editImageUrl.value = "";
+            setEditImageMode("local");
+        } else {
+            populateLocalSelect();
+            if (editImageUrl) editImageUrl.value = imgUrl;
+            setEditImageMode("url");
+        }
+        updateEditPreview();
 
         editModal.classList.add("active");
     }
@@ -187,8 +281,11 @@
         const id = editId.value;
         const name = editNome.value.trim();
         const type = editCategoria.value.trim();
+        const howToExecute = editComoExecutar ? (editComoExecutar.value.trim() || null) : null;
         const observation = editObservacao.value.trim() || null;
         const videoUrl = editVideoLink.value.trim() || null;
+        const equipments = editEquipamentos ? (editEquipamentos.value.trim() || null) : null;
+        const imageUrl = getEditImageUrl() || null;
 
         if (!name || !type) {
             showToast("error", "Nome e categoria são obrigatórios.");
@@ -203,7 +300,7 @@
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 credentials: "include",
-                body: JSON.stringify({ name, type, observation, videoUrl })
+                body: JSON.stringify({ name, type, howToExecute, observation, videoUrl, equipments, imageUrl })
             });
 
             const data = await res.json();
@@ -288,4 +385,5 @@
 
     // ── Init ──────────────────────────────────────────────────
     fetchExercicios();
+    loadLocalImages();
 })();

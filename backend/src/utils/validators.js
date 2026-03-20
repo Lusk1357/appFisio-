@@ -2,7 +2,7 @@ const { z } = require('zod');
 
 const registerSchema = z.object({
     name: z.string().min(3, "O nome deve ter pelo menos 3 caracteres"),
-    email: z.string().email("E-mail inválido").min(1, "E-mail é obrigatório"),
+    email: z.string().min(3, "O login/e-mail deve ter pelo menos 3 caracteres"),
     password: z.string().min(6, "A nova senha deve ter no mínimo 6 caracteres"),
     telefone: z.string().optional(),
     role: z.enum(["PATIENT", "ADMIN"]).optional()
@@ -22,9 +22,13 @@ const tipSchema = z.object({
 
 const exerciseSchema = z.object({
     name: z.string().min(3, "Nome do exercício deve ter no mínimo 3 caracteres").max(255),
-    description: z.string().max(1000).optional(),
-    videoUrl: z.string().max(255).optional(),
-    instructions: z.string().max(2000).optional() // String formatada em JSON
+    type: z.string().min(1, "Categoria é obrigatória").max(100),
+    observation: z.string().max(5000).optional().nullable(),
+    howToExecute: z.string().max(5000).optional().nullable(),
+    videoUrl: z.string().max(500).optional().nullable(),
+    bodyCategory: z.string().max(255).optional().nullable(),
+    equipments: z.string().max(255).optional().nullable(),
+    imageUrl: z.string().max(500).optional().nullable()
 });
 
 const routineSchema = z.object({
@@ -35,7 +39,7 @@ const routineSchema = z.object({
 
 const profileUpdateSchema = z.object({
     name: z.string().min(3).max(100).optional(),
-    email: z.string().email().optional(),
+    email: z.string().min(3).optional(),
     telefone: z.string().max(20).optional(),
     password: z.string().min(6).optional()
 });

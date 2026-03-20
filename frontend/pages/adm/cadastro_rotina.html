@@ -50,12 +50,24 @@
 
             <div class="exercises-section">
                 <h3>Selecione Exercícios e Configure Descanso</h3>
+                
+                <div class="search-filter-container">
+                    <div class="search-box">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="searchExercise" placeholder="Pesquisar exercício pelo nome..." />
+                    </div>
+                    <div class="category-filters" id="categoryFilters">
+                        <span class="category-chip active" data-category="all">Todos</span>
+                        <!-- Categorias dinâmicas aqui -->
+                    </div>
+                </div>
+
                 <div class="exercises-list" id="exercisesList">
                     <!-- Preenchido via JS -->
                 </div>
             </div>
 
-            <button type="button" class="btn-submit" id="btn-cadastrar" style="margin-top: 24px;">CRIAR ROTINA</button>
+            <button type="submit" class="btn-submit" id="btn-cadastrar" style="margin-top: 24px;">CRIAR ROTINA</button>
         </form>
     </div>
 </body>

@@ -82,11 +82,14 @@ document.addEventListener("DOMContentLoaded", () => {
             prescriptionExerciseId: associacao.id,
             id: ex.id,
             name: ex.name,
-            series: ex.series,
-            observation: ex.observation,
+            series: associacao.series || ex.series, // Prefere a série da prescrição
+            observation: associacao.observation || ex.observation, // Prefere a obs da prescrição
+            howToExecute: ex.howToExecute,
+            imageUrl: ex.imageUrl,
             type: ex.type,
             videoUrl: ex.videoUrl || "",
-            completed: isCompleted
+            completed: isCompleted,
+            restTime: associacao.restTime // Passa o tempo de descanso
           });
 
           const item = document.createElement("div");
@@ -145,10 +148,12 @@ document.addEventListener("DOMContentLoaded", () => {
           btn.style.cursor = "pointer";
           btn.innerHTML = '<i class="fa-solid fa-play"></i> INICIAR TREINAMENTO';
           btn.addEventListener("click", () => {
-            sessionStorage.setItem("treinoAtivo", JSON.stringify({
+            const trainingSession = {
               date: dateStr,
               exercises: naoCompletos
-            }));
+            };
+            console.log("Iniciando Treino (v2.2):", trainingSession);
+            sessionStorage.setItem("treinoAtivo", JSON.stringify(trainingSession));
             window.location.href = "/pages/exercicios/detalhes_exercicios.html";
           });
           startTrainingArea.appendChild(btn);

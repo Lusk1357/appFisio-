@@ -1,6 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
-  binaryTargets = ["native", "rhel-openssl-3.0.x"]
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-3.0.x", "debian-openssl-3.0.x"]
 }
 
 datasource db {
@@ -9,16 +9,15 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(uuid())
-  name          String
-  email         String    @unique
-  passwordHash  String
-  role          String    @default("PATIENT") // "ADMIN" ou "PATIENT"
-  createdAt     DateTime  @default(now())
-
+  id             String          @id @default(uuid())
+  name           String
+  email          String          @unique
+  passwordHash   String
+  role           String          @default("PATIENT")
+  createdAt      DateTime        @default(now())
+  achievements   Achievement[]
   patientProfile PatientProfile?
   prescriptions  Prescription[]
-  achievements   Achievement[]
 }
 
 model Achievement {
@@ -30,37 +29,39 @@ model Achievement {
   alert       Boolean  @default(false)
   read        Boolean  @default(false)
   timestamp   DateTime @default(now())
-
   user        User     @relation(fields: [userId], references: [id])
 }
 
 model PatientProfile {
-  id        String  @id @default(uuid())
-  userId    String  @unique
-  weight    Float?  // kg
-  height    Float?  // cm
-  gender    String?
-  age       Int?
-  telefone  String?
-  estado    String?
-  cidade    String?
-  bairro    String?
-  endereco  String?
-  cep       String?
-  notes     String? // Anotações do fisioterapeuta
-  avatar    String? // Nome do arquivo do avatar
-  
-  user      User    @relation(fields: [userId], references: [id])
+  id       String  @id @default(uuid())
+  userId   String  @unique
+  weight   Float?
+  height   Float?
+  gender   String?
+  age      Int?
+  telefone String?
+  estado   String?
+  cidade   String?
+  bairro   String?
+  endereco String?
+  cep      String?
+  notes    String?
+  avatar   String?
+  user     User    @relation(fields: [userId], references: [id])
 }
 
 model Exercise {
-  id            String    @id @default(uuid())
-  name          String    @unique
-  observation   String?   // textos complementares (geral do exercício)
-  type          String    // ex: "Fortalecimento", "Alongamento"
-  videoUrl      String?   // URL principal (opcional agora que temos videos)
-
-  videos        ExerciseVideo[]
+  id                String                 @id @default(uuid())
+  name              String                 @unique
+  observation       String?
+  type              String
+  videoUrl          String?
+  imageUrl          String?
+  externalId        String?                @unique
+  bodyCategory      String?
+  equipments        String?
+  howToExecute      String?
+  videos            ExerciseVideo[]
   prescriptionItems PrescriptionExercise[]
   routineItems      RoutineExercise[]
 }
@@ -68,20 +69,18 @@ model Exercise {
 model ExerciseVideo {
   id         String   @id @default(uuid())
   exerciseId String
-  name       String   // ex: "Treino A"
-  videoUrl   String   // URL do YouTube
-
+  name       String
+  videoUrl   String
   exercise   Exercise @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
 }
 
 model Prescription {
-  id          String   @id @default(uuid())
-  patientId   String   // User (ROLE:PATIENT)
-  adminId     String   // User (ROLE:ADMIN)
-  assignedDay DateTime // Data alvo do treino
-  createdAt   DateTime @default(now())
-
-  patient     User     @relation(fields: [patientId], references: [id])
+  id          String                 @id @default(uuid())
+  patientId   String
+  adminId     String
+  assignedDay DateTime
+  createdAt   DateTime               @default(now())
+  patient     User                   @relation(fields: [patientId], references: [id])
   exercises   PrescriptionExercise[]
 }
 
@@ -89,41 +88,38 @@ model PrescriptionExercise {
   id             String       @id @default(uuid())
   prescriptionId String
   exerciseId     String
-  series         String       @default("3x15") // Específico para esta sessão
-  observation    String?      // Específico para esta sessão
-  restTime       Int          @default(60)     // Tempo de descanso em segundos
+  series         String       @default("3x15")
+  observation    String?
+  restTime       Int          @default(60)
   completed      Boolean      @default(false)
-  
+  exercise       Exercise     @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
   prescription   Prescription @relation(fields: [prescriptionId], references: [id])
-  exercise       Exercise     @relation(fields: [exerciseId], references: [id])
 }
 
 model Tip {
   id        String   @id @default(uuid())
   title     String
-  thumbnail String   // URL da imagem
-  duration  String   // Ex: "10 min"
-  link      String   // Link do YouTube/externo
+  thumbnail String
+  duration  String
+  link      String
   createdAt DateTime @default(now())
 }
 
 model RoutineTemplate {
-  id          String   @id @default(uuid())
+  id          String            @id @default(uuid())
   name        String
   description String?
-  createdAt   DateTime @default(now())
-
+  createdAt   DateTime          @default(now())
   exercises   RoutineExercise[]
 }
 
 model RoutineExercise {
-  id               String          @id @default(uuid())
-  routineId        String
-  exerciseId       String
-  series           String          @default("3x15")
-  observation      String?
-  restTime         Int             @default(60)
-  
-  routine          RoutineTemplate @relation(fields: [routineId], references: [id], onDelete: Cascade)
-  exercise         Exercise        @relation(fields: [exerciseId], references: [id])
+  id          String          @id @default(uuid())
+  routineId   String
+  exerciseId  String
+  series      String          @default("3x15")
+  observation String?
+  restTime    Int             @default(60)
+  exercise    Exercise        @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+  routine     RoutineTemplate @relation(fields: [routineId], references: [id], onDelete: Cascade)
 }

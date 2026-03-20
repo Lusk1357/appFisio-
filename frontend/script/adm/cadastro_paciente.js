@@ -61,7 +61,8 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    btnCadastrar.addEventListener("click", async (e) => {
+    const form = document.querySelector("form");
+    form.addEventListener("submit", async (e) => {
         e.preventDefault();
 
         const nameVal = document.getElementById("name").value.trim();

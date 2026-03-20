@@ -156,7 +156,10 @@ document.addEventListener("DOMContentLoaded", () => {
 	}
 
 	// ── Botão salvar ──────────────────────────────────────────────
-	document.getElementById("btnSave").addEventListener("click", salvar);
+	document.getElementById("editForm").addEventListener("submit", (e) => {
+		e.preventDefault();
+		salvar();
+	});
 
 	// ── Funções ───────────────────────────────────────────────────
 	async function salvar() {
@@ -277,6 +280,15 @@ document.addEventListener("DOMContentLoaded", () => {
 		const el = document.getElementById(id);
 		if (el) el.value = val;
 	}
+
+	// ── Atalho: Esc para voltar ───────────────────────────────────
+	document.addEventListener("keydown", (e) => {
+		if (e.key === "Escape") {
+			if (!document.getElementById("pf-modal-root")) {
+				history.back();
+			}
+		}
+	});
 });
 
 // ── Toast (mesmo padrão do projeto) ───────────────────────────────

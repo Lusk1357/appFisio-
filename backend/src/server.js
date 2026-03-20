@@ -106,7 +106,7 @@ app.use(errorHandler);
 
 const PORT = process.env.PORT || 3000;
 
-if (process.env.NODE_ENV !== 'production') {
+if (require.main === module) {
     app.listen(PORT, () => {
         console.log(`Pro Fisio Backend server listening on port ${PORT}`);
     });

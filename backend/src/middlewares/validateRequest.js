@@ -7,12 +7,13 @@ const validateRequest = (schema) => {
             req.body = schema.parse(req.body);
             next();
         } catch (error) {
-            // Se for um erro do Zod, formate e devolva 400
-            if (error.errors) {
-                const devMsg = error.errors.map(e => e.message).join(", ");
-                return res.status(400).json({ erro: "Dados inválidos: " + devMsg });
+            // Se for um erro do Zod, formate e detalhe
+            if (error.errors && Array.isArray(error.errors)) {
+                const devMsg = error.errors.map(e => e.message).join(" | ");
+                return res.status(400).json({ erro: devMsg });
             }
-            return res.status(400).json({ erro: "Dados inválidos fornecidos." });
+            // Fallback para qualquer outro erro de validação
+            return res.status(400).json({ erro: error.message || "Dados inválidos fornecidos." });
         }
     };
 };

@@ -85,15 +85,89 @@ document.addEventListener("DOMContentLoaded", () => {
                 container.appendChild(detailsDiv);
                 exercisesList.appendChild(container);
             });
+
+            // Extrair categorias únicas e renderizar chips
+            renderCategoryFilters(exerciciosObj);
+
+            // Setup listeners de busca e filtro
+            setupFilters();
+
         } catch (error) {
             console.error("Erro:", error);
             exercisesList.innerHTML = '<div class="empty-exercises" style="color:#ef4444;">Erro ao carregar exercícios.</div>';
         }
     }
 
+    function renderCategoryFilters(exercises) {
+        const filtersContainer = document.getElementById("categoryFilters");
+        const categories = [...new Set(exercises.map(ex => ex.type).filter(Boolean))].sort();
+        
+        categories.forEach(cat => {
+            const chip = document.createElement("span");
+            chip.className = "category-chip";
+            chip.dataset.category = cat;
+            chip.textContent = cat;
+            filtersContainer.appendChild(chip);
+        });
+    }
+
+    function setupFilters() {
+        const searchInput = document.getElementById("searchExercise");
+        const chips = document.querySelectorAll(".category-chip");
+        let activeCategory = "all";
+
+        function apply() {
+            const term = searchInput.value.toLowerCase().trim();
+            const containers = document.querySelectorAll(".exercise-container");
+
+            containers.forEach(container => {
+                const name = container.querySelector(".exercise-name").textContent.toLowerCase();
+                const category = container.querySelector(".exercise-category").textContent;
+                
+                const matchesSearch = name.includes(term);
+                const matchesCategory = activeCategory === "all" || category === activeCategory;
+
+                if (matchesSearch && matchesCategory) {
+                    container.classList.remove("hidden");
+                } else {
+                    container.classList.add("hidden");
+                }
+            });
+
+            // Mensagem de "Nenhum resultado"
+            let noResultsMsg = document.getElementById("noFilterResults");
+            const anyVisible = Array.from(containers).some(c => !c.classList.contains("hidden"));
+            
+            if (!anyVisible) {
+                if (!noResultsMsg) {
+                    noResultsMsg = document.createElement("div");
+                    noResultsMsg.id = "noFilterResults";
+                    noResultsMsg.className = "empty-exercises";
+                    noResultsMsg.textContent = "Nenhum exercício encontrado com esse filtro.";
+                    exercisesList.appendChild(noResultsMsg);
+                }
+                noResultsMsg.style.display = "block";
+            } else if (noResultsMsg) {
+                noResultsMsg.style.display = "none";
+            }
+        }
+
+        searchInput.addEventListener("input", apply);
+
+        chips.forEach(chip => {
+            chip.addEventListener("click", () => {
+                chips.forEach(c => c.classList.remove("active"));
+                chip.classList.add("active");
+                activeCategory = chip.dataset.category;
+                apply();
+            });
+        });
+    }
+
     loadExercises();
 
-    btnCadastrar.addEventListener("click", (e) => {
+    const form = document.querySelector("form");
+    form.addEventListener("submit", (e) => {
         e.preventDefault();
 
         const nomeVal = document.getElementById("nome").value.trim();

@@ -42,8 +42,38 @@
             <div class="form-group">
                 <label for="categoria">Categoria</label>
                 <div class="input-wrapper">
-                    <input type="text" id="categoria" placeholder="Ex: Membros Inferiores" />
+                    <select id="categoria">
+                        <option value="" disabled selected>Selecione a categoria...</option>
+                        <option value="Cervical / Pescoço">Cervical / Pescoço</option>
+                        <option value="Ombro / Braço">Ombro / Braço</option>
+                        <option value="Cotovelo / Antebraço">Cotovelo / Antebraço</option>
+                        <option value="Punho / Mão">Punho / Mão</option>
+                        <option value="Coluna Lombar">Coluna Lombar</option>
+                        <option value="Coluna Torácica">Coluna Torácica</option>
+                        <option value="Core / Abdômen">Core / Abdômen</option>
+                        <option value="Quadril / Coxa">Quadril / Coxa</option>
+                        <option value="Joelho / Perna">Joelho / Perna</option>
+                        <option value="Tornozelo / Pé">Tornozelo / Pé</option>
+                        <option value="Respiratório">Respiratório</option>
+                        <option value="Geral / Funcional">Geral / Funcional</option>
+                    </select>
                     <i class="fa-solid fa-tag input-icon"></i>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="comoExecutar">Como Executar</label>
+                <div class="input-wrapper">
+                    <textarea id="comoExecutar" rows="4" placeholder="Descreva o passo a passo de como realizar o exercício..."></textarea>
+                    <i class="fa-solid fa-clipboard-list input-icon" style="top:14px;"></i>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="equipamentos">Equipamentos (Opcional)</label>
+                <div class="input-wrapper">
+                    <input type="text" id="equipamentos" placeholder="Ex: Halteres, Faixa Elástica" />
+                    <i class="fa-solid fa-box-open input-icon"></i>
                 </div>
             </div>
 
@@ -55,15 +85,44 @@
                 </div>
             </div>
 
+            <!-- Imagem — Modo duplo -->
             <div class="form-group">
-                <label for="videoLink">Link do Vídeo / Imagem (Opcional)</label>
+                <label>Imagem do Exercício (Opcional)</label>
+                <div class="image-mode-toggle">
+                    <button type="button" class="toggle-btn active" data-mode="local" id="btnModoLocal">
+                        <i class="fa-solid fa-folder-open"></i> Imagem Local
+                    </button>
+                    <button type="button" class="toggle-btn" data-mode="url" id="btnModoUrl">
+                        <i class="fa-solid fa-link"></i> URL Externa
+                    </button>
+                </div>
+                <!-- Modo Local -->
+                <div class="input-wrapper" id="imagemLocalWrapper">
+                    <select id="imagemLocalSelect">
+                        <option value="" disabled selected>Carregando imagens...</option>
+                    </select>
+                    <i class="fa-solid fa-image input-icon"></i>
+                </div>
+                <!-- Modo URL -->
+                <div class="input-wrapper" id="imagemUrlWrapper" style="display:none;">
+                    <input type="text" id="imageUrl" placeholder="Ex: https://exemplo.com/imagem.png" />
+                    <i class="fa-solid fa-link input-icon"></i>
+                </div>
+                <!-- Preview -->
+                <div id="imagePreview" style="margin-top:8px; display:none; text-align:center;">
+                    <img id="imgPreviewTag" src="" alt="Prévia" style="max-height:100px; border-radius:10px; border:1px solid #e2e8f0;" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="videoLink">Link do Vídeo (Opcional)</label>
                 <div class="input-wrapper">
                     <input type="url" id="videoLink" placeholder="Ex: https://youtube.com/..." />
                     <i class="fa-solid fa-video input-icon"></i>
                 </div>
             </div>
 
-            <button type="button" class="btn-submit" id="btn-cadastrar">CADASTRAR EXERCÍCIO</button>
+            <button type="submit" class="btn-submit" id="btn-cadastrar">CADASTRAR EXERCÍCIO</button>
         </form>
     </div>
 </body>

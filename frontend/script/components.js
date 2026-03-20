@@ -222,6 +222,15 @@ window.showCustomModal = function(options) {
   overlay.onclick = (e) => {
     if (e.target === overlay && showCancel) closeModal();
   };
+
+  // Suporte à tecla ESC para fechar modal
+  const escListener = (e) => {
+    if (e.key === "Escape" && showCancel) {
+      closeModal();
+      document.removeEventListener("keydown", escListener);
+    }
+  };
+  document.addEventListener("keydown", escListener);
 };
 
 /**
