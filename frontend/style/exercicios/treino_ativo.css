@@ -20,7 +20,6 @@ body::-webkit-scrollbar {
   display: none;
 }
 
-/* ── App shell ─────────────────────────────────────────────────── */
 .app-container {
   width: 100%;
   display: flex;
@@ -32,7 +31,7 @@ body::-webkit-scrollbar {
 
 .detail-card {
   width: 100%;
-  max-width: 500px; /* Largura padrão tablet/mobile */
+  max-width: 500px; 
   background-color: #ffffff;
   display: flex;
   flex-direction: column;
@@ -46,7 +45,6 @@ body::-webkit-scrollbar {
     transform 0.25s ease;
 }
 
-/* ── Cabeçalho de mídia ────────────────────────────────────────── */
 .image-header {
   position: relative;
   width: 100%;
@@ -63,7 +61,6 @@ body::-webkit-scrollbar {
   object-fit: contain;
 }
 
-/* Botões sobre a mídia */
 .back-btn,
 .mute-btn {
   position: absolute;
@@ -98,7 +95,6 @@ body::-webkit-scrollbar {
   transform: scale(1.08);
 }
 
-/* ── Barra de progresso (pills) ────────────────────────────────── */
 .progress-bar-area {
   display: flex;
   justify-content: center;
@@ -126,7 +122,6 @@ body::-webkit-scrollbar {
   transform: scaleY(1.5);
 }
 
-/* ── Conteúdo principal ────────────────────────────────── */
 .content-body {
   background-color: #ffffff;
   display: flex;
@@ -167,7 +162,6 @@ body::-webkit-scrollbar {
   line-height: 1.1;
 }
 
-/* ── Caixa de detalhes ────────────────────────────────── */
 .exercise-details-box {
   margin: 12px 28px 20px;
   padding: 20px 24px;
@@ -193,7 +187,6 @@ body::-webkit-scrollbar {
   line-height: 1.6;
 }
 
-/* ── Como Executar (Accordion) ─────────────────────────── */
 .how-to-section {
   margin: 0 28px 24px;
 }
@@ -240,7 +233,6 @@ body::-webkit-scrollbar {
   white-space: pre-line;
 }
 
-/* ── Cronômetro ─────────────────────────────────────────── */
 .timer-section {
   display: flex;
   justify-content: center;
@@ -275,7 +267,6 @@ body::-webkit-scrollbar {
   margin-top: 6px;
 }
 
-/* ── Rodapé de ação ────────────────────────────────────────────── */
 .bottom-action-bar {
   display: flex;
   padding: 16px 28px 24px;
@@ -335,20 +326,16 @@ body::-webkit-scrollbar {
   box-shadow: 0 8px 25px rgba(91, 138, 245, 0.4);
 }
 
-/* ================================================================
-   RESPONSIVIDADE PARA PC / DESKTOP (Onde a mágica acontece)
-   ================================================================ */
+/* RESPONSIVIDADE */
 @media (min-width: 900px) {
   .detail-card {
-    max-width: 1000px; /* Alarga bem o card */
+    max-width: 1000px; 
     height: 80vh;
     display: grid;
-    /* Divide em 2 colunas 50/50 */
     grid-template-columns: 1fr 1fr;
     grid-template-rows: auto 1fr;
   }
 
-  /* A imagem ocupa toda a coluna da esquerda */
   .image-header {
     grid-column: 1 / 2;
     grid-row: 1 / 3;
@@ -357,14 +344,13 @@ body::-webkit-scrollbar {
   }
 
   .header-img {
-    object-fit: cover !important; /* Cobre o espaço sem bordas brancas feias */
+    object-fit: cover !important; 
   }
 
-  /* Conteúdo fica à direita */
   .progress-bar-area {
     grid-column: 2 / 3;
     grid-row: 1 / 2;
-    padding-top: 30px; /* Mais respiro no topo */
+    padding-top: 30px;
   }
 
   .content-body {
