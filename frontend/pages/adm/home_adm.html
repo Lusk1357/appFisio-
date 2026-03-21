@@ -17,6 +17,16 @@
   <script src="/script/authGuard.js"></script>
   <script src="/script/components.js" defer></script>
   <script src="/script/adm/home_adm.js" defer></script>
+
+  <!-- PWA Setup -->
+  <link rel="manifest" href="/manifest.json" />
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js');
+      });
+    }
+  </script>
 </head>
 
 <body>

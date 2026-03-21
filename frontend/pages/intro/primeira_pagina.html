@@ -11,6 +11,18 @@
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,400;500&display=swap"
     rel="stylesheet" />
   <script src="/script/intro/primeira_pagina.js"></script>
+
+  <!-- PWA Setup -->
+  <link rel="manifest" href="/manifest.json" />
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(reg => console.log('SW reg:', reg.scope))
+          .catch(err => console.log('SW fail:', err));
+      });
+    }
+  </script>
 </head>
 
 <body>
