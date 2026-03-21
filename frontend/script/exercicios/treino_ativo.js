@@ -103,9 +103,8 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // ── Mídia (Aprimorada para garantir visualização e evitar branco) ─────────────────────────────────────────────────────
+  // ── Mídia ─────────────────────────────────────────────────────
   function loadMedia(videoUrl, imageUrl) {
-    // 1. Limpa o contêiner, mantendo botões
     Array.from(mediaContainer.children).forEach((child) => {
       if (child.id !== "backBtn" && child.id !== "muteBtn") child.remove();
     });
@@ -132,7 +131,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // Extrator Seguro de YouTube (Shorts, embeds, watch normal)
+    // Extrator Seguro de YouTube
     const ytMatch = videoUrl.match(
       /(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|shorts\/|watch\?v=|watch\?.+&v=))([\w-]{11})/,
     );
@@ -152,7 +151,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // Se o banco de dados enviou um link de imagem (png, jpg, gif) como se fosse um video, trata direto como imagem.
+    // Se for imagem
     if (/\.(jpg|jpeg|png|gif|webp)(\?.*)?$/i.test(videoUrl)) {
       injetarImagem(videoUrl);
       return;
@@ -160,28 +159,38 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // ── Tenta rodar como Vídeo nativo ──
     const video = document.createElement("video");
+    // muted é ESSENCIAL para o autoplay funcionar em navegadores modernos
     Object.assign(video, {
-      autoplay: true,
       loop: true,
       muted: true,
       playsInline: true,
-      controls: true,
+      controls: false,
     });
     video.className = "header-img";
     video.style.objectFit = "contain";
     video.style.background = "#000";
 
-    // Só adiciona na tela se conseguir começar a carregar
-    video.addEventListener("loadeddata", () => {
-      mediaContainer.appendChild(video);
-    });
-
     video.onerror = () => {
       console.warn("O vídeo falhou ao carregar. Mostrando imagem.");
+      video.remove();
       injetarImagem(imageUrl || videoUrl);
     };
 
     video.src = videoUrl;
+    mediaContainer.appendChild(video);
+
+    const playPromise = video.play();
+
+    if (playPromise !== undefined) {
+      playPromise.catch((error) => {
+        // Autoplay foi bloqueado pelo navegador
+        console.warn(
+          "Autoplay bloqueado pelo navegador. Exibindo controles.",
+          error,
+        );
+        video.controls = true; // Exibe os controles para o usuário dar play manualmente
+      });
+    }
   }
 
   // ── Mudo (YouTube) ───────────────────────────────────────────
