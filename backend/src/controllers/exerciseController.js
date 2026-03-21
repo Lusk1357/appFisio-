@@ -30,7 +30,7 @@ exports.createExercise = async (req, res) => {
             return res.status(400).json({ erro: "Nome e Categoria são obrigatórios." });
         }
 
-        // Verifica se já existe um exercício com este nome (Unique Constraint Friendliness)
+        // Verifica unicidade do nome
         const existing = await prisma.exercise.findUnique({ where: { name } });
         if (existing) {
             return res.status(400).json({ erro: "Já existe um exercício com este nome no catálogo." });
@@ -78,14 +78,32 @@ exports.deleteExercise = async (req, res) => {
     try {
         const { id } = req.params;
 
+        const exercise = await prisma.exercise.findUnique({ where: { id } });
+        if (!exercise) return res.status(404).json({ erro: "Exercício não encontrado." });
+
+        const imageUrl = exercise.imageUrl;
+
         await prisma.exercise.delete({
             where: { id }
         });
 
-        res.status(200).json({ sucesso: true, mensagem: "Exercício apagado com sucesso." });
+        // Limpeza de arquivo físico se for local
+        if (imageUrl && imageUrl.startsWith('/public/images/exercises/')) {
+            try {
+                const fileName = imageUrl.split('/').pop();
+                const filePath = path.join(__dirname, '../../../frontend/public/images/exercises', fileName);
+                if (fs.existsSync(filePath)) {
+                    fs.unlinkSync(filePath);
+                }
+            } catch (err) {
+                console.error("Erro ao remover mídia órfã:", err);
+            }
+        }
+
+        res.status(200).json({ sucesso: true, mensagem: "Exercício e mídia excluídos com sucesso." });
     } catch (error) {
         console.error("Erro ao apagar exercício:", error);
-        res.status(500).json({ erro: "Erro ao deletar exercício. Talvez ele esteja em uso." });
+        res.status(500).json({ erro: "Erro ao deletar exercício. Talvez ele esteja em uso em treinos ativos." });
     }
 };
 
@@ -97,6 +115,16 @@ exports.updateExercise = async (req, res) => {
 
         if (!name || !type) {
             return res.status(400).json({ erro: "Nome e Categoria são obrigatórios." });
+        }
+
+        // Verifica unicidade se o nome mudou
+        if (name) {
+            const existing = await prisma.exercise.findFirst({
+                where: { name, NOT: { id } }
+            });
+            if (existing) {
+                return res.status(400).json({ erro: "Já existe outro exercício com este nome." });
+            }
         }
 
         const updated = await prisma.exercise.update({
@@ -120,6 +148,6 @@ exports.updateExercise = async (req, res) => {
         });
     } catch (error) {
         console.error("Erro ao atualizar exercício:", error);
-        res.status(500).json({ erro: "Erro ao atualizar exercício." });
+        res.status(500).json({ erro: "Erro ao atualizar exercício no servidor." });
     }
 };
