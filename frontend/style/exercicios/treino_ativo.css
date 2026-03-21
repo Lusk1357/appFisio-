@@ -20,6 +20,11 @@ body::-webkit-scrollbar {
   display: none;
 }
 
+iframe.header-img {
+  aspect-ratio: 16/9;
+  background-color: #000;
+}
+
 .app-container {
   width: 100%;
   display: flex;
@@ -31,7 +36,7 @@ body::-webkit-scrollbar {
 
 .detail-card {
   width: 100%;
-  max-width: 500px; 
+  max-width: 500px;
   background-color: #ffffff;
   display: flex;
   flex-direction: column;
@@ -329,7 +334,7 @@ body::-webkit-scrollbar {
 /* RESPONSIVIDADE */
 @media (min-width: 900px) {
   .detail-card {
-    max-width: 1000px; 
+    max-width: 1000px;
     height: 80vh;
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -344,7 +349,7 @@ body::-webkit-scrollbar {
   }
 
   .header-img {
-    object-fit: cover !important; 
+    object-fit: cover !important;
   }
 
   .progress-bar-area {
