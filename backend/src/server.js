@@ -42,11 +42,11 @@ const allowedOrigins = [
 
 app.use(cors({
     origin: function (origin, callback) {
-        // Permite origens locais, na nuvem, ou (apenas em dev) sem origem
-        if (allowedOrigins.indexOf(origin) !== -1 || (!origin && process.env.NODE_ENV !== 'production')) {
+        // Permite origens mapeadas ou ausência de origem (comum em same-origin no Vercel)
+        if (!origin || allowedOrigins.indexOf(origin) !== -1) {
             callback(null, true);
         } else {
-            callback(new Error('Acesso bloqueado pela política de CORS.'));
+            callback(new Error('Acesso bloqueado pela política de CORS (Origem não listada).Origin recebido: ' + origin));
         }
     },
     credentials: true,

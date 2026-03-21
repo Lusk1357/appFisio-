@@ -4,7 +4,7 @@ const prisma = require('../utils/prisma');
 const JWT_SECRET = process.env.JWT_SECRET || "SUPER_SECRET_PRO_FISIO_KEY_123";
 
 if (process.env.NODE_ENV === 'production' && !process.env.JWT_SECRET) {
-    throw new Error('FATAL ERROR: JWT_SECRET is not defined in the production environment. Using a fallback key is unsafe.');
+    console.error('ALERTA DE SEGURANÇA: JWT_SECRET não está definido na Vercel! Usando chave fallback insegura. Configure imediatamente suas Environment Variables.');
 }
 
 // Registro -> Hashing de Senha Segura

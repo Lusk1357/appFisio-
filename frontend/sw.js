@@ -4,7 +4,7 @@ const CACHE_NAME = 'profisio-cache-v1';
 const urlsToCache = [
   '/',
   '/pages/intro/primeira_pagina.html',
-  '/style/intro_auth/primeira_pagina.css',
+  '/style/intro/primeira_pagina.css',
   '/images/icon-192.png',
   '/manifest.json'
 ];
