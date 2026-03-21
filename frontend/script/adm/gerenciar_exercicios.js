@@ -20,6 +20,7 @@
     const editId = document.getElementById("editId");
     const editNome = document.getElementById("editNome");
     const editCategoria = document.getElementById("editCategoria");
+    const editDuration = document.getElementById("editDuration");
     const editComoExecutar = document.getElementById("editComoExecutar");
     const editEquipamentos = document.getElementById("editEquipamentos");
     const editObservacao = document.getElementById("editObservacao");
@@ -244,6 +245,7 @@
         editId.value = ex.id;
         editNome.value = ex.name || "";
         editCategoria.value = ex.type || "";
+        if (editDuration) editDuration.value = ex.duration || 0;
         if (editComoExecutar) editComoExecutar.value = ex.howToExecute || "";
         editObservacao.value = ex.observation || "";
         editVideoLink.value = ex.videoUrl || "";
@@ -281,6 +283,7 @@
         const id = editId.value;
         const name = editNome.value.trim();
         const type = editCategoria.value.trim();
+        const duration = editDuration ? (editDuration.value.trim() || 0) : 0;
         const howToExecute = editComoExecutar ? (editComoExecutar.value.trim() || null) : null;
         const observation = editObservacao.value.trim() || null;
         const videoUrl = editVideoLink.value.trim() || null;
@@ -300,7 +303,7 @@
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 credentials: "include",
-                body: JSON.stringify({ name, type, howToExecute, observation, videoUrl, equipments, imageUrl })
+                body: JSON.stringify({ name, type, duration, howToExecute, observation, videoUrl, equipments, imageUrl })
             });
 
             const data = await res.json();

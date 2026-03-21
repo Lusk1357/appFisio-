@@ -113,6 +113,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const nomeVal = document.getElementById("nome").value.trim();
         const categoriaVal = document.getElementById("categoria").value.trim();
+        const durationVal = document.getElementById("duration").value.trim();
         const comoExecutarVal = document.getElementById("comoExecutar")?.value.trim() || "";
         const equipamentosVal = document.getElementById("equipamentos")?.value.trim() || "";
         const observacaoVal = document.getElementById("observacao").value.trim();
@@ -135,6 +136,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 body: JSON.stringify({
                     name: nomeVal,
                     type: categoriaVal,
+                    duration: durationVal || 0,
                     howToExecute: comoExecutarVal || null,
                     equipments: equipamentosVal || null,
                     observation: observacaoVal || null,

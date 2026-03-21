@@ -59,6 +59,7 @@ model Exercise {
   name              String                 @unique
   observation       String?
   type              String
+  duration          Int                    @default(0)
   videoUrl          String?
   imageUrl          String?
   externalId        String?                @unique

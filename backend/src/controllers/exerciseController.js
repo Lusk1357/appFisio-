@@ -24,7 +24,7 @@ exports.listLocalImages = async (req, res) => {
 
 exports.createExercise = async (req, res) => {
     try {
-        const { name, observation, type, videoUrl, bodyCategory, equipments, imageUrl, howToExecute } = req.body;
+        const { name, observation, type, videoUrl, bodyCategory, equipments, imageUrl, howToExecute, duration } = req.body;
 
         if (!name || !type) {
             return res.status(400).json({ erro: "Nome e Categoria são obrigatórios." });
@@ -41,6 +41,7 @@ exports.createExercise = async (req, res) => {
                 name,
                 observation: observation || null,
                 type,
+                duration: duration ? parseInt(duration, 10) : 0,
                 howToExecute: howToExecute || null,
                 bodyCategory: bodyCategory || null,
                 videoUrl: videoUrl || null,
@@ -111,7 +112,7 @@ exports.deleteExercise = async (req, res) => {
 exports.updateExercise = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, observation, type, videoUrl, bodyCategory, equipments, imageUrl, howToExecute } = req.body;
+        const { name, observation, type, videoUrl, bodyCategory, equipments, imageUrl, howToExecute, duration } = req.body;
 
         if (!name || !type) {
             return res.status(400).json({ erro: "Nome e Categoria são obrigatórios." });
@@ -133,6 +134,7 @@ exports.updateExercise = async (req, res) => {
                 name,
                 observation: observation || null,
                 type,
+                duration: duration ? parseInt(duration, 10) : 0,
                 howToExecute: howToExecute || null,
                 bodyCategory: bodyCategory || null,
                 videoUrl: videoUrl || null,
