@@ -251,58 +251,5 @@ exports.changePassword = async (req, res) => {
     }
 };
 
-// ── Setup de Administrador Seguro (Protegido por Master Key) ──
-exports.setupSuperAdmin = async (req, res) => {
-    try {
-        const { name, email, password, masterKey } = req.body;
-        const SECRET_MASTER_KEY = process.env.MASTER_KEY || "CHAVE_MESTRA_PADRAO_SEGURA";
 
-        console.log(`Tentativa de setup admin para: ${email}`);
-        // Log para depuração (remover em produção se necessário)
-        // console.log(`Chave recebida: "${masterKey}"`);
-        // console.log(`Chave esperada: "${SECRET_MASTER_KEY}"`);
 
-        // 1. Validação da Chave Mestra
-        if (!masterKey || masterKey.trim() !== SECRET_MASTER_KEY.trim()) {
-            console.warn(`Acesso negado: Chave Mestra incorreta.`);
-            console.warn(`Recebida: "${masterKey ? masterKey.substring(0, 3) + '...' : 'null'}" | Esperada: "${SECRET_MASTER_KEY.substring(0, 3)}..."`);
-            return res.status(403).json({ erro: "Chave Mestra inválida ou não fornecida." });
-        }
-
-        // 2. Validação básica de campos
-        if (!name || !email || !password) {
-            return res.status(400).json({ erro: "Nome, e-mail e senha são obrigatórios." });
-        }
-
-        // 3. Verifica se usuário já existe
-        const existingUser = await prisma.user.findUnique({ where: { email } });
-        if (existingUser) {
-            return res.status(400).json({ erro: "Este e-mail já está sendo usado." });
-        }
-
-        // 4. Criação do Admin
-        const passwordHash = await bcrypt.hash(password, 10);
-        const adminUser = await prisma.user.create({
-            data: {
-                name,
-                email,
-                passwordHash,
-                role: "ADMIN"
-            }
-        });
-
-        res.status(201).json({
-            sucesso: true,
-            mensagem: `Administrador ${adminUser.name} criado com sucesso!`,
-            usuario: { id: adminUser.id, email: adminUser.email, role: adminUser.role }
-        });
-    } catch (error) {
-        console.error("SetupSuperAdmin Error:", error);
-        // Retornar o erro real (mas seguro) para ajudar no debug
-        res.status(500).json({ 
-            erro: "Erro interno no servidor ao configurar administrador.",
-            detalhes: error.message,
-            stack: process.env.NODE_ENV === "development" ? error.stack : undefined
-        });
-    }
-};

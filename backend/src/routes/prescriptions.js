@@ -2,9 +2,11 @@ const express = require('express');
 const router = express.Router();
 const prescriptionController = require('../controllers/prescriptionController');
 const { verificarToken, checkAdmin } = require('../middlewares/authGuard');
+const { validateRequest } = require('../middlewares/validateRequest');
+const { prescriptionSchema } = require('../utils/validators');
 
 // Administrador Associa Treino ao Paciente 
-router.post('/admin', verificarToken, checkAdmin, prescriptionController.createPrescription);
+router.post('/admin', verificarToken, checkAdmin, validateRequest(prescriptionSchema), prescriptionController.createPrescription);
 
 // Administrador Busca TODAS as rotinas cadastradas no sistema (Para o Dashboard)
 router.get('/admin/all', verificarToken, checkAdmin, prescriptionController.getAllPrescriptions);

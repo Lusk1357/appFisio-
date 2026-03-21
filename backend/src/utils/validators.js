@@ -41,7 +41,29 @@ const profileUpdateSchema = z.object({
     name: z.string().min(3).max(100).optional(),
     email: z.string().min(3).optional(),
     telefone: z.string().max(20).optional(),
-    password: z.string().min(6).optional()
+    password: z.string().min(6).optional(),
+    estado: z.string().max(2).optional(),
+    cidade: z.string().max(100).optional(),
+    bairro: z.string().max(100).optional(),
+    endereco: z.string().max(255).optional(),
+    cep: z.string().max(10).optional(),
+    notes: z.string().max(5000).optional()
+});
+
+const prescriptionSchema = z.object({
+    patientId: z.string().uuid("ID do paciente inválido"),
+    assignedDay: z.any(), // Pode ser data ISO ou String YYYY-MM-DD dependendo do frontend
+    exercises: z.array(
+        z.union([
+            z.string().uuid("ID de exercício inválido"),
+            z.object({
+                id: z.string().uuid("ID do exercício inválido").optional(),
+                series: z.string().max(50).optional(),
+                observation: z.string().max(500).optional().nullable(),
+                restTime: z.union([z.string(), z.number()]).optional()
+            })
+        ])
+    ).optional().default([])
 });
 
 module.exports = {
@@ -50,5 +72,6 @@ module.exports = {
     tipSchema,
     exerciseSchema,
     routineSchema,
-    profileUpdateSchema
+    profileUpdateSchema,
+    prescriptionSchema
 };

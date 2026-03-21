@@ -32,6 +32,26 @@ console.log(`[Config] Master Key detectada: ${process.env.MASTER_KEY ? 'Sim' : '
 app.use(express.json());
 app.use(cookieParser());
 
+// Configuração do CORS mais restrita (EXECUTADA PRIMEIRO)
+const allowedOrigins = [
+    'http://localhost:3000',
+    'http://localhost:5500', 
+    'http://127.0.0.1:5500',
+    'https://app-fisio-six.vercel.app' // Vercel Production Domain
+];
+
+app.use(cors({
+    origin: function (origin, callback) {
+        // Permite origens locais, na nuvem, ou (apenas em dev) sem origem
+        if (allowedOrigins.indexOf(origin) !== -1 || (!origin && process.env.NODE_ENV !== 'production')) {
+            callback(null, true);
+        } else {
+            callback(new Error('Acesso bloqueado pela política de CORS.'));
+        }
+    },
+    credentials: true,
+}));
+
 // Header Security Config (Helmet)
 // We allow local and specific external resources needed by the app
 app.use(helmet({
@@ -62,26 +82,6 @@ app.get('/api/db-check', async (req, res) => {
         });
     }
 });
-
-// Configuração do CORS mais restrita
-const allowedOrigins = [
-    'http://localhost:3000',
-    'http://localhost:5500', 
-    'http://127.0.0.1:5500',
-    'https://app-fisio-six.vercel.app' // Vercel Production Domain
-];
-
-app.use(cors({
-    origin: function (origin, callback) {
-        // Permitir requisições sem origin (como mobile apps ou curl) ou que estejam na lista
-        if (!origin || allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV !== 'production') {
-            callback(null, true);
-        } else {
-            callback(new Error('Acesso bloqueado pela política de CORS.'));
-        }
-    },
-    credentials: true,
-}));
 
 // Servindo rotas da API
 app.use('/api/auth', authRoutes);
