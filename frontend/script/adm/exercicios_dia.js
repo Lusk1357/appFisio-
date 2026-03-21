@@ -475,7 +475,7 @@ document.addEventListener("DOMContentLoaded", () => {
 			if (jaFoiAdd) return;
 
 			const li = document.createElement("li");
-			li.textContent = exObj.name;
+			li.innerHTML = escapeHTML(exObj.name);
 			li.addEventListener("click", () => {
 				if (swappingIndex !== null) {
 					// Trocar — abre confirmação

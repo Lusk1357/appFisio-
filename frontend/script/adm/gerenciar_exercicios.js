@@ -209,15 +209,15 @@
                 <div class="card-left">
                     ${imageBlock}
                     <div class="card-info">
-                        <h3 class="card-name">${ex.name}</h3>
-                        <span class="card-type">${ex.type || "Sem categoria"}</span>
+                        <h3 class="card-name">${escapeHTML(ex.name)}</h3>
+                        <span class="card-type">${escapeHTML(ex.type || "Sem categoria")}</span>
                     </div>
                 </div>
                 <div class="card-actions">
                     <button class="btn-action btn-edit" title="Editar" data-id="${ex.id}">
                         <i class="fa-solid fa-pen-to-square"></i>
                     </button>
-                    <button class="btn-action btn-delete" title="Excluir" data-id="${ex.id}" data-name="${ex.name}">
+                    <button class="btn-action btn-delete" title="Excluir" data-id="${ex.id}" data-name="${escapeHTML(ex.name)}">
                         <i class="fa-solid fa-trash-can"></i>
                     </button>
                 </div>

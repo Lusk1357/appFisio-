@@ -376,22 +376,41 @@ document.addEventListener("DOMContentLoaded", () => {
     // Marca todos como concluídos na API
     const ids = exercises.map((e) => e.prescriptionExerciseId).filter(Boolean);
     if (ids.length > 0) {
+      btnFinish.disabled = true;
+      btnFinish.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Finalizando no servidor...';
+
       fetch("/api/prescricoes/me/complete", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify({ prescriptionExerciseIds: ids }),
       })
-        .then(() => {
-          // Agora sim verifica conquistas, após o banco ser atualizado
+        .then(async (res) => {
+          if (!res.ok) throw new Error("Falha na resposta do servidor");
+          
+          btnFinish.disabled = false;
+          btnFinish.innerHTML = '<i class="fa-solid fa-house"></i> IR PARA O INÍCIO';
+          
+          // Sucesso: Remove o treino da memória local
+          sessionStorage.removeItem("treinoAtivo");
+          
+          // Verifica conquistas
           if (typeof checkMilestones === "function") {
             checkMilestones();
           }
         })
-        .catch((err) => console.error("Erro ao marcar conclusão:", err));
+        .catch((err) => {
+          console.error("Erro ao marcar conclusão:", err);
+          btnFinish.disabled = false;
+          btnFinish.innerHTML = '<i class="fa-solid fa-rotate"></i> TENTAR NOVAMENTE';
+          if (typeof showToast === "function") {
+              showToast("error", "Erro ao salvar no servidor. Verifique sua conexão e tente novamente.");
+          }
+        });
+    } else {
+        // Se por algum motivo não houver IDs, apenas limpa
+        sessionStorage.removeItem("treinoAtivo");
     }
-
-    sessionStorage.removeItem("treinoAtivo");
   }
 
   btnFinish.addEventListener("click", () => {

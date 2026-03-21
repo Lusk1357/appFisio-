@@ -428,12 +428,30 @@ async function addAchievement(title, description, icon = "fa-medal", alert = fal
 }
 
 /**
+ * Escapa caracteres HTML para prevenir XSS.
+ * @param {string} str 
+ * @returns {string}
+ */
+window.escapeHTML = function(str) {
+  if (!str) return "";
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+};
+
+/**
  * Cria e exibe o popup de conquista em qualquer tela que tenha components.js
  */
 function showAchievementPopup(name, desc, icon = "fa-medal") {
   // Remove popup anterior se existir
   const old = document.getElementById("globalAchievementPopup");
   if (old) old.remove();
+
+  const safeName = window.escapeHTML(name);
+  const safeDesc = window.escapeHTML(desc);
 
   const popup = document.createElement("div");
   popup.id = "globalAchievementPopup";
@@ -463,8 +481,8 @@ function showAchievementPopup(name, desc, icon = "fa-medal") {
   popup.innerHTML = `
     <i class="fa-solid ${icon}" style="font-size: 32px; color: #fbbf24; margin-bottom: 8px;"></i>
     <h3 style="font-family: 'Bebas Neue', sans-serif; font-size: 24px; margin: 0; letter-spacing: 1px; color: #fff;">CONQUISTA!</h3>
-    <p style="font-size: 16px; font-weight: bold; margin: 8px 0 4px; color: #fff;">${name}</p>
-    <p style="font-size: 13px; opacity: 0.9; margin: 0; color: #fff;">${desc}</p>
+    <p style="font-size: 16px; font-weight: bold; margin: 8px 0 4px; color: #fff;">${safeName}</p>
+    <p style="font-size: 13px; opacity: 0.9; margin: 0; color: #fff;">${safeDesc}</p>
     <div style="width: 100%; background: rgba(255,255,255,0.2); height: 3px; border-radius: 2px; margin-top: 15px; overflow: hidden;">
       <div id="popupProgressLine" style="width: 100%; height: 100%; background: #fbbf24; transition: width 5s linear;"></div>
     </div>
