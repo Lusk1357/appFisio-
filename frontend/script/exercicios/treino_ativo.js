@@ -103,8 +103,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // ── Mídia ─────────────────────────────────────────────────────
+  // ── Mídia (Aprimorada para garantir visualização e evitar branco) ─────────────────────────────────────────────────────
   function loadMedia(videoUrl, imageUrl) {
+    // 1. Limpa o contêiner, mantendo botões
     Array.from(mediaContainer.children).forEach((child) => {
       if (child.id !== "backBtn" && child.id !== "muteBtn") child.remove();
     });
@@ -131,6 +132,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    // Extrator Seguro de YouTube (Shorts, embeds, watch normal)
     const ytMatch = videoUrl.match(
       /(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|shorts\/|watch\?v=|watch\?.+&v=))([\w-]{11})/,
     );
@@ -150,11 +152,13 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    // Se o banco de dados enviou um link de imagem (png, jpg, gif) como se fosse um video, trata direto como imagem.
     if (/\.(jpg|jpeg|png|gif|webp)(\?.*)?$/i.test(videoUrl)) {
       injetarImagem(videoUrl);
       return;
-    } // 6. Tenta rodar como Vídeo nativo
+    }
 
+    // ── Tenta rodar como Vídeo nativo ──
     const video = document.createElement("video");
     Object.assign(video, {
       autoplay: true,
@@ -167,14 +171,17 @@ document.addEventListener("DOMContentLoaded", () => {
     video.style.objectFit = "contain";
     video.style.background = "#000";
 
+    // Só adiciona na tela se conseguir começar a carregar
+    video.addEventListener("loadeddata", () => {
+      mediaContainer.appendChild(video);
+    });
+
     video.onerror = () => {
-      console.warn("O vídeo falhou ao carregar.");
-      video.remove();
+      console.warn("O vídeo falhou ao carregar. Mostrando imagem.");
       injetarImagem(imageUrl || videoUrl);
     };
 
     video.src = videoUrl;
-    mediaContainer.appendChild(video);
   }
 
   // ── Mudo (YouTube) ───────────────────────────────────────────
