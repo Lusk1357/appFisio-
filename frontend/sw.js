@@ -3,9 +3,19 @@ const CACHE_NAME = 'profisio-cache-v1';
 // Arquivos mínimos para a tela de erro / load rápido
 const urlsToCache = [
   '/',
+  '/index.html',
+  '/pages/auth/login.html',
+  '/pages/auth/recuperar.html',
   '/pages/intro/primeira_pagina.html',
+  '/pages/paciente/home.html',
+  '/pages/paciente/treinos.html',
+  '/pages/adm/home_adm.html',
   '/style/intro/primeira_pagina.css',
+  '/style/global.css',
+  '/script/components.js',
+  '/script/authGuard.js',
   '/images/icon-192.png',
+  '/images/icon-512.png',
   '/manifest.json'
 ];
 

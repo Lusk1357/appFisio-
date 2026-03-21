@@ -22,11 +22,12 @@ exports.addAchievement = async (req, res) => {
     try {
         const { title, description, icon, alert } = req.body;
         
-        // Verifica se já possui essa conquista para não duplicar
+        // Verifica se já possui essa conquista ativa (não deletada)
         const existing = await prisma.achievement.findFirst({
             where: {
                 userId: req.user.id,
-                title: title
+                title: title,
+                icon: { not: 'DELETED' }
             }
         });
 

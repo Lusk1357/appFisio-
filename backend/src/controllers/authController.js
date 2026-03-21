@@ -10,7 +10,7 @@ if (process.env.NODE_ENV === 'production' && !process.env.JWT_SECRET) {
 // Registro -> Hashing de Senha Segura
 exports.register = async (req, res) => {
     try {
-        const { name, email, password, role, telefone } = req.body;
+        const { name, email, password, role, telefone, weight, height, age, gender } = req.body;
 
         // Verifica se usuário já existe
         const existingUser = await prisma.user.findUnique({ where: { email } });
@@ -44,7 +44,11 @@ exports.register = async (req, res) => {
             await prisma.patientProfile.create({
                 data: {
                     userId: newUser.id,
-                    telefone: telefone || null
+                    telefone: telefone || null,
+                    weight: weight ? parseFloat(weight) : null,
+                    height: height ? parseInt(height) : null,
+                    age: age ? parseInt(age) : null,
+                    gender: gender || null
                 }
             });
         }
