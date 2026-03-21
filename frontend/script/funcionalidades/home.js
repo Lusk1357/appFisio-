@@ -51,9 +51,10 @@ document.addEventListener("DOMContentLoaded", () => {
   loadUserInfo();
 
   // ── Inicialização do Dashboard ────────────────────────────────────
+  // ── Inicialização do Dashboard ────────────────────────────────────
   async function initDashboard() {
     try {
-      // Busca estatísticas
+      // 1. Busca estatísticas
       const statsRes = await fetch("/api/prescricoes/me/stats", { credentials: "include" });
       if (statsRes.ok) {
         const stats = await statsRes.json();
@@ -68,7 +69,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }
 
-      // Busca treino de hoje
+      // 2. Busca treino de hoje
       const now = new Date();
       const ano = now.getFullYear();
       const mes = String(now.getMonth() + 1).padStart(2, "0");
@@ -119,13 +120,12 @@ document.addEventListener("DOMContentLoaded", () => {
           heroTitle.innerHTML = "RECUPERAÇÃO<br/>COMEÇA AQUI";
           heroSubtitle.innerText = `Você tem ${pendentes.length} exercícios pendentes hoje.`;
           btnStartWorkout.style.display = "inline-block";
-          btnStartWorkout.innerText = "Começar Treino";
+          btnStartWorkout.innerText = "Comear Treino";
           btnStartWorkout.onclick = () => {
             const trainingSession = {
               date: dateStr,
               exercises: pendentes
             };
-            console.log("Iniciando Treino pela Home (v2.2):", trainingSession);
             sessionStorage.setItem("treinoAtivo", JSON.stringify(trainingSession));
             window.location.href = "/pages/exercicios/treino_ativo.html";
           };
@@ -187,7 +187,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (dica.link) {
               window.open(dica.link, '_blank');
             } else {
-              alert("Link não disponível para este conteúdo.");
+                if (typeof showToast === "function") showToast("warning", "O link para este vídeo não está disponível.");
             }
           });
 

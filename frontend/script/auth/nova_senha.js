@@ -3,32 +3,8 @@ document.addEventListener("DOMContentLoaded", () => {
       window.history.back();
     });
   
-    function showToast(type, message) {
-      let toastContainer = document.getElementById("toast-container");
-      if (!toastContainer) {
-        toastContainer = document.createElement("div");
-        toastContainer.id = "toast-container";
-        document.body.appendChild(toastContainer);
-      }
-  
-      const toast = document.createElement("div");
-      toast.className = `toast ${type}`;
-  
-      const icon =
-        type === "success"
-          ? '<i class="fa-solid fa-circle-check"></i>'
-          : '<i class="fa-solid fa-circle-exclamation"></i>';
-  
-      toast.innerHTML = `${icon} <span>${message}</span>`;
-      toastContainer.appendChild(toast);
-  
-      setTimeout(() => {
-        toast.style.animation = "fadeOut 0.3s forwards";
-        setTimeout(() => {
-          toast.remove();
-        }, 300);
-      }, 4000);
-    }
+    // showToast é provido globalmente pelo components.js
+
   
     const toggleIcons = document.querySelectorAll(".toggle-password");
     toggleIcons.forEach((icon) => {

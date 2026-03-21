@@ -76,6 +76,16 @@ const prescriptionSchema = z.object({
     ).optional().default([])
 });
 
+const recoveryVerifySchema = z.object({
+    email: z.string().min(1, "O login/e-mail é obrigatório"),
+    telefone: z.string().min(10, "Telefone inválido").max(20)
+});
+
+const passwordResetSchema = z.object({
+    recoveryToken: z.string().min(10, "Token de recuperação inválido"),
+    novaSenha: z.string().min(6, "A nova senha deve ter no mínimo 6 caracteres")
+});
+
 module.exports = {
     registerSchema,
     loginSchema,
@@ -83,5 +93,7 @@ module.exports = {
     exerciseSchema,
     routineSchema,
     profileUpdateSchema,
-    prescriptionSchema
+    prescriptionSchema,
+    recoveryVerifySchema,
+    passwordResetSchema
 };
