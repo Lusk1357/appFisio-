@@ -23,6 +23,7 @@ const tipSchema = z.object({
 const exerciseSchema = z.object({
     name: z.string().min(3, "Nome do exercício deve ter no mínimo 3 caracteres").max(255),
     type: z.string().min(1, "Categoria é obrigatória").max(100),
+    duration: z.union([z.string(), z.number()]).optional().transform(v => Number(v) || 0).pipe(z.number().min(0).max(1440)),
     observation: z.string().max(5000).optional().nullable(),
     howToExecute: z.string().max(5000).optional().nullable(),
     videoUrl: z.string().max(500).optional().nullable(),
@@ -55,7 +56,7 @@ const profileUpdateSchema = z.object({
     notes: z.string().max(5000).optional(),
     weight: z.union([z.string(), z.number()]).optional(),
     height: z.union([z.string(), z.number()]).optional(),
-    age: z.union([z.string(), z.number()]).optional(),
+    age: z.union([z.string(), z.number()]).optional().transform(v => v ? Number(v) : undefined).pipe(z.number().min(0).max(120).optional()),
     gender: z.string().max(20).optional(),
     avatar: z.string().max(255).optional()
 });
