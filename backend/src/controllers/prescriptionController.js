@@ -18,51 +18,52 @@ exports.createPrescription = async (req, res) => {
         const endDate = new Date(targetDate);
         endDate.setUTCHours(23, 59, 59, 999);
 
-        // 1. LIMPAR: Remove prescrições existentes para este paciente neste dia exato
-        // Como o schema não tem Cascade Delete no PrescriptionExercise, limpamos manualmente primeiro
-        const existingPrescriptions = await prisma.prescription.findMany({
-            where: {
-                patientId: patientId,
-                assignedDay: { gte: startDate, lte: endDate }
-            },
-            select: { id: true }
-        });
-
-        const prescriptionIds = existingPrescriptions.map(p => p.id);
-
-        if (prescriptionIds.length > 0) {
-            await prisma.prescriptionExercise.deleteMany({
-                where: { prescriptionId: { in: prescriptionIds } }
-            });
-            await prisma.prescription.deleteMany({
-                where: { id: { in: prescriptionIds } }
-            });
-        }
-
-        // 2. CRIAR: Se houver exercícios, cria a nova prescrição
-        if (exercises.length > 0) {
-            const prescription = await prisma.prescription.create({
-                data: {
+        // 1. & 2. TRANSACIONAL: Limpa e Cria em uma única operação atômica (evita Race Condition)
+        await prisma.$transaction(async (tx) => {
+            // Remove prescrições existentes para este paciente neste dia exato
+            const existing = await tx.prescription.findMany({
+                where: {
                     patientId: patientId,
-                    adminId: req.user.id,
-                    assignedDay: targetDate
-                }
+                    assignedDay: { gte: startDate, lte: endDate }
+                },
+                select: { id: true }
             });
 
-            const exercisePromises = exercises.map(ex => {
-                return prisma.prescriptionExercise.create({
+            const ids = existing.map(p => p.id);
+            if (ids.length > 0) {
+                await tx.prescriptionExercise.deleteMany({
+                    where: { prescriptionId: { in: ids } }
+                });
+                await tx.prescription.deleteMany({
+                    where: { id: { in: ids } }
+                });
+            }
+
+            // Se houver exercícios, cria a nova prescrição
+            if (exercises.length > 0) {
+                const prescription = await tx.prescription.create({
                     data: {
-                        prescriptionId: prescription.id,
-                        exerciseId: ex.id || ex,
-                        series: ex.series || "3x15",
-                        observation: ex.observation || null,
-                        restTime: ex.restTime !== undefined ? Number(ex.restTime) : 60
+                        patientId: patientId,
+                        adminId: req.user.id,
+                        assignedDay: targetDate
                     }
                 });
-            });
 
-            await Promise.all(exercisePromises);
-        }
+                const exercisePromises = exercises.map(ex => {
+                    return tx.prescriptionExercise.create({
+                        data: {
+                            prescriptionId: prescription.id,
+                            exerciseId: ex.id || ex,
+                            series: ex.series || "3x15",
+                            observation: ex.observation || null,
+                            restTime: ex.restTime !== undefined ? Number(ex.restTime) : 60
+                        }
+                    });
+                });
+
+                await Promise.all(exercisePromises);
+            }
+        });
 
         res.status(201).json({
             sucesso: true,

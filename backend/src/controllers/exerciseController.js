@@ -30,6 +30,12 @@ exports.createExercise = async (req, res) => {
             return res.status(400).json({ erro: "Nome e Categoria são obrigatórios." });
         }
 
+        // Verifica se já existe um exercício com este nome (Unique Constraint Friendliness)
+        const existing = await prisma.exercise.findUnique({ where: { name } });
+        if (existing) {
+            return res.status(400).json({ erro: "Já existe um exercício com este nome no catálogo." });
+        }
+
         const newExercise = await prisma.exercise.create({
             data: {
                 name,

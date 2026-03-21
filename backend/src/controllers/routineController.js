@@ -9,27 +9,30 @@ exports.createRoutine = async (req, res) => {
             return res.status(400).json({ erro: "Nome e Pelo menos 1 Exercício são obrigatórios." });
         }
 
-        const routine = await prisma.routineTemplate.create({
-            data: {
-                name: nome,
-                description: descricao || null
-            }
-        });
-
-        // Associar os exercícios selecionados ao template
-        const exercisePromises = lista_exercicios_ids.map(ex => {
-            return prisma.routineExercise.create({
+        const result = await prisma.$transaction(async (tx) => {
+            const routine = await tx.routineTemplate.create({
                 data: {
-                    routineId: routine.id,
-                    exerciseId: ex.id,
-                    series: ex.series || "3x15",
-                    observation: ex.observation || null,
-                    restTime: ex.restTime !== undefined ? Number(ex.restTime) : 60
+                    name: nome,
+                    description: descricao || null
                 }
             });
-        });
 
-        await Promise.all(exercisePromises);
+            // Associar os exercícios selecionados ao template
+            const exercisePromises = lista_exercicios_ids.map(ex => {
+                return tx.routineExercise.create({
+                    data: {
+                        routineId: routine.id,
+                        exerciseId: ex.id,
+                        series: ex.series || "3x15",
+                        observation: ex.observation || null,
+                        restTime: ex.restTime !== undefined ? Number(ex.restTime) : 60
+                    }
+                });
+            });
+
+            await Promise.all(exercisePromises);
+            return routine;
+        });
 
         res.status(201).json({
             sucesso: true,
