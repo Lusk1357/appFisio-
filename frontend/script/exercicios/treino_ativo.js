@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const treino = JSON.parse(treinoJSON);
   console.log("Treino Ativo Carregado (v2.2):", treino);
-  const exercises = treino.exercises.filter(e => !e.completed);
+  const exercises = treino.exercises.filter((e) => !e.completed);
 
   if (exercises.length === 0) {
     window.location.href = "/pages/funcionalidades/treinamento.html";
@@ -70,13 +70,16 @@ document.addEventListener("DOMContentLoaded", () => {
     howToToggle.addEventListener("click", () => {
       howToOpen = !howToOpen;
       howToBody.style.display = howToOpen ? "block" : "none";
-      if (howToChevron) howToChevron.style.transform = howToOpen ? "rotate(180deg)" : "";
+      if (howToChevron)
+        howToChevron.style.transform = howToOpen ? "rotate(180deg)" : "";
     });
   }
 
   // ── Helpers ───────────────────────────────────────────────────
   function formatTime(s) {
-    const m = Math.floor(s / 60).toString().padStart(2, "0");
+    const m = Math.floor(s / 60)
+      .toString()
+      .padStart(2, "0");
     const sec = (s % 60).toString().padStart(2, "0");
     return `${m}:${sec}`;
   }
@@ -101,24 +104,41 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ── Mídia ─────────────────────────────────────────────────────
-  function loadMedia(url) {
-    Array.from(mediaContainer.children).forEach(child => {
+  function loadMedia(videoUrl, imageUrl) {
+    Array.from(mediaContainer.children).forEach((child) => {
       if (child.id !== "backBtn" && child.id !== "muteBtn") child.remove();
     });
 
-    const fallback = "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80";
+    const fallback =
+      imageUrl ||
+      "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80";
     muteBtn.style.display = "none";
 
-    if (!url || typeof url !== "string") {
-      appendImg(fallback);
+    const injetarImagem = (src) => {
+      const img = document.createElement("img");
+      img.className = "header-img";
+      img.style.objectFit = "contain";
+      img.style.background = "#f8fafc";
+      img.onerror = () => {
+        if (img.src !== fallback) img.src = fallback;
+      };
+      img.src = src || fallback;
+      mediaContainer.appendChild(img);
+    };
+
+    if (!videoUrl || typeof videoUrl !== "string" || videoUrl.trim() === "") {
+      injetarImagem(imageUrl);
       return;
     }
 
-    if (url.includes("youtube.com") || url.includes("youtu.be")) {
+    if (videoUrl.includes("youtube.com") || videoUrl.includes("youtu.be")) {
       let videoId = "";
-      if (url.includes("youtu.be/")) videoId = url.split("youtu.be/")[1]?.split("?")[0];
-      else if (url.includes("watch?v=")) videoId = url.split("watch?v=")[1]?.split("&")[0];
-      else if (url.includes("embed/")) videoId = url.split("embed/")[1]?.split("?")[0];
+      if (videoUrl.includes("youtu.be/"))
+        videoId = videoUrl.split("youtu.be/")[1]?.split("?")[0];
+      else if (videoUrl.includes("watch?v="))
+        videoId = videoUrl.split("watch?v=")[1]?.split("&")[0];
+      else if (videoUrl.includes("embed/"))
+        videoId = videoUrl.split("embed/")[1]?.split("?")[0];
 
       if (videoId) {
         const iframe = document.createElement("iframe");
@@ -128,7 +148,6 @@ document.addEventListener("DOMContentLoaded", () => {
         iframe.allow = "autoplay; encrypted-media";
         iframe.allowFullscreen = true;
         mediaContainer.appendChild(iframe);
-        // Show mute toggle for YouTube
         isMuted = true;
         muteBtn.style.display = "flex";
         updateMuteIcon();
@@ -136,27 +155,32 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    if (/\.(mp4|webm|ogg)$/i.test(url)) {
-      const video = document.createElement("video");
-      Object.assign(video, { autoplay: true, loop: true, muted: true, playsInline: true, controls: true });
-      video.className = "header-img";
-      video.style.objectFit = "cover";
-      video.src = url;
-      mediaContainer.appendChild(video);
+    if (/\.(jpg|jpeg|png|gif|webp)(\?.*)?$/i.test(videoUrl)) {
+      injetarImagem(videoUrl);
       return;
     }
 
-    appendImg(url, fallback);
-  }
+    // 6. Tenta rodar como Vídeo nativo
+    const video = document.createElement("video");
+    Object.assign(video, {
+      autoplay: true,
+      loop: true,
+      muted: true,
+      playsInline: true,
+      controls: true,
+    });
+    video.className = "header-img";
+    video.style.objectFit = "contain";
+    video.style.background = "#000";
 
-  function appendImg(src, fallback) {
-    const img = document.createElement("img");
-    img.className = "header-img";
-    img.style.objectFit = "contain";
-    img.style.background = "#eef2ff";
-    if (fallback) img.onerror = () => { if (img.src !== fallback) img.src = fallback; };
-    img.src = src;
-    mediaContainer.appendChild(img);
+    video.onerror = () => {
+      console.warn("O vídeo falhou ao carregar.");
+      video.remove();
+      injetarImagem(imageUrl || videoUrl); // Se não tiver imageUrl, tenta forçar a URL do vídeo como imagem
+    };
+
+    video.src = videoUrl;
+    mediaContainer.appendChild(video);
   }
 
   // ── Mudo (YouTube) ───────────────────────────────────────────
@@ -169,7 +193,10 @@ document.addEventListener("DOMContentLoaded", () => {
   function sendYTCommand(fn) {
     const iframe = mediaContainer.querySelector("iframe");
     if (iframe?.contentWindow)
-      iframe.contentWindow.postMessage(`{"event":"command","func":"${fn}","args":""}`, "*");
+      iframe.contentWindow.postMessage(
+        `{"event":"command","func":"${fn}","args":""}`,
+        "*",
+      );
   }
 
   muteBtn.addEventListener("click", () => {
@@ -236,8 +263,7 @@ document.addEventListener("DOMContentLoaded", () => {
     updatePills(index);
 
     if (isNewExercise) {
-      // Prioriza videoUrl; se não houver, usa a imageUrl do exercício
-      loadMedia(ex.videoUrl || ex.imageUrl);
+      loadMedia(ex.videoUrl, ex.imageUrl);
     }
 
     updateNextButtonText();
@@ -330,27 +356,29 @@ document.addEventListener("DOMContentLoaded", () => {
     statExercicios.innerText = totalExercises;
     statTempo.innerText = formatTime(totalSecondsElapsed);
 
-    completionList.innerHTML = exercises.map(e =>
-      `<li><i class="fa-solid fa-circle-check"></i> ${e.name}</li>`
-    ).join("");
+    completionList.innerHTML = exercises
+      .map((e) => `<li><i class="fa-solid fa-circle-check"></i> ${e.name}</li>`)
+      .join("");
 
     launchConfetti();
     completionOverlay.style.display = "flex";
 
     // Marca todos como concluídos na API
-    const ids = exercises.map(e => e.prescriptionExerciseId).filter(Boolean);
+    const ids = exercises.map((e) => e.prescriptionExerciseId).filter(Boolean);
     if (ids.length > 0) {
       fetch("/api/prescricoes/me/complete", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ prescriptionExerciseIds: ids })
-      }).then(() => {
-        // Agora sim verifica conquistas, após o banco ser atualizado
-        if (typeof checkMilestones === 'function') {
-          checkMilestones();
-        }
-      }).catch(err => console.error("Erro ao marcar conclusão:", err));
+        body: JSON.stringify({ prescriptionExerciseIds: ids }),
+      })
+        .then(() => {
+          // Agora sim verifica conquistas, após o banco ser atualizado
+          if (typeof checkMilestones === "function") {
+            checkMilestones();
+          }
+        })
+        .catch((err) => console.error("Erro ao marcar conclusão:", err));
     }
 
     sessionStorage.removeItem("treinoAtivo");
@@ -362,7 +390,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ── Confete ───────────────────────────────────────────────────
   function launchConfetti() {
-    const colors = ["#5b8af5", "#a3cd39", "#f59e0b", "#ef4444", "#8b5cf6", "#10b981"];
+    const colors = [
+      "#5b8af5",
+      "#a3cd39",
+      "#f59e0b",
+      "#ef4444",
+      "#8b5cf6",
+      "#10b981",
+    ];
     for (let i = 0; i < 80; i++) {
       const piece = document.createElement("div");
       piece.className = "confetti-piece";
