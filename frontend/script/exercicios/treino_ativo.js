@@ -131,36 +131,30 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    if (videoUrl.includes("youtube.com") || videoUrl.includes("youtu.be")) {
-      let videoId = "";
-      if (videoUrl.includes("youtu.be/"))
-        videoId = videoUrl.split("youtu.be/")[1]?.split("?")[0];
-      else if (videoUrl.includes("watch?v="))
-        videoId = videoUrl.split("watch?v=")[1]?.split("&")[0];
-      else if (videoUrl.includes("embed/"))
-        videoId = videoUrl.split("embed/")[1]?.split("?")[0];
+    const ytMatch = videoUrl.match(
+      /(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|shorts\/|watch\?v=|watch\?.+&v=))([\w-]{11})/,
+    );
 
-      if (videoId) {
-        const iframe = document.createElement("iframe");
-        iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=1&rel=0&enablejsapi=1`;
-        iframe.className = "header-img";
-        iframe.style.cssText = "border:none;width:100%;height:100%;";
-        iframe.allow = "autoplay; encrypted-media";
-        iframe.allowFullscreen = true;
-        mediaContainer.appendChild(iframe);
-        isMuted = true;
-        muteBtn.style.display = "flex";
-        updateMuteIcon();
-        return;
-      }
+    if (ytMatch && ytMatch[1]) {
+      const videoId = ytMatch[1];
+      const iframe = document.createElement("iframe");
+      iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=1&rel=0&enablejsapi=1`;
+      iframe.className = "header-img";
+      iframe.style.cssText = "border:none;width:100%;height:100%;";
+      iframe.allow = "autoplay; encrypted-media";
+      iframe.allowFullscreen = true;
+      mediaContainer.appendChild(iframe);
+      isMuted = true;
+      muteBtn.style.display = "flex";
+      updateMuteIcon();
+      return;
     }
 
     if (/\.(jpg|jpeg|png|gif|webp)(\?.*)?$/i.test(videoUrl)) {
       injetarImagem(videoUrl);
       return;
-    }
+    } // 6. Tenta rodar como Vídeo nativo
 
-    // 6. Tenta rodar como Vídeo nativo
     const video = document.createElement("video");
     Object.assign(video, {
       autoplay: true,
@@ -176,7 +170,7 @@ document.addEventListener("DOMContentLoaded", () => {
     video.onerror = () => {
       console.warn("O vídeo falhou ao carregar.");
       video.remove();
-      injetarImagem(imageUrl || videoUrl); // Se não tiver imageUrl, tenta forçar a URL do vídeo como imagem
+      injetarImagem(imageUrl || videoUrl);
     };
 
     video.src = videoUrl;
