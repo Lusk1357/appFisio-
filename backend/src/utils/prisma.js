@@ -6,8 +6,8 @@ const { fieldEncryptionExtension } = require('prisma-field-encryption');
 const client = new PrismaClient();
 const prisma = client.$extends(fieldEncryptionExtension({
     // A chave de criptografia deverá estar definida na env PRISMA_FIELD_ENCRYPTION_KEY
-    // Para dev, fallback
-    encryptionKey: process.env.PRISMA_FIELD_ENCRYPTION_KEY || 'k7b1rA99gYzO3oU2kXpL8Qj4nWtE5sD0vM1fC6hN8XU='
+    // Para dev, fallback no padrão correto (k1.aesgcm256...)
+    encryptionKey: process.env.PRISMA_FIELD_ENCRYPTION_KEY || 'k1.aesgcm256.hdJtjM5T-YZkl5VUJdDAuFckBAtewkzsP6ihwW6urSo='
 }));
 
 module.exports = prisma;
