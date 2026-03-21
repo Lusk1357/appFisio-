@@ -15,7 +15,7 @@ const loginSchema = z.object({
 
 const tipSchema = z.object({
     title: z.string().min(3, "Título deve ter no mínimo 3 caracteres").max(255, "Título muito longo"),
-    thumbnail: z.string().url("A thumbnail deve ser uma URL válida ou caminho correto"),
+    thumbnail: z.string().max(500, "Caminho da imagem muito longo"),
     duration: z.string().min(1, "Duração é obrigatória").max(50, "Duração muito longa"),
     link: z.string().max(255).optional().or(z.literal(""))
 });
@@ -32,9 +32,14 @@ const exerciseSchema = z.object({
 });
 
 const routineSchema = z.object({
-    name: z.string().min(3, "Nome da rotina deve ter no mínimo 3 caracteres e no máximo 100").max(100),
-    description: z.string().max(500).optional(),
-    exercises: z.array(z.string().uuid("ID de exercício inválido")).optional()
+    nome: z.string().min(3, "Nome da rotina deve ter no mínimo 3 caracteres e no máximo 100").max(100),
+    descricao: z.string().max(500).optional(),
+    lista_exercicios_ids: z.array(z.object({
+        id: z.string().uuid("ID de exercício inválido"),
+        series: z.string().max(50).optional(),
+        observation: z.string().max(500).optional().nullable(),
+        restTime: z.union([z.string(), z.number()]).optional().transform(v => Number(v) || 60)
+    })).optional().default([])
 });
 
 const profileUpdateSchema = z.object({
@@ -47,7 +52,12 @@ const profileUpdateSchema = z.object({
     bairro: z.string().max(100).optional(),
     endereco: z.string().max(255).optional(),
     cep: z.string().max(10).optional(),
-    notes: z.string().max(5000).optional()
+    notes: z.string().max(5000).optional(),
+    weight: z.union([z.string(), z.number()]).optional(),
+    height: z.union([z.string(), z.number()]).optional(),
+    age: z.union([z.string(), z.number()]).optional(),
+    gender: z.string().max(20).optional(),
+    avatar: z.string().max(255).optional()
 });
 
 const prescriptionSchema = z.object({
