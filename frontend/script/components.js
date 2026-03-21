@@ -498,34 +498,31 @@ function showAchievementPopup(name, desc, icon = "fa-medal") {
  * Verifica marcos de progresso e atribui conquistas automaticamente.
  * Pode ser chamado de qualquer página (Home, Treino, Progresso).
  */
+// Regras globais de conquistas para uso em todo o app (popups e tela de progresso)
+window.ACHIEVEMENT_RULES = [
+  { id: "primeiroTreino", cond: stats => stats.exerciciosConcluidos > 0, name: "Primeiro Treino", desc: "Inicie sua jornada no app", bg: "#dcfce7", color: "#16a34a", icon: "fa-medal" },
+  { id: "focoSemanal", cond: stats => stats.diasTreinados >= 3, name: "Foco Total", desc: "3 dias de atividades", bg: "#dbeafe", color: "#2563eb", icon: "fa-medal" },
+  { id: "dezExercicios", cond: stats => stats.exerciciosConcluidos >= 10, name: "Iniciante Forte", desc: "10 exercícios concluídos", bg: "#fef9c3", color: "#ca8a04", icon: "fa-medal" },
+  { id: "guerreiro", cond: stats => stats.diasTreinados >= 20, name: "Guerreiro da Fisio", desc: "20 dias de treino", bg: "#f3e8ff", color: "#9333ea", icon: "fa-medal" },
+  { id: "cinquentaExercicios", cond: stats => stats.exerciciosConcluidos >= 50, name: "Atleta Dedicado", desc: "50 exercícios concluídos", bg: "#ffedd5", color: "#ea580c", icon: "fa-medal" },
+  { id: "cinquentaDias", cond: stats => stats.diasTreinados >= 50, name: "Constância de Ferro", desc: "50 dias de treino", bg: "#e0e7ff", color: "#4f46e5", icon: "fa-medal" },
+  { id: "cemExercicios", cond: stats => stats.exerciciosConcluidos >= 100, name: "Mestre do Movimento", desc: "100 exercícios concluídos", bg: "#fef3c7", color: "#d97706", icon: "fa-medal" },
+  { id: "cemDias", cond: stats => stats.diasTreinados >= 100, name: "Resiliência Pura", desc: "100 dias ininterruptos de empenho", bg: "#ecfeff", color: "#0891b2", icon: "fa-gem" },
+  { id: "tempoSaude", cond: stats => stats.tempoTotalMinutos >= 60, name: "Tempo é Saúde", desc: "Completou 1 hora total de exercícios", bg: "#ccfbf1", color: "#0d9488", icon: "fa-hourglass-half" },
+  { id: "superDedicado", cond: stats => stats.tempoTotalMinutos >= 300, name: "Super Dedicado", desc: "Completou 5 horas totais de fisioterapia", bg: "#fae8ff", color: "#c026d3", icon: "fa-award" },
+  { id: "perseveranca", cond: stats => stats.diasComTreinoCompleto >= 5, name: "Perseverança", desc: "Concluiu 5 treinos diários 100%", bg: "#fef3c7", color: "#d97706", icon: "fa-check-double" },
+  { id: "mestreSemana", cond: stats => stats.mesAtualDiasConcluidos >= 7, name: "Mestre da Semana", desc: "Completou 7 dias no mês atual", bg: "#dcfce7", color: "#15803d", icon: "fa-calendar-check" }
+];
+
 async function checkMilestones() {
   try {
     const res = await fetch("/api/prescricoes/me/stats", { credentials: "include" });
     if (!res.ok) return;
     const stats = await res.json();
 
-    // Definição das regras de conquistas
-    const rules = [
-      { id: "primeiroTreino", cond: stats.exerciciosConcluidos > 0, name: "Primeiro Treino", desc: "Inicie sua jornada no app", bg: "#dcfce7", color: "#16a34a" },
-      { id: "focoSemanal", cond: stats.diasTreinados >= 3, name: "Foco Total", desc: "3 dias de atividades", bg: "#dbeafe", color: "#2563eb" },
-      { id: "dezExercicios", cond: stats.exerciciosConcluidos >= 10, name: "Iniciante Forte", desc: "10 exercícios concluídos", bg: "#fef9c3", color: "#ca8a04" },
-      { id: "guerreiro", cond: stats.diasTreinados >= 20, name: "Guerreiro da Fisio", desc: "20 dias de treino", bg: "#f3e8ff", color: "#9333ea" },
-      { id: "cinquentaExercicios", cond: stats.exerciciosConcluidos >= 50, name: "Atleta Dedicado", desc: "50 exercícios concluídos", bg: "#ffedd5", color: "#ea580c" },
-      { id: "cinquentaDias", cond: stats.diasTreinados >= 50, name: "Constância de Ferro", desc: "50 dias de treino", bg: "#e0e7ff", color: "#4f46e5" },
-      { id: "cemExercicios", cond: stats.exerciciosConcluidos >= 100, name: "Mestre do Movimento", desc: "100 exercícios concluídos", bg: "#fef3c7", color: "#d97706" },
-      { id: "cemDias", cond: stats.diasTreinados >= 100, name: "Resiliência Pura", desc: "100 dias ininterruptos de empenho", bg: "#ecfeff", color: "#0891b2", icon: "fa-gem" },
-      
-      // NOVAS CONQUISTAS
-      { id: "tempoSaude", cond: stats.tempoTotalMinutos >= 60, name: "Tempo é Saúde", desc: "Completou 1 hora total de exercícios", bg: "#ccfbf1", color: "#0d9488", icon: "fa-hourglass-half" },
-      { id: "superDedicado", cond: stats.tempoTotalMinutos >= 300, name: "Super Dedicado", desc: "Completou 5 horas totais de fisioterapia", bg: "#fae8ff", color: "#c026d3", icon: "fa-award" },
-      { id: "perseveranca", cond: stats.diasComTreinoCompleto >= 5, name: "Perseverança", desc: "Concluiu 5 treinos diários 100%", bg: "#fef3c7", color: "#d97706", icon: "fa-check-double" },
-      { id: "mestreSemana", cond: stats.mesAtualDiasConcluidos >= 7, name: "Mestre da Semana", desc: "Completou 7 dias no mês atual", bg: "#dcfce7", color: "#15803d", icon: "fa-calendar-check" }
-    ];
-
-    for (const rule of rules) {
-      if (rule.cond) {
-        // addAchievement já lida com a verificação de duplicados e exibição do popup
-        await addAchievement(rule.name, rule.desc, rule.icon || "fa-medal");
+    for (const rule of window.ACHIEVEMENT_RULES) {
+      if (rule.cond(stats)) {
+        await addAchievement(rule.name, rule.desc, rule.icon);
       }
     }
     

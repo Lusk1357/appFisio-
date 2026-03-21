@@ -10,11 +10,13 @@ exports.createPrescription = async (req, res) => {
             return res.status(400).json({ erro: "Paciente, Data e exercícios (mesmo que vazio) são obrigatórios." });
         }
 
-        const targetDate = new Date(assignedDay);
+        // Normaliza para UTC 00:00:00 para evitar drift de timezone entre Admin -> DB -> Patient
+        const [ano, mes, dia] = assignedDay.split('T')[0].split('-');
+        const targetDate = new Date(Date.UTC(ano, mes - 1, dia, 0, 0, 0));
+        
         const startDate = new Date(targetDate);
-        startDate.setHours(0, 0, 0, 0);
         const endDate = new Date(targetDate);
-        endDate.setHours(23, 59, 59, 999);
+        endDate.setUTCHours(23, 59, 59, 999);
 
         // 1. LIMPAR: Remove prescrições existentes para este paciente neste dia exato
         // Como o schema não tem Cascade Delete no PrescriptionExercise, limpamos manualmente primeiro
@@ -98,11 +100,8 @@ exports.getMyPrescriptions = async (req, res) => {
         if (date) {
             // Separa YYYY-MM-DD para evitar bug de parse UTC vs Local
             const [ano, mes, dia] = date.split('-');
-            const startDate = new Date(ano, mes - 1, dia);
-            startDate.setHours(0, 0, 0, 0);
-
-            const endDate = new Date(ano, mes - 1, dia);
-            endDate.setHours(23, 59, 59, 999);
+            const startDate = new Date(Date.UTC(ano, mes - 1, dia, 0, 0, 0));
+            const endDate = new Date(Date.UTC(ano, mes - 1, dia, 23, 59, 59, 999));
 
             dateFilter = {
                 assignedDay: {
@@ -145,11 +144,8 @@ exports.getPatientPrescriptions = async (req, res) => {
         if (date) {
             // Separa YYYY-MM-DD para evitar bug de parse UTC vs Local
             const [ano, mes, dia] = date.split('-');
-            const startDate = new Date(ano, mes - 1, dia);
-            startDate.setHours(0, 0, 0, 0);
-
-            const endDate = new Date(ano, mes - 1, dia);
-            endDate.setHours(23, 59, 59, 999);
+            const startDate = new Date(Date.UTC(ano, mes - 1, dia, 0, 0, 0));
+            const endDate = new Date(Date.UTC(ano, mes - 1, dia, 23, 59, 59, 999));
 
             dateFilter = {
                 assignedDay: {

@@ -361,7 +361,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 credentials: "include",
                 body: JSON.stringify({
                     patientId: paciente.id,
-                    assignedDay: dataAtribuida.toISOString(),
+                    assignedDay: new Date(Date.UTC(ctx.ano, ctx.mes, d)).toISOString(),
                     exercises: arrayIds
                 })
             });

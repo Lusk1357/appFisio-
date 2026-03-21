@@ -46,24 +46,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // ── Atualiza a UI das Conquistas (Locked/Unlocked) ────────────
   async function updateAchievementsUI(stats) {
-    const rules = [
-      { id: "primeiroTreino", cond: stats.exerciciosConcluidos > 0, bg: "#dcfce7", color: "#16a34a" },
-      { id: "focoSemanal", cond: stats.diasTreinados >= 3, bg: "#dbeafe", color: "#2563eb" },
-      { id: "dezExercicios", cond: stats.exerciciosConcluidos >= 10, bg: "#fef9c3", color: "#ca8a04" },
-      { id: "guerreiro", cond: stats.diasTreinados >= 20, bg: "#f3e8ff", color: "#9333ea" },
-      { id: "cinquentaExercicios", cond: stats.exerciciosConcluidos >= 50, bg: "#ffedd5", color: "#ea580c" },
-      { id: "cinquentaDias", cond: stats.diasTreinados >= 50, bg: "#e0e7ff", color: "#4f46e5" },
-      { id: "cemExercicios", cond: stats.exerciciosConcluidos >= 100, bg: "#fef3c7", color: "#d97706" },
-      { id: "cemDias", cond: stats.diasTreinados >= 100, bg: "#ecfeff", color: "#0891b2" },
-      { id: "tempoSaude", cond: stats.tempoTotalMinutos >= 60, bg: "#ccfbf1", color: "#0d9488" },
-      { id: "superDedicado", cond: stats.tempoTotalMinutos >= 300, bg: "#fae8ff", color: "#c026d3" },
-      { id: "perseveranca", cond: stats.diasComTreinoCompleto >= 5, bg: "#fef3c7", color: "#d97706" },
-      { id: "mestreSemana", cond: stats.mesAtualDiasConcluidos >= 7, bg: "#dcfce7", color: "#15803d" }
-    ];
-
+    const rules = window.ACHIEVEMENT_RULES || [];
     rules.forEach(rule => {
       const el = document.querySelector(`.achievement-item[data-id="${rule.id}"]`);
-      if (el && rule.cond) {
+      if (el && rule.cond(stats)) {
         el.classList.remove("locked");
         const iconEl = el.querySelector(".ach-icon");
         if (iconEl) {
