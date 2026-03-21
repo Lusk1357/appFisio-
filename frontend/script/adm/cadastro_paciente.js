@@ -69,20 +69,24 @@ document.addEventListener("DOMContentLoaded", () => {
         const telVal = document.getElementById("tel").value.trim();
         const emailVal = document.getElementById("email").value.trim();
         const passVal = document.getElementById("password").value.trim();
+        
+        const ageVal = document.getElementById("age").value;
+        const genderVal = document.getElementById("gender").value;
+        const weightVal = document.getElementById("weight").value;
+        const heightVal = document.getElementById("height").value;
 
         if (!nameVal || !emailVal || !passVal || !telVal) {
-            showToast("error", "Preencha os campos obrigatórios, incluindo o telefone.");
+            if (typeof showToast === "function") showToast("error", "Preencha os campos obrigatórios (Nome, Tel, Login, Senha).");
             return;
         }
 
-        // Validação de número real (Brasil: DDD + 8 ou 9 dígitos -> 10 ou 11 no total)
+        // Validação de telefone
         const telSomenteNumeros = telVal.replace(/\D/g, "");
         if (telSomenteNumeros.length < 10 || telSomenteNumeros.length > 11) {
-            showToast("error", "Telefone inválido. Insira um número real com DDD (ex: 11988887777).");
+            if (typeof showToast === "function") showToast("error", "Telefone inválido.");
             return;
         }
 
-        // Desabilita o botão enquanto processa
         btnCadastrar.disabled = true;
         btnCadastrar.textContent = "Cadastrando...";
 
@@ -95,7 +99,11 @@ document.addEventListener("DOMContentLoaded", () => {
                     name: nameVal,
                     email: emailVal,
                     password: passVal,
-                    telefone: telVal, // Adicionado telefone aqui
+                    telefone: telVal,
+                    weight: weightVal ? parseFloat(weightVal) : undefined,
+                    height: heightVal ? parseInt(heightVal) : undefined,
+                    age: ageVal ? parseInt(ageVal) : undefined,
+                    gender: genderVal || undefined,
                     role: "PATIENT"
                 })
             });
@@ -103,20 +111,20 @@ document.addEventListener("DOMContentLoaded", () => {
             const data = await response.json();
 
             if (!response.ok) {
-                showToast("error", data.erro || "Erro ao cadastrar paciente.");
+                if (typeof showToast === "function") showToast("error", data.erro || "Erro ao cadastrar.");
                 btnCadastrar.disabled = false;
                 btnCadastrar.textContent = "CADASTRAR";
                 return;
             }
 
-            showToast("success", "Paciente cadastrado com sucesso!");
+            if (typeof showToast === "function") showToast("success", "Paciente cadastrado com sucesso!");
 
             setTimeout(() => {
                 window.location.href = "/pages/adm/pacientes.html";
             }, 1500);
         } catch (error) {
             console.error("Erro:", error);
-            showToast("error", "Erro de conexão com o servidor.");
+            if (typeof showToast === "function") showToast("error", "Erro de conexão.");
             btnCadastrar.disabled = false;
             btnCadastrar.textContent = "CADASTRAR";
         }

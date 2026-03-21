@@ -24,9 +24,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 const card = document.createElement("div");
                 card.className = "tip-card";
                 card.innerHTML = `
-          <img src="${tip.thumbnail}" alt="${tip.title}" onerror="this.src='https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80'" />
+          <img src="${tip.thumbnail}" alt="${escapeHTML(tip.title)}" onerror="this.src='https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80'" />
           <div class="tip-info">
-            <h3 class="tip-title">${tip.title}</h3>
+            <h3 class="tip-title">${escapeHTML(tip.title)}</h3>
             <p class="tip-meta"><i class="fa-regular fa-clock"></i> ${tip.duration}</p>
           <div class="card-actions">
             <button class="btn-edit" data-id="${tip.id}"><i class="fa-solid fa-pen"></i> Editar</button>
@@ -39,9 +39,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Bind deletes
             document.querySelectorAll(".btn-delete").forEach(btn => {
-                btn.addEventListener("click", async (e) => {
-                    if (confirm("Deseja realmente excluir esta dica?")) {
-                        await deleteTip(e.target.closest("button").dataset.id);
+                btn.addEventListener("click", (e) => {
+                    const id = e.target.closest("button").dataset.id;
+                    if (typeof showCustomConfirm === "function") {
+                        showCustomConfirm("Excluir Dica", "Deseja realmente apagar este vídeo/dica?", () => {
+                            deleteTip(id);
+                        });
+                    } else if (confirm("Deseja realmente excluir esta dica?")) {
+                        deleteTip(id);
                     }
                 });
             });

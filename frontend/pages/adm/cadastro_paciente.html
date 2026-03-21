@@ -7,6 +7,15 @@
     <title>Cadastrar Paciente - Pro Fisio</title>
 
     <link rel="stylesheet" href="/style/adm/cadastro_adm.css" />
+    <style>
+        .form-row { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 0; }
+        .flex-1 { flex: 1; min-width: 250px; }
+        .form-select {
+            width: 100%; border: none; background: transparent; height: 50px;
+            padding: 0 10px 0 45px; font-family: 'DM Sans', sans-serif; font-size: 14px;
+            color: #1e293b; outline: none; appearance: none; cursor: pointer;
+        }
+    </style>
     <script src="/script/authGuard.js"></script>
     <script>verificarAcesso("ADMIN");</script>
     <script src="/script/adm/cadastro_paciente.js" defer></script>
@@ -31,41 +40,86 @@
         </header>
 
         <form>
-            <div class="form-group">
-                <label for="name">Nome Completo</label>
-                <div class="input-wrapper">
-                    <input type="text" id="name" placeholder="Insira seu nome completo" />
-                    <i class="fa-solid fa-user input-icon"></i>
+            <div class="form-row">
+                <div class="form-group flex-1">
+                    <label for="name">Nome Completo</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="name" placeholder="Nome completo" />
+                        <i class="fa-solid fa-user input-icon"></i>
+                    </div>
+                </div>
+
+                <div class="form-group flex-1">
+                    <label for="tel">Telefone (DDD + Número)</label>
+                    <div class="input-wrapper">
+                        <input type="tel" id="tel" placeholder="(00) 00000-0000" />
+                        <i class="fa-solid fa-phone input-icon"></i>
+                    </div>
                 </div>
             </div>
 
-            <div class="form-group">
-                <label for="tel">Telefone</label>
-                <div class="input-wrapper">
-                    <input type="tel" id="tel" placeholder="Insira seu número de celular" />
-                    <i class="fa-solid fa-phone input-icon"></i>
+            <div class="form-row">
+                <div class="form-group flex-1">
+                    <label for="age">Idade</label>
+                    <div class="input-wrapper">
+                        <input type="number" id="age" placeholder="Ex: 30" />
+                        <i class="fa-solid fa-calendar-day input-icon"></i>
+                    </div>
+                </div>
+
+                <div class="form-group flex-1">
+                    <label for="gender">Gênero</label>
+                    <div class="input-wrapper">
+                        <select id="gender" class="form-select">
+                            <option value="" disabled selected>Selecione...</option>
+                            <option value="M">Masculino</option>
+                            <option value="F">Feminino</option>
+                            <option value="O">Outro</option>
+                        </select>
+                        <i class="fa-solid fa-venus-mars input-icon"></i>
+                    </div>
                 </div>
             </div>
 
-            <div class="form-group">
-                <label for="email">Login</label>
-                <div class="input-wrapper">
-                    <input type="text" id="email" placeholder="Insira o login ou gere automático" />
-                    <button type="button" id="btn-gerar" title="Gerar Login e Senha"
-                        style="background:transparent; border:none; color:#5b8af5; cursor:pointer; font-weight:700; font-family:'DM Sans', sans-serif; font-size:12px; margin-right:10px; padding: 4px;">GERAR</button>
-                    <i class="fa-solid fa-user-lock input-icon"></i>
+            <div class="form-row">
+                <div class="form-group flex-1">
+                    <label for="weight">Peso (kg)</label>
+                    <div class="input-wrapper">
+                        <input type="number" id="weight" step="0.1" placeholder="Ex: 75.5" />
+                        <i class="fa-solid fa-weight-hanging input-icon"></i>
+                    </div>
+                </div>
+
+                <div class="form-group flex-1">
+                    <label for="height">Altura (cm)</label>
+                    <div class="input-wrapper">
+                        <input type="number" id="height" placeholder="Ex: 175" />
+                        <i class="fa-solid fa-ruler-vertical input-icon"></i>
+                    </div>
                 </div>
             </div>
 
-            <div class="form-group">
-                <label for="password">Senha Inicial</label>
-                <div class="input-wrapper">
-                    <input type="text" id="password" placeholder="Insira ou gere uma senha" />
-                    <i class="fa-solid fa-key input-icon"></i>
+            <div class="form-row">
+                <div class="form-group flex-1">
+                    <label for="email">Login de Acesso</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="email" placeholder="Login desejado" />
+                        <button type="button" id="btn-gerar" title="Gerar automático"
+                            style="background:transparent; border:none; color:#5b8af5; cursor:pointer; font-weight:700; font-family:'DM Sans', sans-serif; font-size:11px; margin-right:10px; padding: 4px;">GERAR</button>
+                        <i class="fa-solid fa-user-lock input-icon"></i>
+                    </div>
+                </div>
+
+                <div class="form-group flex-1">
+                    <label for="password">Senha Inicial</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="password" placeholder="Senha do paciente" />
+                        <i class="fa-solid fa-key input-icon"></i>
+                    </div>
                 </div>
             </div>
 
-            <button type="submit" class="btn-submit" id="btn-cadastrar">CADASTRAR</button>
+            <button type="submit" class="btn-submit" id="btn-cadastrar" style="margin-top: 20px;">CADASTRAR PACIENTE</button>
         </form>
     </div>
 </body>

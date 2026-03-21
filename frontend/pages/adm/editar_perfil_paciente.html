@@ -12,6 +12,16 @@
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&display=swap"
     rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    .row-group { display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 0px; }
+    .flex-1 { flex: 1; min-width: 140px; }
+    .edit-select {
+        width: 100%; border: none; background: transparent; height: 100%;
+        padding: 0 10px; font-family: 'DM Sans', sans-serif; font-size: 14px;
+        color: #1e293b; outline: none; appearance: none; cursor: pointer;
+    }
+    .edit-form .form-group { margin-bottom: 12px; }
+  </style>
 
   <script src="/script/components.js" defer></script>
   <script src="/script/adm/editar_perfil_paciente.js" defer></script>
@@ -52,17 +62,56 @@
       <!-- Formulário -->
       <form class="edit-form" id="editForm">
 
-        <div class="form-group">
-          <label>Nome:</label>
-          <div class="input-wrapper">
-            <input type="text" id="fieldNome" placeholder="Nome completo" />
+        <div class="row-group">
+          <div class="form-group flex-1">
+            <label>Nome:</label>
+            <div class="input-wrapper">
+              <input type="text" id="fieldNome" placeholder="Nome completo" />
+            </div>
+          </div>
+
+          <div class="form-group flex-1">
+            <label>Telefone:</label>
+            <div class="input-wrapper">
+              <input type="tel" id="fieldTelefone" placeholder="(00) 00000-0000" />
+            </div>
           </div>
         </div>
 
-        <div class="form-group">
-          <label>Telefone:</label>
-          <div class="input-wrapper">
-            <input type="tel" id="fieldTelefone" placeholder="(00) 00000-0000" />
+        <div class="row-group">
+          <div class="form-group flex-1">
+            <label>Idade:</label>
+            <div class="input-wrapper">
+              <input type="number" id="fieldAge" placeholder="Ex: 30" />
+            </div>
+          </div>
+
+          <div class="form-group flex-1">
+            <label>Gênero:</label>
+            <div class="input-wrapper">
+              <select id="fieldGender" class="edit-select">
+                <option value="" disabled selected>Selecione...</option>
+                <option value="M">Masculino</option>
+                <option value="F">Feminino</option>
+                <option value="O">Outro</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="row-group">
+          <div class="form-group flex-1">
+            <label>Peso (kg):</label>
+            <div class="input-wrapper">
+              <input type="number" id="fieldWeight" step="0.1" placeholder="Ex: 75.5" />
+            </div>
+          </div>
+
+          <div class="form-group flex-1">
+            <label>Altura (cm):</label>
+            <div class="input-wrapper">
+              <input type="number" id="fieldHeight" placeholder="Ex: 175" />
+            </div>
           </div>
         </div>
 

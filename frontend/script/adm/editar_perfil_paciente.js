@@ -22,12 +22,17 @@ document.addEventListener("DOMContentLoaded", () => {
 	setValue("fieldCidade", paciente.patientProfile?.cidade || "");
 	setValue("fieldBairro", paciente.patientProfile?.bairro || "");
 	setValue("fieldEndereco", paciente.patientProfile?.endereco || "");
+	
+	setValue("fieldAge", paciente.patientProfile?.age || "");
+	setValue("fieldGender", paciente.patientProfile?.gender || "");
+	setValue("fieldWeight", paciente.patientProfile?.weight || "");
+	setValue("fieldHeight", paciente.patientProfile?.height || "");
 
 	// ── Aplica modo Read-Only por padrão ──────────────────────────
-	const formInputs = document.querySelectorAll("#editForm input");
+	const formInputs = document.querySelectorAll("#editForm input, #editForm select");
 	const gerarBtns = document.querySelectorAll(".btn-gerar-inline");
 	formInputs.forEach(input => {
-		input.setAttribute("readonly", true);
+		input.setAttribute("disabled", true);
 		const wrapper = input.closest(".input-wrapper");
 		if (wrapper) wrapper.classList.add("readonly");
 	});
@@ -54,7 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 				// Libera campos e botões
 				formInputs.forEach(input => {
-					input.removeAttribute("readonly");
+					input.removeAttribute("disabled");
 					const wrapper = input.closest(".input-wrapper");
 					if (wrapper) wrapper.classList.remove("readonly");
 				});
@@ -122,7 +127,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		btnGerarLogin.addEventListener("click", () => {
 			const nomeVal = getValue("fieldNome");
 			if (!nomeVal) {
-				showToast("error", "Preencha o nome primeiro para gerar o login.");
+				if (typeof showToast === "function") showToast("error", "Preencha o nome primeiro para gerar o login.");
 				return;
 			}
 			const parts = nomeVal.split(" ");
@@ -130,7 +135,7 @@ document.addEventListener("DOMContentLoaded", () => {
 			const last = parts.length > 1 ? parts[parts.length - 1].toLowerCase().replace(/[^a-z]/g, "") : "";
 			const num = Math.floor(100 + Math.random() * 900);
 			setValue("fieldEmail", `${first}.${last}${num}`);
-			showToast("success", "Login gerado!");
+			if (typeof showToast === "function") showToast("success", "Login gerado!");
 		});
 	}
 
@@ -151,7 +156,7 @@ document.addEventListener("DOMContentLoaded", () => {
 					toggleEl.classList.add("fa-eye");
 				}
 			}
-			showToast("success", "Senha gerada!");
+			if (typeof showToast === "function") showToast("success", "Senha gerada!");
 		});
 	}
 
@@ -165,7 +170,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	async function salvar() {
 		const nomeVal = getValue("fieldNome");
 		if (!nomeVal) {
-			showToast("error", "O campo Nome é obrigatório.");
+			if (typeof showToast === "function") showToast("error", "O campo Nome é obrigatório.");
 			return;
 		}
 
@@ -174,7 +179,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		if (telVal) {
 			const telSemMascara = telVal.replace(/\D/g, "");
 			if (telSemMascara.length < 10 || telSemMascara.length > 11) {
-				showToast("error", "Telefone inválido. Insira DDD + número (ex: 11988887777).");
+				if (typeof showToast === "function") showToast("error", "Telefone inválido.");
 				return;
 			}
 		}
@@ -192,7 +197,11 @@ document.addEventListener("DOMContentLoaded", () => {
 				cidade: getValue("fieldCidade"),
 				bairro: getValue("fieldBairro"),
 				endereco: getValue("fieldEndereco"),
-				cep: getValue("fieldCep")
+				cep: getValue("fieldCep"),
+				age: getValue("fieldAge") ? parseInt(getValue("fieldAge")) : undefined,
+				gender: getValue("fieldGender") || undefined,
+				weight: getValue("fieldWeight") ? parseFloat(getValue("fieldWeight")) : undefined,
+				height: getValue("fieldHeight") ? parseInt(getValue("fieldHeight")) : undefined
 			};
 
 			const pass = getValue("fieldSenha");
@@ -210,13 +219,13 @@ document.addEventListener("DOMContentLoaded", () => {
 			const data = await response.json();
 
 			if (!response.ok) {
-				showToast("error", data.erro || "Erro ao salvar.");
+				if (typeof showToast === "function") showToast("error", data.erro || "Erro ao salvar.");
 				btnSave.disabled = false;
 				btnSave.textContent = "SALVAR";
 				return;
 			}
 
-			// Atualiza sessionStorage para a tela de perfil refletir as mudanças sem apagar dados anteriores
+			// Atualiza sessionStorage para a tela de perfil refletir as mudanças
 			const atualizado = {
 				...paciente,
 				name: nomeVal,
@@ -228,7 +237,11 @@ document.addEventListener("DOMContentLoaded", () => {
 					cidade: payload.cidade,
 					bairro: payload.bairro,
 					endereco: payload.endereco,
-					cep: payload.cep
+					cep: payload.cep,
+					age: payload.age,
+					gender: payload.gender,
+					weight: payload.weight,
+					height: payload.height
 				}
 			};
 			sessionStorage.setItem("pacienteSelecionado", JSON.stringify(atualizado));
@@ -238,12 +251,12 @@ document.addEventListener("DOMContentLoaded", () => {
 			const nameEl = document.getElementById("patientName");
 			if (nameEl) nameEl.textContent = atualizado.name.toUpperCase();
 
-			showToast("success", "Perfil atualizado com sucesso!");
+			if (typeof showToast === "function") showToast("success", "Perfil atualizado com sucesso!");
 
 			setTimeout(() => history.back(), 1800);
 		} catch (error) {
 			console.error("Erro:", error);
-			showToast("error", "Erro de conexão com o servidor.");
+			if (typeof showToast === "function") showToast("error", "Erro de conexão.");
 			btnSave.disabled = false;
 			btnSave.textContent = "SALVAR";
 		}
@@ -256,18 +269,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		if (nameEl) nameEl.textContent = p.name ? p.name.toUpperCase() : "—";
 
 		if (avatarEl) {
-			const avatarFile = p.patientProfile?.avatar;
-			if (avatarFile) {
-				avatarEl.innerHTML = `<img src="/images/avatars/${avatarFile}" alt="${p.name}" />`;
-			} else {
-				const initials = (p.name || "")
-					.split(" ")
-					.filter(Boolean)
-					.slice(0, 2)
-					.map((w) => w[0].toUpperCase())
-					.join("");
-				avatarEl.innerHTML = `<span style="font-family:'Bebas Neue',sans-serif;font-size:32px;color:#7aa3ec;letter-spacing:2px">${initials || "?"}</span>`;
-			}
+			avatarEl.innerHTML = getAvatarHTML(p.name, p.patientProfile?.avatar, { size: "100%", fontSize: "36px" });
 		}
 	}
 
@@ -290,25 +292,3 @@ document.addEventListener("DOMContentLoaded", () => {
 		}
 	});
 });
-
-// ── Toast (mesmo padrão do projeto) ───────────────────────────────
-function showToast(type, message) {
-	let container = document.getElementById("toast-container");
-	if (!container) {
-		container = document.createElement("div");
-		container.id = "toast-container";
-		document.body.appendChild(container);
-	}
-	const toast = document.createElement("div");
-	toast.className = `toast ${type}`;
-	const icon =
-		type === "success"
-			? '<i class="fa-solid fa-circle-check"></i>'
-			: '<i class="fa-solid fa-circle-exclamation"></i>';
-	toast.innerHTML = `${icon} <span>${message}</span>`;
-	container.appendChild(toast);
-	setTimeout(() => {
-		toast.style.animation = "fadeOut 0.3s forwards";
-		setTimeout(() => toast.remove(), 300);
-	}, 3500);
-}

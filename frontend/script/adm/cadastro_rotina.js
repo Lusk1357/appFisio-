@@ -2,31 +2,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const btnCadastrar = document.getElementById("btn-cadastrar");
     const exercisesList = document.getElementById("exercisesList");
 
-    function showToast(type, message) {
-        let toastContainer = document.getElementById("toast-container");
-        if (!toastContainer) {
-            toastContainer = document.createElement("div");
-            toastContainer.id = "toast-container";
-            document.body.appendChild(toastContainer);
-        }
-
-        const toast = document.createElement("div");
-        toast.className = `toast ${type}`;
-
-        const icon =
-            type === "success"
-                ? '<i class="fa-solid fa-circle-check"></i>'
-                : '<i class="fa-solid fa-circle-exclamation"></i>';
-
-        toast.innerHTML = `${icon} <span>${message}</span>`;
-        toastContainer.appendChild(toast);
-
-        setTimeout(() => {
-            toast.style.animation = "fadeOut 0.3s forwards";
-            setTimeout(() => {
-                toast.remove();
-            }, 300);
-        }, 4000);
+    function getShowToast() {
+        return typeof showToast === "function" ? showToast : () => {};
     }
 
     // Carregar os exercícios da API
@@ -58,8 +35,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 label.innerHTML = `
                     <input type="checkbox" class="ex-checkbox" value="${ex.id}" />
                     <div class="exercise-info">
-                        <span class="exercise-name">${ex.name}</span>
-                        <span class="exercise-category">${ex.type}</span>
+                        <span class="exercise-name">${escapeHTML(ex.name)}</span>
+                        <span class="exercise-category">${escapeHTML(ex.type)}</span>
                     </div>
                 `;
 
@@ -73,7 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         <input type="number" class="input-rest" placeholder="Descanso (s)" value="60" style="flex: 1;" />
                     </div>
                     <div class="form-group" style="margin-bottom: 0;">
-                        <input type="text" class="input-obs" placeholder="Observação específica (opcional)" value="${ex.observation || ''}" style="width: 100%;" />
+                        <input type="text" class="input-obs" placeholder="Observação específica" value="${escapeHTML(ex.observation || '')}" style="width: 100%;" />
                     </div>
                 `;
 
