@@ -38,8 +38,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   const treino = JSON.parse(treinoJSON);
-  console.log("Treino Ativo Carregado (v2.2):", treino);
-  const exercises = treino.exercises.filter((e) => !e.completed);
+  console.log("Treino Ativo Carregado (v2.3):", treino);
+  const allExercises = treino.exercises;
+  const exercises = allExercises.filter((e) => !e.completed);
 
   if (exercises.length === 0) {
     window.location.href = "/pages/funcionalidades/treinamento.html";
@@ -403,10 +404,12 @@ document.addEventListener("DOMContentLoaded", () => {
   // ── Tela de conclusão ─────────────────────────────────────────
   function showCompletion() {
     clearInterval(timerInterval);
-    statExercicios.innerText = totalExercises;
-    statTempo.innerText = formatTime(totalSecondsElapsed);
+    
+    // Mostra as estatísticas do DIA TODO, não apenas os fragmentos concluídos nesta sessão
+    statExercicios.innerText = allExercises.length;
+    statTempo.innerText = formatTime(totalSecondsElapsed); // O tempo permanece da sessão atual (seria ideal acumular, mas por hora foca na interface limpa).
 
-    completionList.innerHTML = exercises
+    completionList.innerHTML = allExercises
       .map((e) => `<li><i class="fa-solid fa-circle-check"></i> ${e.name}</li>`)
       .join("");
 

@@ -185,16 +185,17 @@ document.addEventListener("DOMContentLoaded", () => {
                     btn.className = "btn-start-training";
                     btn.innerHTML = '<i class="fa-solid fa-play"></i> INICIAR TREINAMENTO';
                     btn.addEventListener("click", () => {
-                        // Salva exercícios pendentes no sessionStorage para o treino ativo ler
+                        // Passa a rotina inteira para o Active Training não perder o contexto das estatísticas
                         sessionStorage.setItem("treinoAtivo", JSON.stringify({
                             date: dateStr,
-                            exercises: naoCompletos
+                            exercises: exerciciosDoDia
                         }));
                         window.location.href = "/pages/exercicios/treino_ativo.html";
                     });
                     btnArea.innerHTML = "";
                     btnArea.appendChild(btn);
                 }
+
             } else {
                 // Todos completos — mostra mensagem de parabéns
                 const btnArea = document.getElementById("startTrainingArea");
