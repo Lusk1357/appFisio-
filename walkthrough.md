@@ -30,7 +30,20 @@ Todo o código necessário para estancar as vulnerabilidades da Fase 2 e 3 foi d
 
 -   **Resiliência PWA & Cadastro:** O PWA agora é verdadeiramente 'offline-first' e o cadastro salva dados clínicos de Peso, Altura, Idade e Gênero instantaneamente.
 
--   **Sanitização XSS Global:** Toda a interface administrativa foi blindada com Entidades HTML, neutralizando qualquer tentativa de injeção de script via nomes ou descrições.
+- **Sanitização XSS Global:** Toda a interface administrativa foi blindada com Entidades HTML, neutralizando qualquer tentativa de injeção de script via nomes ou descrições.
+
+---
+
+### Fase 10: Divisão de Campos (Séries e Repetições)
+Refatoramos a interface para separar "Séries" de "Repetições", melhorando a usabilidade e precisão dos dados.
+- **Frontend:** Novos inputs numéricos com validação em tempo real.
+- **Backend:** Suporte ao novo formato `X x Y` (ex: 3x10) gerado automaticamente.
+
+![Verificação de Campos Divididos](file:///C:/Users/Gamer/.gemini/antigravity/brain/dba1414f-f2e2-4130-877b-8cd022571cf0/verify_split_series_ui_1774222134642.webp)
+
+### Fase 11: Polimento Premium e Responsividade
+- **Mudança**: A interface foi refinada para uma experiência de usuário mais fluida e responsiva em todos os dispositivos.
+- **Resultado**: Telas adaptáveis, navegação intuitiva e um design moderno que eleva a percepção de valor do ProFisio.
 
 ---
 
