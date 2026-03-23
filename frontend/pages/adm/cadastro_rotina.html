@@ -80,6 +80,9 @@
 
     <script>
         function toggleScroll() {
+            const btn = document.getElementById('scrollToBottomBtn');
+            btn.blur(); // Remove o foco para evitar que o estado de clique persista no PWA
+
             const isBottom = (window.innerHeight + window.scrollY) >= (document.documentElement.scrollHeight - 100);
             if (isBottom) {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -87,6 +90,7 @@
                 window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' });
             }
         }
+
 
         window.addEventListener('scroll', () => {
             const btn = document.getElementById('scrollToBottomBtn');
