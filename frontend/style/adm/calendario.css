@@ -201,19 +201,21 @@ body {
 	background: #dce6fb;
 }
 
-/* Hoje */
+/* Hoje (Estado Inicial) */
 .day-cell.today {
-	background: #5b8af5;
-	color: #fff;
+	background: #eef2ff;
+	color: #5b8af5;
 	font-weight: 700;
+	border: 2px solid #5b8af5;
 	border-radius: 10px;
 }
 
-/* Dia selecionado */
-.day-cell.selected:not(.today) {
-	background: #1a1a2e;
-	color: #fff;
+/* Dia selecionado (Qualquer dia, incluindo Hoje) */
+.day-cell.selected {
+	background: #1a1a2e !important;
+	color: #fff !important;
 	font-weight: 700;
+	border: none;
 }
 
 /* Dia com exercício salvo */

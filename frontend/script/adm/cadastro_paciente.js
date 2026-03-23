@@ -69,11 +69,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const telVal = document.getElementById("tel").value.trim();
         const emailVal = document.getElementById("email").value.trim();
         const passVal = document.getElementById("password").value.trim();
-        
-        const ageVal = document.getElementById("age").value;
-        const genderVal = document.getElementById("gender").value;
-        const weightVal = document.getElementById("weight").value;
-        const heightVal = document.getElementById("height").value;
 
         if (!nameVal || !emailVal || !passVal || !telVal) {
             if (typeof showToast === "function") showToast("error", "Preencha os campos obrigatórios (Nome, Tel, Login, Senha).");
@@ -100,10 +95,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     email: emailVal,
                     password: passVal,
                     telefone: telVal,
-                    weight: weightVal ? parseFloat(weightVal) : undefined,
-                    height: heightVal ? parseInt(heightVal) : undefined,
-                    age: ageVal ? parseInt(ageVal) : undefined,
-                    gender: genderVal || undefined,
                     role: "PATIENT"
                 })
             });

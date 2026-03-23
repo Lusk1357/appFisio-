@@ -1,3 +1,5 @@
+const prisma = require('../utils/prisma');
+
 // ADMIN cria um novo template de rotina
 exports.createRoutine = async (req, res) => {
     try {
@@ -118,10 +120,18 @@ exports.deleteRoutine = async (req, res) => {
 exports.getAllRoutines = async (req, res) => {
     try {
         const routines = await prisma.routineTemplate.findMany({
-            include: {
+            select: {
+                id: true,
+                name: true,
+                description: true,
+                createdAt: true,
                 exercises: {
-                    include: {
-                        exercise: true
+                    select: {
+                        exercise: {
+                            select: {
+                                name: true
+                            }
+                        }
                     }
                 }
             },

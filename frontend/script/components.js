@@ -1,4 +1,32 @@
 // ── Sistema de UI Global (Modais e Toasts) ──
+const _PF_CACHE = new Map();
+
+/**
+ * Wrapper de Fetch com cache para GET requests.
+ * @param {string} url 
+ * @param {object} options 
+ * @param {number} ttl - Tempo de vida em ms (default 30s)
+ */
+window.pfFetch = async function(url, options = {}, ttl = 30000) {
+  const isGet = !options.method || options.method.toUpperCase() === "GET";
+  if (isGet) {
+    const cached = _PF_CACHE.get(url);
+    if (cached && (Date.now() - cached.timestamp < ttl)) {
+      return Promise.resolve(new Response(JSON.stringify(cached.data), {
+        status: 200,
+        headers: { "Content-Type": "application/json" }
+      }));
+    }
+  }
+
+  const res = await fetch(url, options);
+  if (isGet && res.ok) {
+    const data = await res.clone().json();
+    _PF_CACHE.set(url, { data, timestamp: Date.now() });
+  }
+  return res;
+};
+
 (function injectGlobalStyles() {
   if (document.getElementById("pro-fisio-global-styles")) return;
   const style = document.createElement("style");
@@ -380,6 +408,7 @@ function getAvatarHTML(name, avatarUrl, options = {}) {
 
   if (avatarUrl) {
     return `<img src="/images/avatars/${avatarUrl}" 
+      loading="lazy"
       style="width: ${size}; height: ${size}; border-radius: 50%; object-fit: cover; border: ${border}; display: block;" 
       alt="Avatar de ${name}"
       onerror="this.parentElement.innerHTML='${getInitials(name)}'; this.parentElement.style.background='${bgColor}';">`;

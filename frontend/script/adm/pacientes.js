@@ -8,6 +8,7 @@
 	let currentSort = "az";
 	let visibleCount = PAGE_SIZE;
 	let selectedId = null; // ID do paciente atualmente selecionado
+	let allPacientes = []; // Cache local da lista completa
 
 	// ── Elementos ──────────────────────────────────────────────────
 	const grid = document.getElementById("patientsGrid");
@@ -28,14 +29,20 @@
 
 	// ── Leitura da API ─────────────────────────────────────────────
 	async function getPacientes() {
+		// Se já temos os dados em cache e não for um reset forçado, não busca de novo
+		if (allPacientes.length > 0) return allPacientes;
+
+		const grid = document.getElementById("patientsGrid");
+		grid.innerHTML = '<p class="empty-msg">Carregando lista...</p>';
+
 		try {
 			const res = await fetch("/api/pacientes", {
 				method: "GET",
-				credentials: "include" // Importante: envia o JWT para acessar rota protegida do Admin
+				credentials: "include"
 			});
 			if (!res.ok) throw new Error("Network response falhou");
-			const data = await res.json();
-			return data;
+			allPacientes = await res.json();
+			return allPacientes;
 		} catch (error) {
 			console.error(error);
 			return [];
@@ -65,22 +72,32 @@
 	// getInitials removido, usamos o do components.js
 
 	// ── Render ─────────────────────────────────────────────────────
-	async function render() {
-		grid.innerHTML = '<p class="empty-msg">Carregando lista...</p>';
+	async function render(appendOnly = false) {
 		const all = await getPacientes();
 		const sorted = sortPacientes(all, currentSort);
-		const slice = sorted.slice(0, visibleCount);
-
-		grid.innerHTML = "";
-
+		
 		if (sorted.length === 0) {
+			grid.innerHTML = "";
 			emptyState.style.display = "flex";
 			loadMoreWrapper.style.display = "none";
 			return;
 		}
 
 		emptyState.style.display = "none";
-		slice.forEach((p) => grid.appendChild(createCard(p)));
+
+		// Se appendOnly for verdadeiro, apenas adicionamos os itens que faltam
+		if (appendOnly) {
+			const currentInGrid = grid.children.length;
+			const nextSlice = sorted.slice(currentInGrid, visibleCount);
+			nextSlice.forEach((p) => {
+				const card = createCard(p);
+				grid.appendChild(card);
+			});
+		} else {
+			grid.innerHTML = "";
+			const slice = sorted.slice(0, visibleCount);
+			slice.forEach((p) => grid.appendChild(createCard(p)));
+		}
 
 		if (sorted.length > visibleCount) {
 			loadMoreWrapper.style.display = "flex";
@@ -134,6 +151,10 @@
 
 		const capitalizedName = capitalizeName(paciente.name);
 		avatar.innerHTML = getAvatarHTML(capitalizedName, paciente.patientProfile?.avatar, { size: "100%", fontSize: "28px" });
+		
+		// Otimização: Lazy Loading para imagem se existir no HTML retornado
+		const img = avatar.querySelector("img");
+		if (img) img.loading = "lazy";
 
 		clickableArea.appendChild(avatar);
 
@@ -155,18 +176,19 @@
 	// ── Filtros ────────────────────────────────────────────────────
 	filterPills.forEach((pill) => {
 		pill.addEventListener("click", () => {
+			if (pill.classList.contains("active")) return;
 			filterPills.forEach((p) => p.classList.remove("active"));
 			pill.classList.add("active");
 			currentSort = pill.dataset.sort;
 			visibleCount = PAGE_SIZE;
-			render();
+			render(); // Reset do grid para nova ordenação
 		});
 	});
 
 	// ── Ver mais ───────────────────────────────────────────────────
 	btnLoadMore.addEventListener("click", () => {
 		visibleCount += PAGE_SIZE;
-		render();
+		render(true); // Passa true para apenas anexar
 	});
 
 	// ── Init ───────────────────────────────────────────────────────

@@ -37,7 +37,7 @@ const routineSchema = z.object({
     descricao: z.string().max(500).optional(),
     lista_exercicios_ids: z.array(z.object({
         id: z.string().uuid("ID de exercício inválido"),
-        series: z.string().max(50).optional(),
+        series: z.string().regex(/^(\d+\s*[xX*]\s*\d+|[\d+]+|[a-zA-Záàâãéèêíïóôõöúçñ\s.-]{2,})$/, "Formato de série inválido").max(50).optional(),
         observation: z.string().max(500).optional().nullable(),
         restTime: z.union([z.string(), z.number()]).optional().transform(v => Number(v) || 60)
     })).optional().default([])
@@ -54,11 +54,11 @@ const profileUpdateSchema = z.object({
     endereco: z.string().max(255).optional(),
     cep: z.string().max(10).optional(),
     notes: z.string().max(5000).optional(),
-    weight: z.union([z.string(), z.number()]).optional(),
-    height: z.union([z.string(), z.number()]).optional(),
-    age: z.union([z.string(), z.number()]).optional().transform(v => v ? Number(v) : undefined).pipe(z.number().min(0).max(120).optional()),
-    gender: z.string().max(20).optional(),
-    avatar: z.string().max(255).optional()
+    weight: z.preprocess(v => v === null ? undefined : v, z.union([z.string(), z.number()]).optional()),
+    height: z.preprocess(v => v === null ? undefined : v, z.union([z.string(), z.number()]).optional()),
+    age: z.preprocess(v => v === null ? undefined : v, z.union([z.string(), z.number()]).optional().transform(v => v ? Number(v) : undefined).pipe(z.number().min(0).max(120).optional())),
+    gender: z.preprocess(v => v === null ? undefined : v, z.string().max(20).optional()),
+    avatar: z.preprocess(v => v === null ? undefined : v, z.string().max(255).optional())
 });
 
 const prescriptionSchema = z.object({
@@ -69,7 +69,7 @@ const prescriptionSchema = z.object({
             z.string().uuid("ID de exercício inválido"),
             z.object({
                 id: z.string().uuid("ID do exercício inválido").optional(),
-                series: z.string().max(50).optional(),
+                series: z.string().regex(/^(\d+\s*[xX*]\s*\d+|[\d+]+|[a-zA-Záàâãéèêíïóôõöúçñ\s.-]{2,})$/, "Formato de série inválido").max(50).optional(),
                 observation: z.string().max(500).optional().nullable(),
                 restTime: z.union([z.string(), z.number()]).optional()
             })

@@ -86,9 +86,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     genderIcon.className = "fa-solid icon-left";
 
-    if (value === "male") {
+    if (value === "Masculino") {
       genderIcon.classList.add("fa-mars");
-    } else if (value === "female") {
+    } else if (value === "Feminino") {
       genderIcon.classList.add("fa-venus");
     } else {
       genderIcon.classList.add("fa-genderless");

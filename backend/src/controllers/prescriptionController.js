@@ -20,6 +20,20 @@ exports.createPrescription = async (req, res) => {
 
         // 1. & 2. TRANSACIONAL: Limpa e Cria em uma única operação atômica (evita Race Condition)
         await prisma.$transaction(async (tx) => {
+            // Busca exercícios que já foram concluídos pelo paciente para preservarmos o progresso
+            const previouslyCompleted = await tx.prescriptionExercise.findMany({
+                where: {
+                    prescription: {
+                        patientId: patientId,
+                        assignedDay: { gte: startDate, lte: endDate }
+                    },
+                    completed: true
+                },
+                select: { exerciseId: true }
+            });
+
+            const completedIdsSet = new Set(previouslyCompleted.map(pe => pe.exerciseId));
+
             // Remove prescrições existentes para este paciente neste dia exato
             const existing = await tx.prescription.findMany({
                 where: {
@@ -50,13 +64,17 @@ exports.createPrescription = async (req, res) => {
                 });
 
                 const exercisePromises = exercises.map(ex => {
+                    const exId = ex.id || ex;
+                    const isCompleted = completedIdsSet.has(exId);
+
                     return tx.prescriptionExercise.create({
                         data: {
                             prescriptionId: prescription.id,
-                            exerciseId: ex.id || ex,
+                            exerciseId: exId,
                             series: ex.series || "3x15",
                             observation: ex.observation || null,
-                            restTime: ex.restTime !== undefined ? Number(ex.restTime) : 60
+                            restTime: ex.restTime !== undefined ? Number(ex.restTime) : 60,
+                            completed: isCompleted // Preserva o progresso!
                         }
                     });
                 });
@@ -155,10 +173,9 @@ exports.getPatientPrescriptions = async (req, res) => {
                 }
             };
         } else if (month && year) {
-            // Filtrar pelo mês todo
-            const startDate = new Date(year, month - 1, 1);
-            const endDate = new Date(year, month, 0);
-            endDate.setHours(23, 59, 59, 999);
+            // Filtrar pelo mês todo usando UTC para evitar drift
+            const startDate = new Date(Date.UTC(year, month - 1, 1, 0, 0, 0));
+            const endDate = new Date(Date.UTC(year, month, 0, 23, 59, 59, 999));
 
             dateFilter = {
                 assignedDay: {

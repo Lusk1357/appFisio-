@@ -45,9 +45,21 @@ document.addEventListener("DOMContentLoaded", () => {
                 detailsDiv.style.display = "none";
 
                 detailsDiv.innerHTML = `
-                    <div class="form-group" style="margin-bottom: 8px; display: flex; gap: 8px;">
-                        <input type="text" class="input-series" placeholder="Séries (ex: 3x15)" value="3x15" style="flex: 1;" />
-                        <input type="number" class="input-rest" placeholder="Descanso (s)" value="60" style="flex: 1;" />
+                    <div class="form-group" style="margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; gap: 8px; background: #f8fafc; padding: 10px; border-radius: 12px; border: 1px solid #e2e8f0;">
+                        <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px;">
+                            <span style="font-size: 9px; color: #94a3b8; font-weight: 800;">SÉRIES</span>
+                            <input type="number" class="input-series-qty" placeholder="3" value="3" min="1" style="width: 100%; border: none; background: transparent; font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 700; text-align: center; color: #0f172a; outline: none;" title="Séries" />
+                        </div>
+                        <div style="font-family: 'Bebas Neue', sans-serif; font-size: 18px; color: #cbd5e1; padding-top: 10px;">X</div>
+                        <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px;">
+                            <span style="font-size: 9px; color: #94a3b8; font-weight: 800;">REPS</span>
+                            <input type="number" class="input-reps-qty" placeholder="15" value="15" min="1" style="width: 100%; border: none; background: transparent; font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 700; text-align: center; color: #0f172a; outline: none;" title="Repetições" />
+                        </div>
+                        <div style="width: 1px; height: 24px; background: #e2e8f0; margin: 0 4px; margin-top: 10px;"></div>
+                        <div style="flex: 1.2; display: flex; flex-direction: column; align-items: center; gap: 2px;">
+                            <span style="font-size: 9px; color: #94a3b8; font-weight: 800;">DESCANSO (S)</span>
+                            <input type="number" class="input-rest" placeholder="60" value="60" min="0" style="width: 100%; border: none; background: transparent; font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 700; text-align: center; color: #0f172a; outline: none;" title="Descanso em segundos" />
+                        </div>
                     </div>
                     <div class="form-group" style="margin-bottom: 0;">
                         <input type="text" class="input-obs" placeholder="Observação específica" value="${escapeHTML(ex.observation || '')}" style="width: 100%;" />
@@ -157,9 +169,12 @@ document.addEventListener("DOMContentLoaded", () => {
         containers.forEach(container => {
             const cb = container.querySelector(".ex-checkbox");
             if (cb && cb.checked) {
-                const series = container.querySelector(".input-series").value.trim() || "3x15";
+                const sQty = container.querySelector(".input-series-qty").value.trim();
+                const rQty = container.querySelector(".input-reps-qty").value.trim();
+                const series = (sQty && rQty) ? `${sQty}x${rQty}` : "3x15";
                 const restTime = parseInt(container.querySelector(".input-rest").value.trim()) || 60;
                 const obs = container.querySelector(".input-obs").value.trim();
+
                 selectedExercises.push({
                     id: cb.value,
                     series: series,

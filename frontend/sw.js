@@ -2,16 +2,16 @@ const CACHE_NAME = 'profisio-cache-v1';
 
 // Arquivos mínimos para a tela de erro / load rápido
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/pages/auth/login.html',
-  '/pages/auth/recuperar.html',
   '/pages/intro/primeira_pagina.html',
-  '/pages/paciente/home.html',
-  '/pages/paciente/treinos.html',
+  '/pages/auth/login.html',
+  '/pages/auth/esqueci_a_senha.html',
+  '/pages/paciente/meus_status.html',
+  '/pages/paciente/meus_treinamentos.html',
   '/pages/adm/home_adm.html',
   '/style/intro/primeira_pagina.css',
-  '/style/global.css',
+  '/style/auth/login.css',
+  '/style/paciente/home_paciente.css',
+  '/script/auth/login.js',
   '/script/components.js',
   '/script/authGuard.js',
   '/images/icon-192.png',
@@ -53,6 +53,22 @@ self.addEventListener('fetch', event => {
   if (event.request.url.includes('/api/')) return;
   
   event.respondWith(
-    fetch(event.request).catch(() => caches.match(event.request))
+    fetch(event.request).catch(async () => {
+      const match = await caches.match(event.request);
+      if (match) return match;
+
+      // Se for uma navegação de página, retorna o login como fallback (ou offline page)
+      if (event.request.mode === 'navigate') {
+        return caches.match('/pages/auth/login.html');
+      }
+
+      // Para outros recursos (css/js/img), se não tem no cache e falhou a rede, 
+      // retornamos uma resposta de erro real para o browser entender em vez de undefined.
+      return new Response('Recurso indisponível (Offline)', {
+        status: 503,
+        statusText: 'Service Unavailable',
+        headers: new Headers({ 'Content-Type': 'text/plain; charset=utf-8' })
+      });
+    })
   );
 });

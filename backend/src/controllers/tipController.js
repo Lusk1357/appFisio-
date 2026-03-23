@@ -3,6 +3,13 @@ const prisma = require("../utils/prisma");
 exports.getTips = async (req, res) => {
     try {
         const tips = await prisma.tip.findMany({
+            select: {
+                id: true,
+                title: true,
+                thumbnail: true,
+                duration: true,
+                createdAt: true
+            },
             orderBy: { createdAt: "desc" }
         });
         res.json(tips);
@@ -19,10 +26,6 @@ exports.createTip = async (req, res) => {
         // Apenas admin pode criar
         if (req.user.role !== "ADMIN") {
             return res.status(403).json({ error: "Acesso negado. Apenas ADMIN." });
-        }
-
-        if (!title || !thumbnail || !duration) {
-            return res.status(400).json({ error: "Título, thumbnail e duração são obrigatórios." });
         }
 
         const tip = await prisma.tip.create({
@@ -67,10 +70,6 @@ exports.updateTip = async (req, res) => {
 
         if (req.user.role !== "ADMIN") {
             return res.status(403).json({ error: "Acesso negado. Apenas ADMIN." });
-        }
-
-        if (!title || !thumbnail || !duration) {
-            return res.status(400).json({ error: "Título, thumbnail e duração são obrigatórios." });
         }
 
         const tip = await prisma.tip.update({

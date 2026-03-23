@@ -8,18 +8,19 @@ exports.getAllPatients = async (req, res) => {
             where: {
                 role: 'PATIENT'
             },
-            include: {
-                patientProfile: true // Traz dados como peso/altura embutidos no JSON da resposta!
+            select: {
+                id: true,
+                name: true,
+                createdAt: true,
+                patientProfile: {
+                    select: {
+                        avatar: true
+                    }
+                }
             }
         });
 
-        // Nós filtramos o envio de senhas criptografadas por segurança, mandando apens os dados úteis.
-        const safeData = patients.map(p => {
-            const { passwordHash, ...rest } = p;
-            return rest;
-        });
-
-        res.status(200).json(safeData);
+        res.status(200).json(patients);
     } catch (error) {
         console.error("Erro ao listar pacientes:", error);
         res.status(500).json({ erro: "Erro interno no servidor." });

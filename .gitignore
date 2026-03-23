@@ -12,3 +12,12 @@ frontend/node_modules/
 backend/.env
 *.db
 *.db-journal
+
+# Scratch & Dev Scripts
+backend/temp/
+backend/debug_rotinas.js
+test_zod.js
+check_db_profile.js
+backend/scripts/test-api.js
+backend/scripts/test-routines.js
+backend/test_prep.js

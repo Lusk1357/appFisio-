@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <img src="${tip.thumbnail}" alt="${escapeHTML(tip.title)}" onerror="this.src='https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80'" />
           <div class="tip-info">
             <h3 class="tip-title">${escapeHTML(tip.title)}</h3>
-            <p class="tip-meta"><i class="fa-regular fa-clock"></i> ${tip.duration}</p>
+            <p class="tip-meta"><i class="fa-regular fa-clock"></i> ${escapeHTML(tip.duration)}</p>
           <div class="card-actions">
             <button class="btn-edit" data-id="${tip.id}"><i class="fa-solid fa-pen"></i> Editar</button>
             <button class="btn-delete" data-id="${tip.id}"><i class="fa-solid fa-trash"></i> Excluir</button>

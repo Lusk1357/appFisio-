@@ -113,9 +113,8 @@ document.addEventListener("DOMContentLoaded", () => {
 				const treinosMes = await res.json();
 				treinosMes.forEach(treino => {
 					const d = new Date(treino.assignedDay);
-					// Como a API retorna UTC e o front está em local, pode haver pequena diferença de fuso
-					// Compensa pelo fato do backend devolver UTC (ex: 2026-03-10T03:00:00Z)
-					persisted.add(d.getDate());
+					// Usamos getUTCDate() para evitar que o fuso horário local altere o dia (drift)
+					persisted.add(d.getUTCDate());
 				});
 			}
 		} catch (e) {
@@ -146,15 +145,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
 			if (isToday) cell.classList.add("today");
 			if (persisted.has(d)) cell.classList.add("has-exercise");
-			if (selectedDays.has(d) && !isToday) cell.classList.add("selected");
+			if (selectedDays.has(d)) cell.classList.add("selected");
 
 			cell.addEventListener("click", () => {
 				if (selectedDays.has(d)) {
 					selectedDays.delete(d);
-					if (!isToday) cell.classList.remove("selected");
+					cell.classList.remove("selected");
 				} else {
 					selectedDays.add(d);
-					if (!isToday) cell.classList.add("selected");
+					cell.classList.add("selected");
 				}
 				updateSaveBtn();
 			});

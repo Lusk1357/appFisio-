@@ -6,10 +6,12 @@ document.addEventListener("DOMContentLoaded", () => {
 	// ── Catálogo de exercícios e rotinas do BD ────────────────────
 	let CATALOGO = [];
 	let ROTINAS = [];
+	let isInitialLoading = true; // Flag para evitar modal vazio antes da API responder
 
 	async function loadCatalogo() {
 		try {
-			const res = await fetch("/api/exercicios", { credentials: "include" });
+			// Usando pfFetch (global definido em components.js) com TTL de 5 min
+			const res = await pfFetch("/api/exercicios", { credentials: "include" }, 300000);
 			const data = await res.json();
 			CATALOGO = data; 
 		} catch (e) {
@@ -19,7 +21,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 	async function loadRotinas() {
 		try {
-			const res = await fetch("/api/rotinas", { credentials: "include" });
+			// Usando pfFetch com TTL de 5 min
+			const res = await pfFetch("/api/rotinas", { credentials: "include" }, 300000);
 			const data = await res.json();
 			ROTINAS = data;
 		} catch (e) {
@@ -28,10 +31,19 @@ document.addEventListener("DOMContentLoaded", () => {
 	}
 
 	async function initData() {
+		isInitialLoading = true;
 		await Promise.all([loadCatalogo(), loadRotinas()]);
+		isInitialLoading = false;
+		
 		renderExercises();
         renderPopupFilters();
         setupPopupFilters();
+
+		// Se o modal estiver aberto (mostrando o "Carregando..."), atualiza ele agora que os dados chegaram
+		const modal = document.getElementById("overlayExercises");
+		if (modal && modal.classList.contains("open")) {
+			openPickList(activeExerciseIndex);
+		}
 	}
 	initData();
 
@@ -188,8 +200,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 				treinos.forEach(treino => {
 					const assignedDate = new Date(treino.assignedDay);
-					// A API envia a data em UTC com Z no final. Quando convertermos para data local, pegamos o Date.
-					const dia = assignedDate.getDate();
+					// Usamos getUTCDate() para evitar que o fuso horário local altere o dia (ex: 22 virar 21)
+					const dia = assignedDate.getUTCDate();
 
 					// Se o administrador abriu esse dia no calendário, carregamos os ex.
 					if (ctx.dias.includes(dia)) {
@@ -372,7 +384,7 @@ document.addEventListener("DOMContentLoaded", () => {
 			document.getElementById("btnSave").disabled = true;
 			document.getElementById("btnSave").textContent = "Salvando...";
 			await Promise.all(promessas);
-			showToast("success", "Treinos atribuídos com sucesso no Banco!");
+			showToast("success", "Prescrição salva com sucesso! 🚀");
 			setTimeout(() => {
 				window.location.href = "/pages/adm/perfil_paciente.html";
 			}, 1800);
@@ -398,15 +410,23 @@ document.addEventListener("DOMContentLoaded", () => {
         chips.forEach(c => c.classList.remove("active"));
         if (chips[0]) chips[0].classList.add("active");
 
+		// Mostra ou esconde o "Aplicar a todos" (se tiver múltiplos dias no contexto)
 		const applyAllContainer = document.getElementById("applyAllContainer");
-		if (swappingIndex !== null) {
-			applyAllContainer.style.display = "none"; // Hide checkbox when swapping
+		if (ctx.dias.length > 1 && swappingIndex === null) {
+			applyAllContainer.style.display = "flex";
 		} else {
-			applyAllContainer.style.display = "flex"; // Show when adding
+			applyAllContainer.style.display = "none";
 		}
 
 		const diaInfo = ctx.dias[currentDayIndex];
 		const list = exerciciosPorDia[diaInfo];
+
+		if (isInitialLoading) {
+			ul.innerHTML = "<p style='padding: 20px; text-align:center; color: #5b8af5'><i class='fa-solid fa-circle-notch fa-spin'></i> Carregando catálogo...</p>";
+			// Se ainda está carregando, não renderiza o resto ainda
+			openOverlay("overlayExercises");
+			return;
+		}
 
 		if (CATALOGO.length === 0) {
 			ul.innerHTML = "<p style='padding: 20px; text-align:center'>Nenhum exercício encontrado. Cadastre no Painel Administrativo.</p>";
@@ -454,7 +474,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 						closeOverlay("overlayExercises");
 						renderExercises();
-						showToast("success", `Rotina "${rotina.name}" aplicada com sucesso!`);
+						showToast("success", `Rotina "${rotina.name}" aplicada! ✨`);
 					});
 					ul.appendChild(li);
 				});
@@ -470,30 +490,57 @@ document.addEventListener("DOMContentLoaded", () => {
 		}
 
 		CATALOGO.forEach((exObj) => {
-			// Verifica se o ID do exercicio atual já está na listagem deste dia
 			const jaFoiAdd = list.some(item => item.id === exObj.id);
 			if (jaFoiAdd) return;
 
 			const li = document.createElement("li");
 			li.innerHTML = escapeHTML(exObj.name);
 			li.addEventListener("click", () => {
-				if (swappingIndex !== null) {
-					// Trocar — abre confirmação
-					pendingSwapName = exObj;
-					const oldObj = exerciciosPorDia[diaInfo][swappingIndex];
-					document.getElementById("swapOldName").textContent = oldObj.name;
-					document.getElementById("swapNewName").textContent = exObj.name;
+				const isSwap = (swappingIndex !== null);
+				
+				if (isSwap) {
+					// MODO TROCA: Carrega o modal de opções com o NOVO exercício, mas com os valores do ANTIGO
+					const oldEx = list[swappingIndex];
+					pendingAddPayload = { isRoutine: false, exObj: exObj, isSwap: true, oldId: oldEx.id };
+					
+					document.getElementById("addOptionsTitle").textContent = "Trocar Exercício";
+					document.getElementById("btnConfirmAddOptions").textContent = "CONFIRMAR TROCA";
+					
+					const parts = (oldEx.series || "3x15").toLowerCase().split('x');
+					document.getElementById("addSeriesQty").value = parts[0] || "3";
+					document.getElementById("addRepsQty").value = parts[1] || "15";
+					document.getElementById("addRestTime").value = oldEx.restTime || "60";
+					document.getElementById("addObservation").value = oldEx.observation || "";
+					
+					// Assegura visibilidade do checkbox no modal de opções finais
+					const applyAllOptionsContainer = document.getElementById("applyAllOptionsContainer");
+					if (ctx.dias.length > 1) {
+						applyAllOptionsContainer.style.display = "flex";
+					} else {
+						applyAllOptionsContainer.style.display = "none";
+					}
+					
 					closeOverlay("overlayExercises");
-					openOverlay("overlayConfirmSwap");
+					openOverlay("overlayAddOptions");
 				} else {
+					// MODO ADIÇÃO NORMAL
 					pendingAddPayload = { isRoutine: false, exObj: exObj, isNewAdd: true };
-					document.getElementById("addSeries").value = "3x15";
+					document.getElementById("addOptionsTitle").textContent = "Detalhes do Exercício";
+					document.getElementById("btnConfirmAddOptions").textContent = "CONFIRMAR INCLUSÃO";
+					
+					document.getElementById("addSeriesQty").value = "3";
+					document.getElementById("addRepsQty").value = "15";
 					document.getElementById("addRestTime").value = "60";
-					document.getElementById("addObservation").value = exObj.observation || ""; // default from DB
-
-                    // Garante que o texto do botão esteja correto para inclusão
-                    document.getElementById("btnConfirmAddOptions").textContent = "CONFIRMAR INCLUSÃO";
-
+					document.getElementById("addObservation").value = exObj.observation || "";
+					
+					// Assegura visibilidade do checkbox no modal de opções finais
+					const applyAllOptionsContainer = document.getElementById("applyAllOptionsContainer");
+					if (ctx.dias.length > 1) {
+						applyAllOptionsContainer.style.display = "flex";
+					} else {
+						applyAllOptionsContainer.style.display = "none";
+					}
+					
 					closeOverlay("overlayExercises");
 					openOverlay("overlayAddOptions");
 				}
@@ -526,6 +573,15 @@ document.addEventListener("DOMContentLoaded", () => {
 		const dia = ctx.dias[currentDayIndex];
 		const exObj = exerciciosPorDia[dia][activeExerciseIndex];
 		document.getElementById("deleteExName").textContent = exObj.name;
+		
+		// Mostra checkbox se houver múltiplos dias
+		const applyAllDeleteContainer = document.getElementById("applyAllDeleteContainer");
+		if (ctx.dias.length > 1) {
+			applyAllDeleteContainer.style.display = "flex";
+		} else {
+			applyAllDeleteContainer.style.display = "none";
+		}
+
 		closeOverlay("overlayOptions");
 		openOverlay("overlayConfirmDelete");
 	});
@@ -536,35 +592,61 @@ document.addEventListener("DOMContentLoaded", () => {
 	});
 
 	document.getElementById("btnDeleteYes").addEventListener("click", () => {
-		const dia = ctx.dias[currentDayIndex];
-		const list = exerciciosPorDia[dia];
+		const currentDia = ctx.dias[currentDayIndex];
+		const diaList = exerciciosPorDia[currentDia];
 
-		// Anima saída do bloco antes de remover
+		if (activeExerciseIndex === null || activeExerciseIndex >= diaList.length) {
+			closeOverlay("overlayConfirmDelete");
+			return;
+		}
+
+		// Pega ID do exercício para remover em outros dias se solicitado
+		const exIdToDelete = diaList[activeExerciseIndex].id;
+		const chkApplyAllDelete = document.getElementById("chkApplyAllDelete");
+		const applyToAll = chkApplyAllDelete && chkApplyAllDelete.checked;
+		const targetDays = applyToAll ? ctx.dias : [currentDia];
+
 		const blocks = document.querySelectorAll(".exercise-block");
 		const target = blocks[activeExerciseIndex];
+		
+		const performActualDelete = () => {
+			targetDays.forEach(d => {
+				const list = exerciciosPorDia[d];
+				const idx = list.findIndex(item => item.id === exIdToDelete);
+				if (idx !== -1) {
+					list.splice(idx, 1);
+				}
+			});
+			
+			let msg = "Exercício removido.";
+			if (applyToAll && ctx.dias.length > 1) {
+				msg = `Excluído em ${ctx.dias.length} dias! 🗑️`;
+			}
+			showToast("success", msg);
+
+			activeExerciseIndex = null;
+			renderExercises();
+			closeOverlay("overlayConfirmDelete");
+		};
+
 		if (target) {
 			target.classList.add("removing");
-			target.addEventListener(
-				"animationend",
-				() => {
-					list.splice(activeExerciseIndex, 1);
-					closeOverlay("overlayConfirmDelete");
-					renderExercises();
-				},
-				{ once: true },
-			);
+			let finished = false;
+			const onAnimEnd = () => {
+				if (finished) return;
+				finished = true;
+				performActualDelete();
+			};
+			target.addEventListener("animationend", onAnimEnd, { once: true });
+			setTimeout(onAnimEnd, 350);
 		} else {
-			list.splice(activeExerciseIndex, 1);
-			closeOverlay("overlayConfirmDelete");
-			renderExercises();
+			performActualDelete();
 		}
 	});
 
 	// TROCAR
 	document.getElementById("optSwap").addEventListener("click", () => {
 		closeOverlay("overlayOptions");
-        // Quando for trocar, ao escolher o próximo exercício, o texto do botão deve ser o padrão
-        document.getElementById("btnConfirmAddOptions").textContent = "CONFIRMAR INCLUSÃO";
 		openPickList(activeExerciseIndex);
 	});
 
@@ -574,72 +656,91 @@ document.addEventListener("DOMContentLoaded", () => {
 		const exObj = exerciciosPorDia[dia][activeExerciseIndex];
 		
 		pendingAddPayload = { isRoutine: false, exObj: exObj, isEdit: true };
-		document.getElementById("addSeries").value = exObj.series || "3x15";
+		document.getElementById("addOptionsTitle").textContent = "Editar Detalhes";
+		document.getElementById("btnConfirmAddOptions").textContent = "SALVAR ALTERAÇÕES";
+		
+		const seriesValue = exObj.series || "3x15";
+		const parts = seriesValue.toLowerCase().split('x');
+		document.getElementById("addSeriesQty").value = parts[0] || "3";
+		document.getElementById("addRepsQty").value = parts[1] || "15";
 		document.getElementById("addRestTime").value = exObj.restTime || "60";
 		document.getElementById("addObservation").value = exObj.observation || "";
 
-        // Altera o texto do botão no modal para "SALVAR ALTERAÇÕES"
-        document.getElementById("btnConfirmAddOptions").textContent = "SALVAR ALTERAÇÕES";
-		
 		closeOverlay("overlayOptions");
+		
+		// Mostra o container de aplicar a todos no modal de edição
+		const applyAllOptionsContainer = document.getElementById("applyAllOptionsContainer");
+		if (ctx.dias.length > 1) {
+			applyAllOptionsContainer.style.display = "flex";
+		} else {
+			applyAllOptionsContainer.style.display = "none";
+		}
+
 		openOverlay("overlayAddOptions");
 	});
 
-	document.getElementById("btnSwapNo").addEventListener("click", () => {
-		closeOverlay("overlayConfirmSwap");
-		// Reabre a lista de exercícios para trocar
-		openPickList(activeExerciseIndex);
-	});
-
-	document.getElementById("btnSwapYes").addEventListener("click", () => {
-		const dia = ctx.dias[currentDayIndex];
-		exerciciosPorDia[dia][activeExerciseIndex] = pendingSwapName;
-		closeOverlay("overlayConfirmSwap");
-		renderExercises();
-	});
+	// (Removidos btnSwapNo/btnSwapYes pois o modal foi deletado)
 
 
 	// CONFIRMAR ADIÇÃO OU EDIÇÃO (SÉRIES E OBS)
 	document.getElementById("btnConfirmAddOptions").addEventListener("click", () => {
 		const isEdit = pendingAddPayload && pendingAddPayload.isEdit;
-		const series = document.getElementById("addSeries").value.trim();
+		const isSwap = pendingAddPayload && pendingAddPayload.isSwap;
+		const sQty = document.getElementById("addSeriesQty").value.trim();
+		const rQty = document.getElementById("addRepsQty").value.trim();
+		const series = (sQty && rQty) ? `${sQty}x${rQty}` : "3x15";
 		const restTime = parseInt(document.getElementById("addRestTime").value.trim()) || 60;
 		const obs = document.getElementById("addObservation").value.trim();
 
-		if (!series) {
-			showToast("error", "Informe as séries/repetições.");
-			return;
-		}
-
-		const dia = ctx.dias[currentDayIndex];
-		const diaInfo = ctx.dias[currentDayIndex];
+		const currentDia = ctx.dias[currentDayIndex];
 		const exObj = pendingAddPayload.exObj;
 
-		if (isEdit) {
-			// MODO EDIÇÃO: Apenas altera o item no dia atual (índice ativo)
-			exerciciosPorDia[dia][activeExerciseIndex] = { ...exObj, series, observation: obs, restTime: restTime };
-			showToast("success", "Detalhes atualizados!");
-		} else {
-			// MODO ADIÇÃO/TROCA
-			const chkApplyAll = document.getElementById("chkApplyAll");
-			const applyToAll = chkApplyAll && chkApplyAll.checked;
-			const swappingIndex = (pendingAddPayload && pendingAddPayload.swappingIndex !== undefined) ? pendingAddPayload.swappingIndex : activeExerciseIndex;
+		// Pega o estado do checkbox (pode ser o da lista ou o do modal de opções)
+		const chk1 = document.getElementById("chkApplyAll");
+		const chk2 = document.getElementById("chkApplyAllOptions");
+		const applyToAll = (chk1 && chk1.checked) || (chk2 && chk2.checked);
+		
+		const targetDays = applyToAll ? ctx.dias : [currentDia];
 
-			const isSwap = swappingIndex !== null && swappingIndex !== undefined && !pendingAddPayload.isNewAdd;
-
-			if (isSwap) {
-				// Modo TROCAR: substitui o item na posição original
-				exerciciosPorDia[dia][swappingIndex] = { ...exObj, series, observation: obs, restTime: restTime };
-			} else {
-				// Modo ADICIONAR: Nova entrada
-				const targetDays = applyToAll ? ctx.dias : [diaInfo];
-				targetDays.forEach(d => {
-					const diaList = exerciciosPorDia[d];
-					if (!diaList.some(item => item.id === exObj.id)) {
-						diaList.push({ ...exObj, series, observation: obs, restTime: restTime });
+		if (isEdit || isSwap) {
+			// MODO EDIÇÃO ou TROCA
+			targetDays.forEach(d => {
+				const diaList = exerciciosPorDia[d];
+				if (isEdit) {
+					// Edição: procura pelo ID original em todos os dias selecionados
+					const targetIdx = diaList.findIndex(item => item.id === exObj.id);
+					if (targetIdx !== -1) {
+						diaList[targetIdx] = { ...exObj, series, observation: obs, restTime: restTime };
 					}
-				});
+				} else {
+					// Troca: procura o exercício ANTIGO (está sendo trocado) nos outros dias tbm
+					const oldExId = (d === currentDia) ? diaList[activeExerciseIndex]?.id : pendingAddPayload.oldId;
+					const targetIdx = diaList.findIndex(item => item.id === oldExId);
+					if (targetIdx !== -1) {
+						diaList[targetIdx] = { ...exObj, series, observation: obs, restTime: restTime };
+					}
+				}
+			});
+
+			let msg = isSwap ? "Exercício trocado!" : "Detalhes atualizados!";
+			if (applyToAll && ctx.dias.length > 1) {
+				msg = isSwap ? `Troca realizada em ${ctx.dias.length} dias! ✨` : `Dados atualizados em ${ctx.dias.length} dias! ✨`;
 			}
+			showToast("success", msg);
+		} else {
+			// MODO ADIÇÃO NORMAL
+			targetDays.forEach(d => {
+				const diaList = exerciciosPorDia[d];
+				if (!diaList.some(item => item.id === exObj.id)) {
+					diaList.push({ ...exObj, series, observation: obs, restTime: restTime });
+				}
+			});
+
+			let msg = "Exercício adicionado!";
+			if (applyToAll && ctx.dias.length > 1) {
+				msg = `Inserido em ${ctx.dias.length} dias com sucesso! ✨`;
+			}
+			showToast("success", msg);
 		}
 
 		closeOverlay("overlayAddOptions");

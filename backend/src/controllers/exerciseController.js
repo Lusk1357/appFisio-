@@ -26,10 +26,6 @@ exports.createExercise = async (req, res) => {
     try {
         const { name, observation, type, videoUrl, bodyCategory, equipments, imageUrl, howToExecute, duration } = req.body;
 
-        if (!name || !type) {
-            return res.status(400).json({ erro: "Nome e Categoria são obrigatórios." });
-        }
-
         // Verifica unicidade do nome
         const existing = await prisma.exercise.findUnique({ where: { name } });
         if (existing) {
@@ -65,7 +61,14 @@ exports.createExercise = async (req, res) => {
 exports.getAllExercises = async (req, res) => {
     try {
         const exercises = await prisma.exercise.findMany({
-            include: { videos: true }
+            select: {
+                id: true,
+                name: true,
+                type: true,
+                bodyCategory: true,
+                imageUrl: true,
+                duration: true
+            }
         });
         res.status(200).json(exercises);
     } catch (error) {
@@ -113,10 +116,6 @@ exports.updateExercise = async (req, res) => {
     try {
         const { id } = req.params;
         const { name, observation, type, videoUrl, bodyCategory, equipments, imageUrl, howToExecute, duration } = req.body;
-
-        if (!name || !type) {
-            return res.status(400).json({ erro: "Nome e Categoria são obrigatórios." });
-        }
 
         // Verifica unicidade se o nome mudou
         if (name) {

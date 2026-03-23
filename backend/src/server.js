@@ -4,6 +4,7 @@ const cookieParser = require('cookie-parser');
 const path = require('path');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
+const compression = require('compression');
 
 // Carrega variáveis de ambiente SOMENTE em desenvolvimento
 if (process.env.NODE_ENV !== 'production') {
@@ -31,6 +32,7 @@ console.log(`[Config] Master Key detectada: ${process.env.MASTER_KEY ? 'Sim' : '
 
 app.use(express.json());
 app.use(cookieParser());
+app.use(compression());
 
 // Configuração do CORS mais restrita (EXECUTADA PRIMEIRO)
 const allowedOrigins = [
