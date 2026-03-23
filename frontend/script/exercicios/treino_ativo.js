@@ -402,49 +402,36 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // ── Tela de conclusão ─────────────────────────────────────────
-  function showCompletion() {
+  async function showCompletion() {
     clearInterval(timerInterval);
     
-    // Mostra as estatísticas do DIA TODO, não apenas os fragmentos concluídos nesta sessão
-    statExercicios.innerText = allExercises.length;
-    statTempo.innerText = formatTime(totalSecondsElapsed); // O tempo permanece da sessão atual (seria ideal acumular, mas por hora foca na interface limpa).
+    // Salva o resultado no sessionStorage para o resultado.html ler
+    const treinoResultado = {
+        totalExercicios: allExercises.length,
+        tempoTotalSegundos: totalSecondsElapsed
+    };
+    sessionStorage.setItem("treinoResultado", JSON.stringify(treinoResultado));
 
-    completionList.innerHTML = allExercises
-      .map((e) => `<li><i class="fa-solid fa-circle-check"></i> ${e.name}</li>`)
-      .join("");
-
-    launchConfetti();
-    completionOverlay.style.display = "flex";
-
+    // Se houver exercícios pendentes de sincronização
     if (exercisesToSync.length > 0) {
-      btnFinish.disabled = true;
-      btnFinish.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Finalizando no servidor...';
+      // Pequeno feedback de carregamento já que vamos trocar de página
+      const loadingOverlay = document.createElement("div");
+      loadingOverlay.style.cssText = "position:fixed;inset:0;background:rgba(255,255,255,0.9);z-index:9999;display:flex;justify-content:center;align-items:center;font-size:24px;font-family:'Bebas Neue', sans-serif;color:#1e293b;";
+      loadingOverlay.innerHTML = '<i class="fa-solid fa-spinner fa-spin" style="color:#5b8af5;margin-right:12px;"></i> SALVANDO TREINO...';
+      document.body.appendChild(loadingOverlay);
 
-      syncProgress()
-        .then(() => {
-          btnFinish.disabled = false;
-          btnFinish.innerHTML = '<i class="fa-solid fa-house"></i> IR PARA O INÍCIO';
-          
-          sessionStorage.removeItem("treinoAtivo");
-          if (typeof checkMilestones === "function") checkMilestones();
-        })
-        .catch((err) => {
-          console.error("Erro ao marcar conclusão:", err);
-          btnFinish.disabled = false;
-          btnFinish.innerHTML = '<i class="fa-solid fa-rotate"></i> TENTAR NOVAMENTE';
-          if (typeof showToast === "function") {
-              showToast("error", "Erro ao salvar no servidor. Verifique conexão e tente novamente.");
-          }
-        });
-    } else {
-        sessionStorage.removeItem("treinoAtivo");
-        if (typeof checkMilestones === "function") checkMilestones();
+      try {
+        await syncProgress();
+      } catch (err) {
+        console.error("Erro ao sincronizar progresso final:", err);
+      }
     }
+    
+    // Limpa o estado ativo e vai para a página de Resultados
+    sessionStorage.removeItem("treinoAtivo");
+    window.location.href = "/pages/exercicios/resultado.html";
   }
 
-  btnFinish.addEventListener("click", () => {
-    window.location.href = "/pages/funcionalidades/treinamento.html";
-  });
 
 
   // ── Confete ───────────────────────────────────────────────────
