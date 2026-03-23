@@ -64,6 +64,41 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const startTime = Date.now();
 
+  // ── Fila de Sincronização (Progresso Parcial) ─────────────────
+  let exercisesToSync = [];
+
+  function enqueueForSync(ex) {
+    ex.completed = true;
+    if (ex.prescriptionExerciseId && !exercisesToSync.includes(ex.prescriptionExerciseId)) {
+      exercisesToSync.push(ex.prescriptionExerciseId);
+    }
+    // Atualiza cache local para não perder caso recarregue a página
+    const treinoJSONL = sessionStorage.getItem("treinoAtivo");
+    if (treinoJSONL) {
+      const storedTreino = JSON.parse(treinoJSONL);
+      const tEx = storedTreino.exercises.find(e => e.prescriptionExerciseId === ex.prescriptionExerciseId);
+      if (tEx) tEx.completed = true;
+      sessionStorage.setItem("treinoAtivo", JSON.stringify(storedTreino));
+    }
+  }
+
+  function syncProgress() {
+    if (exercisesToSync.length === 0) return Promise.resolve();
+    const idsToSync = [...exercisesToSync];
+    return fetch("/api/prescricoes/me/complete", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ prescriptionExerciseIds: idsToSync }),
+    }).then(res => {
+      if (!res.ok) throw new Error("Falha na sincronização");
+      exercisesToSync = exercisesToSync.filter(id => !idsToSync.includes(id));
+    }).catch(err => {
+      console.error("Erro ao sincronizar progresso parcial:", err);
+      throw err;
+    });
+  }
+
   // ── Accordion Como Executar ───────────────────────────────────
   let howToOpen = false;
   if (howToToggle) {
@@ -373,49 +408,36 @@ document.addEventListener("DOMContentLoaded", () => {
     launchConfetti();
     completionOverlay.style.display = "flex";
 
-    // Marca todos como concluídos na API
-    const ids = exercises.map((e) => e.prescriptionExerciseId).filter(Boolean);
-    if (ids.length > 0) {
+    if (exercisesToSync.length > 0) {
       btnFinish.disabled = true;
       btnFinish.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Finalizando no servidor...';
 
-      fetch("/api/prescricoes/me/complete", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ prescriptionExerciseIds: ids }),
-      })
-        .then(async (res) => {
-          if (!res.ok) throw new Error("Falha na resposta do servidor");
-          
+      syncProgress()
+        .then(() => {
           btnFinish.disabled = false;
           btnFinish.innerHTML = '<i class="fa-solid fa-house"></i> IR PARA O INÍCIO';
           
-          // Sucesso: Remove o treino da memória local
           sessionStorage.removeItem("treinoAtivo");
-          
-          // Verifica conquistas
-          if (typeof checkMilestones === "function") {
-            checkMilestones();
-          }
+          if (typeof checkMilestones === "function") checkMilestones();
         })
         .catch((err) => {
           console.error("Erro ao marcar conclusão:", err);
           btnFinish.disabled = false;
           btnFinish.innerHTML = '<i class="fa-solid fa-rotate"></i> TENTAR NOVAMENTE';
           if (typeof showToast === "function") {
-              showToast("error", "Erro ao salvar no servidor. Verifique sua conexão e tente novamente.");
+              showToast("error", "Erro ao salvar no servidor. Verifique conexão e tente novamente.");
           }
         });
     } else {
-        // Se por algum motivo não houver IDs, apenas limpa
         sessionStorage.removeItem("treinoAtivo");
+        if (typeof checkMilestones === "function") checkMilestones();
     }
   }
 
   btnFinish.addEventListener("click", () => {
     window.location.href = "/pages/funcionalidades/treinamento.html";
   });
+
 
   // ── Confete ───────────────────────────────────────────────────
   function launchConfetti() {
@@ -447,6 +469,10 @@ document.addEventListener("DOMContentLoaded", () => {
   backBtn.addEventListener("click", () => {
     clearInterval(timerInterval);
     clearInterval(restInterval);
+    
+    // Sincroniza o progresso parcial antes de voltar
+    syncProgress().catch(e => console.error("Sincronização em background falhou:", e));
+    
     window.location.href = "/pages/funcionalidades/treinamento.html";
   });
 
@@ -468,7 +494,9 @@ document.addEventListener("DOMContentLoaded", () => {
       // Ainda tem séries desse exercício -> Tela de descanso
       startRestScreen();
     } else {
-      // Última série concluída -> Pula para o próximo exercício sem descanso
+      // Última série concluída -> Oculta o atual e prepara o próximo
+      enqueueForSync(exercises[currentExercise]);
+
       if (currentExercise >= totalExercises - 1) {
         showCompletion(); // Último exercício do treino
       } else {
