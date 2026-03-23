@@ -186,8 +186,8 @@
     right: 24px;
     width: 56px;
     height: 56px;
-    background-color: #5b8af5;
-    color: #fff;
+    background-color: #5b8af5 !important;
+    color: #fff !important;
     border: none;
     border-radius: 50%;
     box-shadow: 0 4px 15px rgba(91, 138, 245, 0.4);
@@ -197,31 +197,41 @@
     justify-content: center;
     font-size: 22px;
     z-index: 2000;
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s;
     border: 2px solid rgba(255, 255, 255, 0.2);
     -webkit-tap-highlight-color: transparent;
     user-select: none;
-    outline: none;
+    outline: none !important;
 }
 
-/* Evita que o hover fique "preso" em dispositivos touch (PWAs) */
+/* Hover real (apenas para dispositivos com mouse) */
 @media (hover: hover) {
     .btn-floating-bottom:hover {
-        background-color: #1a1a2e;
+        background-color: #1a1a2e !important;
         transform: translateY(-5px);
         box-shadow: 0 8px 25px rgba(26, 26, 46, 0.3);
     }
 }
 
-.btn-floating-bottom:focus {
-    outline: none;
+/* Garante que em touch o botão NUNCA mude de cor no foco ou hover */
+@media (hover: none) {
+    .btn-floating-bottom:hover,
+    .btn-floating-bottom:active,
+    .btn-floating-bottom:focus {
+        background-color: #5b8af5 !important;
+    }
+}
+
+.btn-floating-bottom:focus,
+.btn-floating-bottom:focus-visible {
+    outline: none !important;
+    background-color: #5b8af5 !important;
 }
 
 .btn-floating-bottom:active {
-    transform: scale(0.95);
-    transition: transform 0.1s;
+    transform: scale(0.92);
+    transition: transform 0.05s;
 }
-
 
 .btn-floating-bottom i {
     filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.1));
