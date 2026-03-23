@@ -318,9 +318,14 @@ document.addEventListener("DOMContentLoaded", () => {
     if (currentSet < totalSetsForExercise) {
       nextBtn.innerHTML = `<i class="fa-solid fa-check"></i> Série ${currentSet}/${totalSetsForExercise}`;
     } else {
-      nextBtn.innerHTML = `<i class="fa-solid fa-person-running"></i> Próximo Exer.`;
+      if (currentExercise >= totalExercises - 1) {
+        nextBtn.innerHTML = `<i class="fa-solid fa-flag-checkered"></i> Concluir Treino`;
+      } else {
+        nextBtn.innerHTML = `<i class="fa-solid fa-person-running"></i> Próximo Exer.`;
+      }
     }
   }
+
 
   // ── Pausar mídia ──────────────────────────────────────────────
   function pauseMedia() {
@@ -470,11 +475,18 @@ document.addEventListener("DOMContentLoaded", () => {
     clearInterval(timerInterval);
     clearInterval(restInterval);
     
-    // Sincroniza o progresso parcial antes de voltar
-    syncProgress().catch(e => console.error("Sincronização em background falhou:", e));
-    
-    window.location.href = "/pages/funcionalidades/treinamento.html";
+    // Espera o progresso sincronizar na API para evitar race condition
+    const originalHtml = backBtn.innerHTML;
+    backBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i>';
+    backBtn.disabled = true;
+
+    syncProgress()
+      .catch(e => console.error("Sincronização falhou na saída:", e))
+      .finally(() => {
+        window.location.href = "/pages/funcionalidades/treinamento.html";
+      });
   });
+
 
   pauseBtn.addEventListener("click", () => {
     isPaused = !isPaused;
