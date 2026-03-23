@@ -73,10 +73,31 @@
         </form>
     </div>
 
-    <!-- Botão Flutuante para Ir para o Final -->
-    <button class="btn-floating-bottom" onclick="window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })" title="Ir para o final">
+    <!-- Botão Flutuante para Navegação -->
+    <button id="scrollToBottomBtn" class="btn-floating-bottom" onclick="toggleScroll()" title="Rolar">
         <i class="fa-solid fa-chevron-down"></i>
     </button>
+
+    <script>
+        function toggleScroll() {
+            const isBottom = (window.innerHeight + window.scrollY) >= (document.documentElement.scrollHeight - 100);
+            if (isBottom) {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' });
+            }
+        }
+
+        window.addEventListener('scroll', () => {
+            const btn = document.getElementById('scrollToBottomBtn');
+            const isBottom = (window.innerHeight + window.scrollY) >= (document.documentElement.scrollHeight - 100);
+            if (isBottom) {
+                btn.classList.add('is-up');
+            } else {
+                btn.classList.remove('is-up');
+            }
+        });
+    </script>
 </body>
 
 
