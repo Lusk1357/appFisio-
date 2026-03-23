@@ -45,6 +45,34 @@ document.addEventListener("DOMContentLoaded", () => {
     if (dateDisplay) dateDisplay.innerText = `Feito em ${formattedDate}`;
   }
 
+  // ── Confete Automático ─────────────────────────────────────────
+  const completionCard = document.querySelector(".completion-card");
+  if (completionCard) {
+    const confettiArea = document.createElement("div");
+    confettiArea.className = "confetti-area";
+    confettiArea.id = "confettiArea";
+    completionCard.insertBefore(confettiArea, completionCard.firstChild);
+
+    const colors = [
+      "#5b8af5", "#a3cd39", "#f59e0b",
+      "#ef4444", "#8b5cf6", "#10b981",
+    ];
+    for (let i = 0; i < 80; i++) {
+        const piece = document.createElement("div");
+        piece.className = "confetti-piece";
+        piece.style.cssText = `
+        left: ${Math.random() * 100}%;
+        background: ${colors[Math.floor(Math.random() * colors.length)]};
+        width: ${6 + Math.random() * 8}px;
+        height: ${6 + Math.random() * 8}px;
+        border-radius: ${Math.random() > 0.5 ? "50%" : "2px"};
+        animation-delay: ${Math.random() * 1}s;
+        animation-duration: ${1.5 + Math.random() * 1.5}s;
+        `;
+        confettiArea.appendChild(piece);
+    }
+  }
+
   function showToast(type, message) {
     let toastContainer = document.getElementById("toast-container");
     if (!toastContainer) {

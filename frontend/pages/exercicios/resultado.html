@@ -18,56 +18,39 @@
 </head>
 
 <body>
-  <div class="app-container">
-    <div class="result-card">
-      <header class="top-bar">
-        <button class="back-btn" id="backBtn" aria-label="Voltar">
-          <i class="fa-solid fa-chevron-left"></i>
-        </button>
-        <h1>RESULTADO</h1>
-        <div style="width: 40px"></div>
-      </header>
-
-      <main class="content-body">
-        <div class="workout-info">
-          <h2 class="workout-title">Exercícios</h2>
-          <p class="workout-date" id="completionDate">Feito em 24/02/2026</p>
-          <p class="workout-step" id="workoutStep">Exercício —/—</p>
+  <!-- Overlay Dark Blue Background -->
+  <div class="completion-overlay">
+    <div class="completion-card">
+      <div class="completion-medal"><i class="fa-solid fa-medal"></i></div>
+      <h2 class="completion-title">TREINO CONCLUÍDO!</h2>
+      
+      <div class="completion-stats">
+        <div class="stat-item">
+          <span class="stat-icon"><i class="fa-solid fa-dumbbell"></i></span>
+          <span class="stat-value" id="statExercicios">0</span>
+          <span class="stat-label">exercícios</span>
         </div>
-
-        <h3 class="section-title">Sumário</h3>
-
-        <div class="stats-grid">
-          <div class="stat-card">
-            <span class="stat-label">Tempo Total</span>
-            <span class="stat-value" id="statTempo">00:00 min</span>
-          </div>
-          <div class="stat-card">
-            <span class="stat-label">Total de calorias</span>
-            <span class="stat-value" id="statCalorias">0 kcal</span>
-          </div>
-          <div class="stat-card">
-            <span class="stat-label">Total de exercícios</span>
-            <span class="stat-value" id="statExercicios">0 feitos</span>
-          </div>
-          <div class="stat-card">
-            <span class="stat-label">Peso total</span>
-            <span class="stat-value">59kg</span>
-          </div>
-          <div class="stat-card">
-            <span class="stat-label">Batimentos por minuto</span>
-            <span class="stat-value">- bpm</span>
-          </div>
-          <div class="stat-card">
-            <span class="stat-label">Intensidade</span>
-            <span class="stat-value">Moderada</span>
-          </div>
+        <div class="stat-item">
+          <span class="stat-icon"><i class="fa-solid fa-clock"></i></span>
+          <span class="stat-value" id="statTempo">00:00</span>
+          <span class="stat-label">tempo total</span>
         </div>
-      </main>
+      </div>
 
-      <footer class="bottom-action-bar">
-        <button class="btn-save" id="saveBtn">Salvar</button>
-      </footer>
+      <!-- Mantemos um fallback do statCalorias oculto só para o script não quebrar se quiser ler -->
+      <span id="statCalorias" style="display:none;"></span>
+      <span id="completionDate" style="display:none;"></span>
+      <span id="workoutStep" style="display:none;"></span>
+      <button id="backBtn" style="display:none;"></button>
+
+      <!-- Lista de exercícios feitos (vazia no mock, populada seria o ideal, mas simularemos a aparência) -->
+      <ul class="completion-list" id="completionList">
+        <li><i class="fa-solid fa-circle-check"></i> Treino Finalizado</li>
+      </ul>
+
+      <button class="btn-finish" id="saveBtn">
+        <i class="fa-solid fa-house"></i> Voltar ao início
+      </button>
     </div>
   </div>
 </body>
