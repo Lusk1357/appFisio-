@@ -182,3 +182,39 @@
         /* sem altura fixa para evitar scroll duplo */
     }
 }
+
+/* Botão Flutuante */
+.btn-floating-bottom {
+    position: fixed;
+    bottom: 30px;
+    right: 24px;
+    width: 56px;
+    height: 56px;
+    background-color: #5b8af5;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    box-shadow: 0 4px 15px rgba(91, 138, 245, 0.4);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    z-index: 2000;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.btn-floating-bottom:hover {
+    background-color: #1a1a2e;
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(26, 26, 46, 0.3);
+}
+
+.btn-floating-bottom:active {
+    transform: translateY(0);
+}
+
+.btn-floating-bottom i {
+    filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.1));
+}

@@ -20,6 +20,7 @@
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.3",
     "node-fetch": "^3.3.2",
+    "prisma-field-encryption": "^1.6.0",
     "puppeteer": "^24.39.1",
     "translate": "^3.0.1",
     "zod": "^4.3.6"
