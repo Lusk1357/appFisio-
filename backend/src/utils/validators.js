@@ -39,7 +39,8 @@ const routineSchema = z.object({
         id: z.string().uuid("ID de exercício inválido"),
         series: z.string().regex(/^(\d+\s*[xX*]\s*\d+|[\d+]+|[a-zA-Záàâãéèêíïóôõöúçñ\s.-]{2,})$/, "Formato de série inválido").max(50).optional(),
         observation: z.string().max(500).optional().nullable(),
-        restTime: z.union([z.string(), z.number()]).optional().transform(v => Number(v) || 60)
+        restTime: z.union([z.string(), z.number()]).optional().transform(v => Number(v) || 60),
+        howToExecute: z.string().max(5000).optional().nullable()
     })).optional().default([])
 });
 
@@ -71,7 +72,8 @@ const prescriptionSchema = z.object({
                 id: z.string().uuid("ID do exercício inválido").optional(),
                 series: z.string().regex(/^(\d+\s*[xX*]\s*\d+|[\d+]+|[a-zA-Záàâãéèêíïóôõöúçñ\s.-]{2,})$/, "Formato de série inválido").max(50).optional(),
                 observation: z.string().max(500).optional().nullable(),
-                restTime: z.union([z.string(), z.number()]).optional()
+                restTime: z.union([z.string(), z.number()]).optional(),
+                howToExecute: z.string().max(5000).optional().nullable()
             })
         ])
     ).optional().default([])
