@@ -10,7 +10,45 @@ document.addEventListener("DOMContentLoaded", () => {
     const imgPreviewTag = document.getElementById("imgPreviewTag");
 
     let currentMode = "local"; // "local" or "url"
+    
+    // ── Lógica do Dropdown Customizado ─────────────────────────
+    const categoryContainer = document.getElementById("categorySelectContainer");
+    const categoryTrigger = document.getElementById("categoryTrigger");
+    const categoryDropdown = document.getElementById("categoryDropdown");
+    const selectedText = document.getElementById("selectedCategoryText");
+    const hiddenInput = document.getElementById("categoria");
 
+    categoryTrigger.addEventListener("click", () => {
+        categoryContainer.classList.toggle("open");
+    });
+
+    categoryDropdown.querySelectorAll(".select-option").forEach(option => {
+        option.addEventListener("click", (e) => {
+            const val = e.target.dataset.value;
+            const text = e.target.textContent;
+
+            // Update UI
+            selectedText.textContent = text;
+            selectedText.classList.remove("placeholder");
+            
+            // Update value
+            hiddenInput.value = val;
+
+            // Highlight selected
+            categoryDropdown.querySelectorAll(".select-option").forEach(opt => opt.classList.remove("selected"));
+            e.target.classList.add("selected");
+
+            // Close
+            categoryContainer.classList.remove("open");
+        });
+    });
+
+    // Fechar ao clicar fora
+    document.addEventListener("click", (e) => {
+        if (!categoryContainer.contains(e.target)) {
+            categoryContainer.classList.remove("open");
+        }
+    });
     // ── Toast ──────────────────────────────────────────────────
     function showToast(type, message) {
         let toastContainer = document.getElementById("toast-container");

@@ -45,23 +45,27 @@
 
             <div class="form-group">
                 <label for="categoria">Categoria</label>
-                <div class="input-wrapper">
-                    <select id="categoria">
-                        <option value="" disabled selected>Selecione a categoria...</option>
-                        <option value="Cervical / Pescoço">Cervical / Pescoço</option>
-                        <option value="Ombro / Braço">Ombro / Braço</option>
-                        <option value="Cotovelo / Antebraço">Cotovelo / Antebraço</option>
-                        <option value="Punho / Mão">Punho / Mão</option>
-                        <option value="Coluna Lombar">Coluna Lombar</option>
-                        <option value="Coluna Torácica">Coluna Torácica</option>
-                        <option value="Core / Abdômen">Core / Abdômen</option>
-                        <option value="Quadril / Coxa">Quadril / Coxa</option>
-                        <option value="Joelho / Perna">Joelho / Perna</option>
-                        <option value="Tornozelo / Pé">Tornozelo / Pé</option>
-                        <option value="Respiratório">Respiratório</option>
-                        <option value="Geral / Funcional">Geral / Funcional</option>
-                    </select>
-                    <i class="fa-solid fa-tag input-icon"></i>
+                <div class="custom-select-container" id="categorySelectContainer">
+                    <div class="input-wrapper select-trigger" id="categoryTrigger">
+                        <span id="selectedCategoryText" class="placeholder">Selecione a categoria...</span>
+                        <i class="fa-solid fa-chevron-down arrow"></i>
+                    </div>
+                    <div class="select-dropdown" id="categoryDropdown">
+                        <div class="select-option" data-value="Cervical / Pescoço">Cervical / Pescoço</div>
+                        <div class="select-option" data-value="Ombro / Braço">Ombro / Braço</div>
+                        <div class="select-option" data-value="Cotovelo / Antebraço">Cotovelo / Antebraço</div>
+                        <div class="select-option" data-value="Punho / Mão">Punho / Mão</div>
+                        <div class="select-option" data-value="Coluna Lombar">Coluna Lombar</div>
+                        <div class="select-option" data-value="Coluna Torácica">Coluna Torácica</div>
+                        <div class="select-option" data-value="Core / Abdômen">Core / Abdômen</div>
+                        <div class="select-option" data-value="Quadril / Coxa">Quadril / Coxa</div>
+                        <div class="select-option" data-value="Joelho / Perna">Joelho / Perna</div>
+                        <div class="select-option" data-value="Tornozelo / Pé">Tornozelo / Pé</div>
+                        <div class="select-option" data-value="Respiratório">Respiratório</div>
+                        <div class="select-option" data-value="Geral / Funcional">Geral / Funcional</div>
+                    </div>
+                    <!-- Hidden input to keep compatibility with existing JS if needed, or we just use a variable -->
+                    <input type="hidden" id="categoria" name="categoria" value="">
                 </div>
             </div>
 
@@ -75,9 +79,9 @@
 
             <div class="form-group">
                 <label for="comoExecutar">Como Executar</label>
-                <div class="input-wrapper">
+                <div class="input-wrapper textarea-wrapper">
                     <textarea id="comoExecutar" rows="4" placeholder="Descreva o passo a passo de como realizar o exercício..."></textarea>
-                    <i class="fa-solid fa-clipboard-list input-icon" style="top:14px;"></i>
+                    <i class="fa-solid fa-clipboard-list input-icon" style="top:18px;"></i>
                 </div>
             </div>
 
