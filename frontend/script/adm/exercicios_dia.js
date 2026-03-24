@@ -212,7 +212,8 @@ document.addEventListener("DOMContentLoaded", () => {
 								type: pe.exercise.type,
 								series: pe.series,
 								observation: pe.observation,
-								restTime: pe.restTime
+								restTime: pe.restTime,
+								howToExecute: pe.howToExecute || pe.exercise.howToExecute || null
 							};
 
 							// Evita duplicatas caso a API retorne algo estranho (embora não devesse)
@@ -363,7 +364,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     id: ex.id,
                     series: ex.series,
                     observation: ex.observation,
-                    restTime: ex.restTime
+                    restTime: ex.restTime,
+                    howToExecute: ex.howToExecute || null
                 };
             });
 
@@ -458,7 +460,8 @@ document.addEventListener("DOMContentLoaded", () => {
 								type: re.exercise.type,
 								series: re.series || "3x15",
 								observation: re.observation || re.exercise.observation || null,
-								restTime: re.restTime || 60
+								restTime: re.restTime || 60,
+								howToExecute: re.howToExecute || re.exercise.howToExecute || null
 							};
 						});
 
@@ -511,6 +514,7 @@ document.addEventListener("DOMContentLoaded", () => {
 					document.getElementById("addRepsQty").value = parts[1] || "15";
 					document.getElementById("addRestTime").value = oldEx.restTime || "60";
 					document.getElementById("addObservation").value = oldEx.observation || "";
+					document.getElementById("addHowToExecute").value = oldEx.howToExecute || exObj.howToExecute || "";
 					
 					// Assegura visibilidade do checkbox no modal de opções finais
 					const applyAllOptionsContainer = document.getElementById("applyAllOptionsContainer");
@@ -532,6 +536,7 @@ document.addEventListener("DOMContentLoaded", () => {
 					document.getElementById("addRepsQty").value = "15";
 					document.getElementById("addRestTime").value = "60";
 					document.getElementById("addObservation").value = exObj.observation || "";
+					document.getElementById("addHowToExecute").value = exObj.howToExecute || "";
 					
 					// Assegura visibilidade do checkbox no modal de opções finais
 					const applyAllOptionsContainer = document.getElementById("applyAllOptionsContainer");
@@ -665,6 +670,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		document.getElementById("addRepsQty").value = parts[1] || "15";
 		document.getElementById("addRestTime").value = exObj.restTime || "60";
 		document.getElementById("addObservation").value = exObj.observation || "";
+		document.getElementById("addHowToExecute").value = exObj.howToExecute || "";
 
 		closeOverlay("overlayOptions");
 		
@@ -691,6 +697,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		const series = (sQty && rQty) ? `${sQty}x${rQty}` : "3x15";
 		const restTime = parseInt(document.getElementById("addRestTime").value.trim()) || 60;
 		const obs = document.getElementById("addObservation").value.trim();
+		const howToExecute = document.getElementById("addHowToExecute").value.trim() || null;
 
 		const currentDia = ctx.dias[currentDayIndex];
 		const exObj = pendingAddPayload.exObj;
@@ -710,14 +717,14 @@ document.addEventListener("DOMContentLoaded", () => {
 					// Edição: procura pelo ID original em todos os dias selecionados
 					const targetIdx = diaList.findIndex(item => item.id === exObj.id);
 					if (targetIdx !== -1) {
-						diaList[targetIdx] = { ...exObj, series, observation: obs, restTime: restTime };
+						diaList[targetIdx] = { ...exObj, series, observation: obs, restTime: restTime, howToExecute: howToExecute };
 					}
 				} else {
 					// Troca: procura o exercício ANTIGO (está sendo trocado) nos outros dias tbm
 					const oldExId = (d === currentDia) ? diaList[activeExerciseIndex]?.id : pendingAddPayload.oldId;
 					const targetIdx = diaList.findIndex(item => item.id === oldExId);
 					if (targetIdx !== -1) {
-						diaList[targetIdx] = { ...exObj, series, observation: obs, restTime: restTime };
+						diaList[targetIdx] = { ...exObj, series, observation: obs, restTime: restTime, howToExecute: howToExecute };
 					}
 				}
 			});
@@ -732,7 +739,7 @@ document.addEventListener("DOMContentLoaded", () => {
 			targetDays.forEach(d => {
 				const diaList = exerciciosPorDia[d];
 				if (!diaList.some(item => item.id === exObj.id)) {
-					diaList.push({ ...exObj, series, observation: obs, restTime: restTime });
+					diaList.push({ ...exObj, series, observation: obs, restTime: restTime, howToExecute: howToExecute });
 				}
 			});
 

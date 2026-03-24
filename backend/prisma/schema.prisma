@@ -97,6 +97,7 @@ model PrescriptionExercise {
   observation    String?
   restTime       Int          @default(60)
   completed      Boolean      @default(false)
+  howToExecute   String?
   exercise       Exercise     @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
   prescription   Prescription @relation(fields: [prescriptionId], references: [id])
 }

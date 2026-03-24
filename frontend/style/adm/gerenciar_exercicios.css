@@ -132,6 +132,39 @@ body {
     flex-wrap: wrap;
 }
 
+/* ── Category Filters ── */
+.category-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 14px;
+}
+
+.category-chip {
+    padding: 6px 14px;
+    background: #f1f5f9;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid transparent;
+    white-space: nowrap;
+    font-family: "DM Sans", sans-serif;
+}
+
+.category-chip:hover {
+    background: #e2e8f0;
+    color: #475569;
+}
+
+.category-chip.active {
+    background: #5b8af5;
+    color: #fff;
+    border-color: #5b8af5;
+}
+
 .filter-label {
     font-size: 12px;
     font-weight: 500;

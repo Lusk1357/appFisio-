@@ -134,7 +134,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         name: ex.name,
                         series: seriesReal,
                         observation: obsReal,
-                        howToExecute: ex.howToExecute, // Adicionado
+                        howToExecute: associacao.howToExecute || ex.howToExecute,
                         restTime: associacao.restTime || ex.restTime || 60,
                         type: ex.type || "",
                         videoUrl: ex.videoUrl || "",

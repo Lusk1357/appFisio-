@@ -67,7 +67,10 @@ exports.getAllExercises = async (req, res) => {
                 type: true,
                 bodyCategory: true,
                 imageUrl: true,
-                duration: true
+                duration: true,
+                howToExecute: true,
+                observation: true,
+                videoUrl: true
             }
         });
         res.status(200).json(exercises);

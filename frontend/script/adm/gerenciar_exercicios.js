@@ -5,6 +5,7 @@
 (function () {
     let allExercicios = [];
     let currentSort = "az";
+    let currentCategory = "all";
     let deleteTargetId = null;
 
     // ── Elementos ──────────────────────────────────────────────
@@ -149,11 +150,44 @@
             });
             if (!res.ok) throw new Error("Falha ao carregar exercícios.");
             allExercicios = await res.json();
+            renderCategoryFilters();
             renderList();
         } catch (error) {
             console.error(error);
             list.innerHTML = '<p class="empty-msg">Erro ao carregar exercícios.</p>';
         }
+    }
+
+    // ── Filtros de Categoria ──────────────────────────────────
+    function renderCategoryFilters() {
+        const container = document.getElementById("categoryFilters");
+        if (!container) return;
+
+        container.innerHTML = '<span class="category-chip active" data-category="all">Todos</span>';
+
+        const categories = [...new Set(allExercicios.map(ex => ex.type).filter(Boolean))].sort((a, b) => a.localeCompare(b, "pt-BR"));
+
+        categories.forEach(cat => {
+            const chip = document.createElement("span");
+            chip.className = "category-chip";
+            chip.dataset.category = cat;
+            chip.textContent = cat;
+            container.appendChild(chip);
+        });
+
+        setupCategoryFilters();
+    }
+
+    function setupCategoryFilters() {
+        const chips = document.querySelectorAll("#categoryFilters .category-chip");
+        chips.forEach(chip => {
+            chip.addEventListener("click", () => {
+                chips.forEach(c => c.classList.remove("active"));
+                chip.classList.add("active");
+                currentCategory = chip.dataset.category;
+                renderList();
+            });
+        });
     }
 
     // ── Ordenação ─────────────────────────────────────────────
@@ -178,8 +212,12 @@
         const query = (searchInput.value || "").trim().toLowerCase();
         let filtered = allExercicios;
 
+        if (currentCategory !== "all") {
+            filtered = filtered.filter(ex => (ex.type || "") === currentCategory);
+        }
+
         if (query) {
-            filtered = allExercicios.filter(ex =>
+            filtered = filtered.filter(ex =>
                 (ex.name || "").toLowerCase().includes(query) ||
                 (ex.type || "").toLowerCase().includes(query)
             );

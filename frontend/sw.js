@@ -1,4 +1,4 @@
-const CACHE_NAME = 'profisio-cache-v1';
+const CACHE_NAME = 'profisio-cache-v2';
 
 // Arquivos mínimos para a tela de erro / load rápido
 const urlsToCache = [

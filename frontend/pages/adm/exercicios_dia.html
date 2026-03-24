@@ -18,7 +18,7 @@
   <script src="/script/authGuard.js"></script>
   <script>verificarAcesso("ADMIN");</script>
   <script src="/script/components.js" defer></script>
-  <script src="/script/adm/exercicios_dia.js" defer></script>
+  <script src="/script/adm/exercicios_dia.js?v=2" defer></script>
 </head>
 
 <body>
@@ -170,6 +170,12 @@
             específica (Opcional)</label>
           <input type="text" id="addObservation" placeholder="Ex: Cuidado com o limite..."
             style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-family: 'DM Sans', sans-serif;" />
+        </div>
+        <div class="form-group" style="margin-bottom: 16px;">
+          <label for="addHowToExecute"
+            style="display: block; font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 5px;">Como Executar (Opcional — personalizado para este paciente)</label>
+          <textarea id="addHowToExecute" rows="3" placeholder="Descreva o passo a passo personalizado..."
+            style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-family: 'DM Sans', sans-serif; resize: vertical; font-size: 13px;"></textarea>
         </div>
         <button id="btnConfirmAddOptions"
           style="width: 100%; margin-top: 10px; padding: 15px; border: none; border-radius: 12px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 700; color: #fff; background: #1a1a2e; letter-spacing: 1px; cursor: pointer;">CONFIRMAR

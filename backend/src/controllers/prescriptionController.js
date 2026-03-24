@@ -4,7 +4,7 @@ const prisma = require('../utils/prisma');
 exports.createPrescription = async (req, res) => {
     try {
         const { patientId, assignedDay, exercises } = req.body;
-        // exercises é uma array de objetos {id, series, observation, restTime} ou IDs
+        // exercises é uma array de objetos {id, series, observation, restTime, howToExecute} ou IDs
         
         if (!patientId || !assignedDay || !exercises) {
             return res.status(400).json({ erro: "Paciente, Data e exercícios (mesmo que vazio) são obrigatórios." });
@@ -74,7 +74,8 @@ exports.createPrescription = async (req, res) => {
                             series: ex.series || "3x15",
                             observation: ex.observation || null,
                             restTime: ex.restTime !== undefined ? Number(ex.restTime) : 60,
-                            completed: isCompleted // Preserva o progresso!
+                            completed: isCompleted, // Preserva o progresso!
+                            howToExecute: ex.howToExecute || null
                         }
                     });
                 });
