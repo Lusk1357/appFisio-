@@ -1,12 +1,35 @@
 /* perfil_paciente.js */
 
 document.addEventListener("DOMContentLoaded", () => {
-	// Lê o paciente salvo ao clicar na grade
 	const raw = sessionStorage.getItem("pacienteSelecionado");
 	if (!raw) return;
 
-	const paciente = JSON.parse(raw);
+	let paciente = JSON.parse(raw);
 
+	// Tenta carregar dados completos do servidor para garantir que cards não fiquem vazios
+	fetchPatientDetails(paciente.id);
+
+	renderInitialData(paciente);
+});
+
+async function fetchPatientDetails(id) {
+	try {
+		const res = await fetch(`/api/pacientes/${id}`, { credentials: "include" });
+		if (!res.ok) return;
+		
+		const fullPatient = await res.json();
+		
+		// Atualiza sessionStorage para as demais telas (como Edição) terem os dados completos
+		sessionStorage.setItem("pacienteSelecionado", JSON.stringify(fullPatient));
+		
+		// Renderiza novamente com os dados completos
+		renderInitialData(fullPatient);
+	} catch (err) {
+		console.error("Erro ao carregar detalhes do paciente:", err);
+	}
+}
+
+function renderInitialData(paciente) {
 	// Nome e Email
 	const nameEl = document.getElementById("patientName");
 	if (nameEl) nameEl.textContent = paciente.name || "—";
@@ -37,10 +60,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
 	// Observações Clínicas
 	const notesEl = document.getElementById("patientNotesInput");
-	if (notesEl && paciente.patientProfile && paciente.patientProfile.notes) {
-		notesEl.value = paciente.patientProfile.notes;
+	if (notesEl && profile.notes) {
+		notesEl.value = profile.notes;
 	}
-});
+}
 
 // Salvar anotações do paciente
 async function savePatientNotes() {
