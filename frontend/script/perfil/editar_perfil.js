@@ -114,9 +114,10 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("inputHeight").value = p.height || "";
       document.getElementById("inputAge").value = p.age || "";
 
-      // Setar genero base
+      // Setar genero base (com normalização de M/F/O antigos)
       if (p.gender) {
-        genderSelect.value = p.gender;
+        const genderMap = { 'M': 'Masculino', 'F': 'Feminino', 'O': 'Outro' };
+        genderSelect.value = genderMap[p.gender] || p.gender;
         genderSelect.dispatchEvent(new Event("change"));
       }
 

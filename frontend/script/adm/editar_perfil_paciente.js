@@ -24,7 +24,12 @@ document.addEventListener("DOMContentLoaded", () => {
 	setValue("fieldEndereco", paciente.patientProfile?.endereco || "");
 	
 	setValue("fieldAge", paciente.patientProfile?.age || "");
-	setValue("fieldGender", paciente.patientProfile?.gender || "");
+	
+	// Normaliza gênero antigo se necessário
+	const gen = paciente.patientProfile?.gender || "";
+	const genderMap = { 'M': 'Masculino', 'F': 'Feminino', 'O': 'Outro' };
+	setValue("fieldGender", genderMap[gen] || gen);
+
 	setValue("fieldWeight", paciente.patientProfile?.weight || "");
 	setValue("fieldHeight", paciente.patientProfile?.height || "");
 
