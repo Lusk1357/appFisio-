@@ -104,7 +104,13 @@ exports.updatePatient = async (req, res) => {
             });
         }
 
-        const { passwordHash, ...safe } = updatedUser;
+        // 4. Busca o usuário completo para retornar ao frontend
+        const finalPatient = await prisma.user.findUnique({
+            where: { id },
+            include: { patientProfile: true }
+        });
+        
+        const { passwordHash, ...safe } = finalPatient;
         res.status(200).json({ sucesso: true, paciente: safe });
     } catch (error) {
         console.error("Erro ao atualizar paciente:", error);
@@ -224,7 +230,14 @@ exports.updateMe = async (req, res) => {
             });
         }
 
-        res.status(200).json({ sucesso: true, mensagem: "Perfil atualizado com sucesso!" });
+        // Busca o usuário completo para retornar ao frontend
+        const finalUser = await prisma.user.findUnique({
+            where: { id: userId },
+            include: { patientProfile: true }
+        });
+        
+        const { passwordHash, ...safe } = finalUser;
+        res.status(200).json({ sucesso: true, paciente: safe, mensagem: "Perfil atualizado com sucesso!" });
     } catch (error) {
         console.error("Erro ao atualizar meu perfil:", error);
         res.status(500).json({ erro: "Erro interno no servidor." });

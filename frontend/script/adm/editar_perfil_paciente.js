@@ -224,36 +224,22 @@ document.addEventListener("DOMContentLoaded", () => {
 				btnSave.textContent = "SALVAR";
 				return;
 			}
+			
+			// Atualiza sessionStorage com os dados OFICIAIS retornados pelo servidor
+			if (data.paciente) {
+				sessionStorage.setItem("pacienteSelecionado", JSON.stringify(data.paciente));
+				paciente = data.paciente;
 
-			// Atualiza sessionStorage para a tela de perfil refletir as mudanças
-			const atualizado = {
-				...paciente,
-				name: nomeVal,
-				email: payload.email,
-				patientProfile: {
-					...(paciente.patientProfile || {}),
-					telefone: payload.telefone,
-					estado: payload.estado,
-					cidade: payload.cidade,
-					bairro: payload.bairro,
-					endereco: payload.endereco,
-					cep: payload.cep,
-					age: payload.age,
-					gender: payload.gender,
-					weight: payload.weight,
-					height: payload.height
-				}
-			};
-			sessionStorage.setItem("pacienteSelecionado", JSON.stringify(atualizado));
-			paciente = atualizado;
-
-			// Atualiza nome no topo imediatamente
-			const nameEl = document.getElementById("patientName");
-			if (nameEl) nameEl.textContent = atualizado.name.toUpperCase();
+				// Atualiza nome no topo imediatamente
+				const nameEl = document.getElementById("patientName");
+				if (nameEl) nameEl.textContent = data.paciente.name.toUpperCase();
+			}
 
 			if (typeof showToast === "function") showToast("success", "Perfil atualizado com sucesso!");
 
-			setTimeout(() => history.back(), 1800);
+			setTimeout(() => {
+				window.location.href = "/pages/adm/perfil_paciente.html";
+			}, 1800);
 		} catch (error) {
 			console.error("Erro:", error);
 			if (typeof showToast === "function") showToast("error", "Erro de conexão.");

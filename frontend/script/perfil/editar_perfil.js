@@ -160,13 +160,17 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       if (!res.ok) throw new Error("Erro na atualização");
+      const data = await res.json();
 
-      // Atualizar LocalStorage para sincronizar Home/Menu Lateral
-      const loggedUserJSON = localStorage.getItem("userProFisio");
-      if (loggedUserJSON) {
-        const user = JSON.parse(loggedUserJSON);
-        user.nome = payload.name;
-        localStorage.setItem("userProFisio", JSON.stringify(user));
+      // Atualizar LocalStorage com os dados REAIS retornados pelo servidor
+      if (data.paciente) {
+        const loggedUserJSON = localStorage.getItem("userProFisio");
+        if (loggedUserJSON) {
+          const user = JSON.parse(loggedUserJSON);
+          user.nome = data.paciente.name;
+          // Se quiser salvar mais dados no localStorage, aqui é o lugar
+          localStorage.setItem("userProFisio", JSON.stringify(user));
+        }
       }
 
       saveBtn.innerHTML = '<i class="fa-solid fa-check"></i> SALVO!';
