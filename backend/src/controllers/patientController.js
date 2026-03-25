@@ -57,7 +57,7 @@ exports.getPatientById = async (req, res) => {
 exports.updatePatient = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, email, password, telefone, estado, cidade, bairro, endereco, cep, notes, weight, height, age, gender } = req.body;
+        const { name, email, password, telefone, estado, cidade, bairro, endereco, cep, notes, weight, height, age, gender, avatar } = req.body;
 
         // 1. Verifica unicidade de e-mail se estiver sendo alterado
         if (email) {
@@ -85,20 +85,22 @@ exports.updatePatient = async (req, res) => {
         // 3. Atualiza campos extras no PatientProfile (incluindo dados clínicos novos)
         if (telefone !== undefined || estado !== undefined || cidade !== undefined || bairro !== undefined || 
             endereco !== undefined || cep !== undefined || notes !== undefined || 
-            weight !== undefined || height !== undefined || age !== undefined || gender !== undefined) {
+            weight !== undefined || height !== undefined || age !== undefined || gender !== undefined || avatar !== undefined) {
             
-            const parsedWeight = weight ? parseFloat(weight) : undefined;
-            const parsedHeight = height ? parseFloat(height) : undefined;
-            const parsedAge = age ? parseInt(age, 10) : undefined;
+            const parsedWeight = (weight !== undefined && weight !== null && weight !== "") ? parseFloat(weight) : undefined;
+            const parsedHeight = (height !== undefined && height !== null && height !== "") ? parseFloat(height) : undefined;
+            const parsedAge = (age !== undefined && age !== null && age !== "") ? parseInt(age, 10) : undefined;
+
+            console.log(`[DEBUG] Atualizando PatientProfile id=${id}`, { parsedWeight, parsedHeight, parsedAge });
 
             await prisma.patientProfile.upsert({
                 where: { userId: id },
                 update: { 
-                    telefone, estado, cidade, bairro, endereco, cep, notes,
+                    telefone, estado, cidade, bairro, endereco, cep, notes, avatar,
                     weight: parsedWeight, height: parsedHeight, age: parsedAge, gender
                 },
                 create: { 
-                    userId: id, telefone, estado, cidade, bairro, endereco, cep, notes,
+                    userId: id, telefone, estado, cidade, bairro, endereco, cep, notes, avatar,
                     weight: parsedWeight, height: parsedHeight, age: parsedAge, gender
                 }
             });
@@ -206,9 +208,9 @@ exports.updateMe = async (req, res) => {
             bairro !== undefined || cep !== undefined || avatar !== undefined) {
 
             // Garantir que os numéricos sejam convertidos corretamentes se vierem como string
-            const parsedWeight = weight ? parseFloat(weight) : undefined;
-            const parsedHeight = height ? parseFloat(height) : undefined;
-            const parsedAge = age ? parseInt(age, 10) : undefined;
+            const parsedWeight = (weight !== undefined && weight !== null && weight !== "") ? parseFloat(weight) : undefined;
+            const parsedHeight = (height !== undefined && height !== null && height !== "") ? parseFloat(height) : undefined;
+            const parsedAge = (age !== undefined && age !== null && age !== "") ? parseInt(age, 10) : undefined;
 
             updatedProfile = await prisma.patientProfile.upsert({
                 where: { userId: userId },
