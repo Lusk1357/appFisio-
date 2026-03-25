@@ -25,7 +25,8 @@ exports.createRoutine = async (req, res) => {
                         exerciseId: ex.id,
                         series: ex.series || "3x15",
                         observation: ex.observation || null,
-                        restTime: ex.restTime !== undefined ? Number(ex.restTime) : 60
+                        restTime: ex.restTime !== undefined ? Number(ex.restTime) : 60,
+                        howToExecute: ex.howToExecute || null
                     }
                 });
             });
@@ -78,7 +79,8 @@ exports.updateRoutine = async (req, res) => {
                         exerciseId: ex.id,
                         series: ex.series || "3x15",
                         observation: ex.observation || null,
-                        restTime: ex.restTime !== undefined ? Number(ex.restTime) : 60
+                        restTime: ex.restTime !== undefined ? Number(ex.restTime) : 60,
+                        howToExecute: ex.howToExecute || null
                     }
                 });
             });
@@ -120,18 +122,10 @@ exports.deleteRoutine = async (req, res) => {
 exports.getAllRoutines = async (req, res) => {
     try {
         const routines = await prisma.routineTemplate.findMany({
-            select: {
-                id: true,
-                name: true,
-                description: true,
-                createdAt: true,
+            include: {
                 exercises: {
-                    select: {
-                        exercise: {
-                            select: {
-                                name: true
-                            }
-                        }
+                    include: {
+                        exercise: true
                     }
                 }
             },
@@ -141,5 +135,31 @@ exports.getAllRoutines = async (req, res) => {
     } catch (error) {
         console.error("Erro ao buscar rotinas:", error);
         res.status(500).json({ erro: "Falha na base de dados ao listar rotinas." });
+    }
+};
+
+// ADMIN (ou paciente) busca UMA rotina específica por ID
+exports.getRoutineById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const routine = await prisma.routineTemplate.findUnique({
+            where: { id },
+            include: {
+                exercises: {
+                    include: {
+                        exercise: true
+                    }
+                }
+            }
+        });
+
+        if (!routine) {
+            return res.status(404).json({ erro: "Rotina não encontrada." });
+        }
+
+        res.status(200).json(routine);
+    } catch (error) {
+        console.error("Erro ao buscar rotina por ID:", error);
+        res.status(500).json({ erro: "Falha na base de dados ao buscar rotina." });
     }
 };

@@ -153,7 +153,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	}
 
 	const paciente = JSON.parse(rawPac);
-	const ctx = JSON.parse(rawCtx); // { ano, mes, dias[] }
+	const ctx = JSON.parse(rawCtx); // { dates: ["YYYY-MM-DD", ...] }
 
 	// ── Nomes dos dias e meses ────────────────────────────────────
 	const DIAS_SEMANA = [
@@ -183,52 +183,57 @@ document.addEventListener("DOMContentLoaded", () => {
 	// ── Estado ────────────────────────────────────────────────────
 	let currentDayIndex = 0; // índice dentro de ctx.dias[]
 
-	// exerciciosPorDia: { [dia]: [{id, name}, ...] }
+	// exerciciosPorDia: { ["YYYY-MM-DD"]: [{id, name}, ...] }
 	const exerciciosPorDia = {};
-	ctx.dias.forEach((d) => {
-		exerciciosPorDia[d] = [];
+	ctx.dates.forEach((dStr) => {
+		exerciciosPorDia[dStr] = [];
 	});
 
 	// Buscando treinos do banco para pré-preencher
 	async function loadExistingPrescriptions() {
 		try {
-			const res = await fetch(`/api/prescricoes/admin/${paciente.id}?month=${ctx.mes + 1}&year=${ctx.ano}`, {
-				credentials: "include"
-			});
-			if (res.ok) {
-				const treinos = await res.json();
+			// Identifica todos os meses únicos que precisamos buscar
+			const mesesUnicos = [...new Set(ctx.dates.map(d => d.substring(0, 7)))]; // ["YYYY-MM", ...]
 
-				treinos.forEach(treino => {
-					const assignedDate = new Date(treino.assignedDay);
-					// Usamos getUTCDate() para evitar que o fuso horário local altere o dia (ex: 22 virar 21)
-					const dia = assignedDate.getUTCDate();
-
-					// Se o administrador abriu esse dia no calendário, carregamos os ex.
-					if (ctx.dias.includes(dia)) {
-						treino.exercises.forEach(pe => {
-							const exObj = {
-								id: pe.exercise.id,
-								name: pe.exercise.name,
-								type: pe.exercise.type,
-								series: pe.series,
-								observation: pe.observation,
-								restTime: pe.restTime,
-								howToExecute: pe.howToExecute || pe.exercise.howToExecute || null
-							};
-
-							// Evita duplicatas caso a API retorne algo estranho (embora não devesse)
-							const jaTem = exerciciosPorDia[dia].some(e => e.id === exObj.id);
-							if (!jaTem) {
-								exerciciosPorDia[dia].push(exObj);
-							}
-						});
-					}
+			for (const mesKey of mesesUnicos) {
+				const [ano, mes] = mesKey.split("-");
+				const res = await fetch(`/api/prescricoes/admin/${paciente.id}?month=${parseInt(mes)}&year=${ano}`, {
+					credentials: "include"
 				});
+				
+				if (res.ok) {
+					const treinos = await res.json();
+					treinos.forEach(treino => {
+						const assignedDate = new Date(treino.assignedDay);
+						const dStr = assignedDate.toISOString().split('T')[0];
 
-				// Re-renderiza após carregar os dados
-				renderExercises();
-				updateSaveBtn();
+						// Se essa data está no nosso contexto, carregamos os ex.
+						if (exerciciosPorDia[dStr]) {
+							treino.exercises.forEach(pe => {
+								const exObj = {
+									id: pe.exercise.id,
+									name: pe.exercise.name,
+									type: pe.exercise.type,
+									series: pe.series,
+									observation: pe.observation,
+									restTime: pe.restTime,
+									howToExecute: pe.howToExecute || pe.exercise.howToExecute || null,
+                                    imageUrl: pe.exercise.imageUrl || null
+								};
+
+								const jaTem = exerciciosPorDia[dStr].some(e => e.id === exObj.id);
+								if (!jaTem) {
+									exerciciosPorDia[dStr].push(exObj);
+								}
+							});
+						}
+					});
+				}
 			}
+
+			// Re-renderiza após carregar os dados
+			renderExercises();
+			updateSaveBtn();
 		} catch (error) {
 			console.error("Erro ao puxar prescrições antigas", error);
 		}
@@ -262,8 +267,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	}
 
 	// ── Label mês/ano ─────────────────────────────────────────────
-	document.getElementById("monthYearLabel").textContent =
-		`${MESES[ctx.mes]} ${ctx.ano}`;
+	// (Atualizado dinamicamente no renderDayNav)
 
 	// ── Navegação de dias ─────────────────────────────────────────
 	renderDayNav();
@@ -278,7 +282,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	});
 
 	document.getElementById("btnNextDay").addEventListener("click", () => {
-		if (currentDayIndex < ctx.dias.length - 1) {
+		if (currentDayIndex < ctx.dates.length - 1) {
 			currentDayIndex++;
 			renderDayNav();
 			renderExercises();
@@ -286,32 +290,28 @@ document.addEventListener("DOMContentLoaded", () => {
 	});
 
 	function renderDayNav() {
-		const d = ctx.dias[currentDayIndex];
-		const dateObj = new Date(ctx.ano, ctx.mes, d);
+		const dStr = ctx.dates[currentDayIndex];
+		const [ano, mes, dia] = dStr.split("-").map(Number);
+		const dateObj = new Date(ano, mes - 1, dia);
 		const diaSemana = DIAS_SEMANA[dateObj.getDay()];
 
-		// Monta label com TODOS os dias: "Segunda 01, Terça 02, ..."
-		const allDaysLabel = ctx.dias
-			.map((day) => {
-				const obj = new Date(ctx.ano, ctx.mes, day);
-				return `${DIAS_SEMANA[obj.getDay()]} ${String(day).padStart(2, "0")}`;
-			})
-			.join(", ");
+		document.getElementById("monthYearLabel").textContent =
+			`${MESES[mes - 1]} ${ano}`;
 
 		document.getElementById("dayLabel").textContent =
-			`${diaSemana} ${String(d).padStart(2, "0")}`;
+			`${diaSemana} ${String(dia).padStart(2, "0")}`;
 
 		// Esconde setas quando não há mais dias naquela direção
 		document.getElementById("btnPrevDay").style.visibility =
 			currentDayIndex === 0 ? "hidden" : "visible";
 		document.getElementById("btnNextDay").style.visibility =
-			currentDayIndex === ctx.dias.length - 1 ? "hidden" : "visible";
+			currentDayIndex === ctx.dates.length - 1 ? "hidden" : "visible";
 	}
 
 	// ── Render lista de exercícios ────────────────────────────────
 	function renderExercises() {
-		const dia = ctx.dias[currentDayIndex];
-		const list = exerciciosPorDia[dia];
+		const dStr = ctx.dates[currentDayIndex];
+		const list = exerciciosPorDia[dStr];
 		const container = document.getElementById("exercisesList");
 		container.innerHTML = "";
 
@@ -336,7 +336,11 @@ document.addEventListener("DOMContentLoaded", () => {
 		block.innerHTML = `
       <div class="exercise-bg"></div>
       <div class="exercise-overlay">
-        <span class="exercise-name">${exObj.name}</span>
+        ${exObj.imageUrl 
+            ? `<img src="${exObj.imageUrl}" class="exercise-block-thumb" alt="${escapeHTML(exObj.name)}">` 
+            : `<div class="exercise-block-thumb-placeholder"><i class="fa-solid fa-dumbbell"></i></div>`
+        }
+        <span class="exercise-name">${escapeHTML(exObj.name)}</span>
       </div>
     `;
 
@@ -354,11 +358,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
 	async function salvar() {
 		const promessas = [];
-		ctx.dias.forEach((d) => {
-			const exerciciosDoDia = exerciciosPorDia[d];
+		ctx.dates.forEach((dStr) => {
+			const exerciciosDoDia = exerciciosPorDia[dStr];
+			const [ano, mes, dia] = dStr.split("-").map(Number);
 			
             // Formata ISO date do dia correspondente
-            const dataAtribuida = new Date(ctx.ano, ctx.mes, d);
             const arrayIds = exerciciosDoDia.map(ex => {
                 return {
                     id: ex.id,
@@ -375,7 +379,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 credentials: "include",
                 body: JSON.stringify({
                     patientId: paciente.id,
-                    assignedDay: new Date(Date.UTC(ctx.ano, ctx.mes, d)).toISOString(),
+                    assignedDay: new Date(Date.UTC(ano, mes - 1, dia)).toISOString(),
                     exercises: arrayIds
                 })
             });
@@ -414,13 +418,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
 		// Mostra ou esconde o "Aplicar a todos" (se tiver múltiplos dias no contexto)
 		const applyAllContainer = document.getElementById("applyAllContainer");
-		if (ctx.dias.length > 1 && swappingIndex === null) {
+		if (ctx.dates.length > 1 && swappingIndex === null) {
 			applyAllContainer.style.display = "flex";
 		} else {
 			applyAllContainer.style.display = "none";
 		}
 
-		const diaInfo = ctx.dias[currentDayIndex];
+		const diaInfo = ctx.dates[currentDayIndex];
 		const list = exerciciosPorDia[diaInfo];
 
 		if (isInitialLoading) {
@@ -461,11 +465,12 @@ document.addEventListener("DOMContentLoaded", () => {
 								series: re.series || "3x15",
 								observation: re.observation || re.exercise.observation || null,
 								restTime: re.restTime || 60,
-								howToExecute: re.howToExecute || re.exercise.howToExecute || null
+								howToExecute: re.howToExecute || re.exercise.howToExecute || null,
+                                imageUrl: re.exercise.imageUrl || null
 							};
 						});
 
-						const targetDays = applyToAll ? ctx.dias : [diaInfo];
+						const targetDays = applyToAll ? ctx.dates : [diaInfo];
 						targetDays.forEach(d => {
 							const diaList = exerciciosPorDia[d];
 							exObjs.forEach(exObj => {
@@ -497,7 +502,16 @@ document.addEventListener("DOMContentLoaded", () => {
 			if (jaFoiAdd) return;
 
 			const li = document.createElement("li");
-			li.innerHTML = escapeHTML(exObj.name);
+			li.innerHTML = `
+                ${exObj.imageUrl 
+                    ? `<img src="${exObj.imageUrl}" class="exercise-thumb" alt="${escapeHTML(exObj.name)}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">` 
+                    : ''
+                }
+                <div class="exercise-thumb-placeholder" style="${exObj.imageUrl ? 'display:none;' : 'display:flex;'}">
+                    <i class="fa-solid fa-dumbbell"></i>
+                </div>
+                <span>${escapeHTML(exObj.name)}</span>
+            `;
 			li.addEventListener("click", () => {
 				const isSwap = (swappingIndex !== null);
 				
@@ -518,7 +532,7 @@ document.addEventListener("DOMContentLoaded", () => {
 					
 					// Assegura visibilidade do checkbox no modal de opções finais
 					const applyAllOptionsContainer = document.getElementById("applyAllOptionsContainer");
-					if (ctx.dias.length > 1) {
+					if (ctx.dates.length > 1) {
 						applyAllOptionsContainer.style.display = "flex";
 					} else {
 						applyAllOptionsContainer.style.display = "none";
@@ -540,7 +554,7 @@ document.addEventListener("DOMContentLoaded", () => {
 					
 					// Assegura visibilidade do checkbox no modal de opções finais
 					const applyAllOptionsContainer = document.getElementById("applyAllOptionsContainer");
-					if (ctx.dias.length > 1) {
+					if (ctx.dates.length > 1) {
 						applyAllOptionsContainer.style.display = "flex";
 					} else {
 						applyAllOptionsContainer.style.display = "none";
@@ -563,8 +577,8 @@ document.addEventListener("DOMContentLoaded", () => {
 	// ── Pop-up: opções ────────────────────────────────────────────
 	function openOptions(idx) {
 		activeExerciseIndex = idx;
-		const dia = ctx.dias[currentDayIndex];
-		const exObj = exerciciosPorDia[dia][idx];
+		const dStr = ctx.dates[currentDayIndex];
+		const exObj = exerciciosPorDia[dStr][idx];
 		document.getElementById("optionsTitle").textContent = exObj.name;
 		openOverlay("overlayOptions");
 	}
@@ -575,13 +589,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
 	// APAGAR
 	document.getElementById("optDelete").addEventListener("click", () => {
-		const dia = ctx.dias[currentDayIndex];
-		const exObj = exerciciosPorDia[dia][activeExerciseIndex];
+		const dStr = ctx.dates[currentDayIndex];
+		const exObj = exerciciosPorDia[dStr][activeExerciseIndex];
 		document.getElementById("deleteExName").textContent = exObj.name;
 		
 		// Mostra checkbox se houver múltiplos dias
 		const applyAllDeleteContainer = document.getElementById("applyAllDeleteContainer");
-		if (ctx.dias.length > 1) {
+		if (ctx.dates.length > 1) {
 			applyAllDeleteContainer.style.display = "flex";
 		} else {
 			applyAllDeleteContainer.style.display = "none";
@@ -597,7 +611,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	});
 
 	document.getElementById("btnDeleteYes").addEventListener("click", () => {
-		const currentDia = ctx.dias[currentDayIndex];
+		const currentDia = ctx.dates[currentDayIndex];
 		const diaList = exerciciosPorDia[currentDia];
 
 		if (activeExerciseIndex === null || activeExerciseIndex >= diaList.length) {
@@ -609,7 +623,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		const exIdToDelete = diaList[activeExerciseIndex].id;
 		const chkApplyAllDelete = document.getElementById("chkApplyAllDelete");
 		const applyToAll = chkApplyAllDelete && chkApplyAllDelete.checked;
-		const targetDays = applyToAll ? ctx.dias : [currentDia];
+		const targetDays = applyToAll ? ctx.dates : [currentDia];
 
 		const blocks = document.querySelectorAll(".exercise-block");
 		const target = blocks[activeExerciseIndex];
@@ -624,8 +638,8 @@ document.addEventListener("DOMContentLoaded", () => {
 			});
 			
 			let msg = "Exercício removido.";
-			if (applyToAll && ctx.dias.length > 1) {
-				msg = `Excluído em ${ctx.dias.length} dias! 🗑️`;
+			if (applyToAll && ctx.dates.length > 1) {
+				msg = `Excluído em ${ctx.dates.length} dias! 🗑️`;
 			}
 			showToast("success", msg);
 
@@ -657,8 +671,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 	// EDITAR DETALHES (Séries, etc)
 	document.getElementById("optEdit").addEventListener("click", () => {
-		const dia = ctx.dias[currentDayIndex];
-		const exObj = exerciciosPorDia[dia][activeExerciseIndex];
+		const dStr = ctx.dates[currentDayIndex];
+		const exObj = exerciciosPorDia[dStr][activeExerciseIndex];
 		
 		pendingAddPayload = { isRoutine: false, exObj: exObj, isEdit: true };
 		document.getElementById("addOptionsTitle").textContent = "Editar Detalhes";
@@ -676,7 +690,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		
 		// Mostra o container de aplicar a todos no modal de edição
 		const applyAllOptionsContainer = document.getElementById("applyAllOptionsContainer");
-		if (ctx.dias.length > 1) {
+		if (ctx.dates.length > 1) {
 			applyAllOptionsContainer.style.display = "flex";
 		} else {
 			applyAllOptionsContainer.style.display = "none";
@@ -699,7 +713,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		const obs = document.getElementById("addObservation").value.trim();
 		const howToExecute = document.getElementById("addHowToExecute").value.trim() || null;
 
-		const currentDia = ctx.dias[currentDayIndex];
+		const currentDia = ctx.dates[currentDayIndex];
 		const exObj = pendingAddPayload.exObj;
 
 		// Pega o estado do checkbox (pode ser o da lista ou o do modal de opções)
@@ -707,7 +721,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		const chk2 = document.getElementById("chkApplyAllOptions");
 		const applyToAll = (chk1 && chk1.checked) || (chk2 && chk2.checked);
 		
-		const targetDays = applyToAll ? ctx.dias : [currentDia];
+		const targetDays = applyToAll ? ctx.dates : [currentDia];
 
 		if (isEdit || isSwap) {
 			// MODO EDIÇÃO ou TROCA
@@ -730,8 +744,8 @@ document.addEventListener("DOMContentLoaded", () => {
 			});
 
 			let msg = isSwap ? "Exercício trocado!" : "Detalhes atualizados!";
-			if (applyToAll && ctx.dias.length > 1) {
-				msg = isSwap ? `Troca realizada em ${ctx.dias.length} dias! ✨` : `Dados atualizados em ${ctx.dias.length} dias! ✨`;
+			if (applyToAll && ctx.dates.length > 1) {
+				msg = isSwap ? `Troca realizada em ${ctx.dates.length} dias! ✨` : `Dados atualizados em ${ctx.dates.length} dias! ✨`;
 			}
 			showToast("success", msg);
 		} else {
@@ -744,8 +758,8 @@ document.addEventListener("DOMContentLoaded", () => {
 			});
 
 			let msg = "Exercício adicionado!";
-			if (applyToAll && ctx.dias.length > 1) {
-				msg = `Inserido em ${ctx.dias.length} dias com sucesso! ✨`;
+			if (applyToAll && ctx.dates.length > 1) {
+				msg = `Inserido em ${ctx.dates.length} dias com sucesso! ✨`;
 			}
 			showToast("success", msg);
 		}

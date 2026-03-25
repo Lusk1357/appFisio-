@@ -145,24 +145,101 @@ function closeDeleteModal() {
 	if (modal) modal.classList.remove("active");
 }
 
+function openNotifyModal() {
+	const modal = document.getElementById("notifyModal");
+	if (modal) modal.classList.add("active");
+	
+	const titleInp = document.getElementById("notifyTitle");
+	if (titleInp) titleInp.focus();
+}
+
+function closeNotifyModal() {
+	const modal = document.getElementById("notifyModal");
+	if (modal) modal.classList.remove("active");
+	
+	// Limpa campos
+	const t = document.getElementById("notifyTitle");
+	const m = document.getElementById("notifyMessage");
+	if (t) t.value = "";
+	if (m) m.value = "";
+}
+
+async function confirmNotify() {
+	const raw = sessionStorage.getItem("pacienteSelecionado");
+	if (!raw) return;
+	const paciente = JSON.parse(raw);
+
+	const title = document.getElementById("notifyTitle").value.trim();
+	const description = document.getElementById("notifyMessage").value.trim();
+	const btn = document.getElementById("btnConfirmNotify");
+
+	if (!title || !description) {
+		showToast("Preencha o título e a mensagem.", "error");
+		return;
+	}
+
+	if (btn) {
+		btn.disabled = true;
+		btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Enviando...`;
+	}
+
+	try {
+		const res = await fetch(`/api/conquistas/admin/${paciente.id}`, {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({ title, description, icon: "fa-comment-medical" }),
+			credentials: "include"
+		});
+
+		if (!res.ok) {
+			const data = await res.json();
+			throw new Error(data.erro || "Erro ao enviar notificação");
+		}
+
+		showToast("Notificação enviada com sucesso!", "success");
+		closeNotifyModal();
+
+	} catch (error) {
+		console.error(error);
+		showToast(error.message, "error");
+	} finally {
+		if (btn) {
+			btn.disabled = false;
+			btn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Enviar`;
+		}
+	}
+}
+
 // Fecha ao clicar fora do card
 document.addEventListener("DOMContentLoaded", () => {
-	const modal = document.getElementById("deleteModal");
-	if (modal) {
-		modal.addEventListener("click", (e) => {
-			if (e.target === modal) closeDeleteModal();
+    // Listener para o modal de exclusão (já existente)
+	const dModal = document.getElementById("deleteModal");
+	if (dModal) {
+		dModal.addEventListener("click", (e) => {
+			if (e.target === dModal) closeDeleteModal();
 		});
 	}
+    
+    // Listener para o modal de notificação
+    const nModal = document.getElementById("notifyModal");
+    if (nModal) {
+        nModal.addEventListener("click", (e) => {
+            if (e.target === nModal) closeNotifyModal();
+        });
+    }
 });
 
 // ── Atalho: Esc para fechar modal ou voltar ───────────────────────
 document.addEventListener("keydown", (e) => {
 	if (e.key === "Escape") {
 		const deleteModal = document.getElementById("deleteModal");
+		const notifyModal = document.getElementById("notifyModal");
+        
 		if (deleteModal && deleteModal.classList.contains("active")) {
-			const modalFunc = window.closeDeleteModal || closeDeleteModal;
-			modalFunc();
-		} else if (!document.getElementById("pf-modal-root")) {
+			closeDeleteModal();
+		} else if (notifyModal && notifyModal.classList.contains("active")) {
+            closeNotifyModal();
+        } else if (!document.getElementById("pf-modal-root")) {
 			history.back();
 		}
 	}

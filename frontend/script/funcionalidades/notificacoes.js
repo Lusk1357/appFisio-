@@ -83,12 +83,23 @@ document.addEventListener("DOMContentLoaded", () => {
         if (emptyMsg) emptyMsg.style.display = "none";
         notificationsContainer.innerHTML = "";
 
-        // Mostra os mais recentes primeiro
+        // Ordenação: Admin primeiro, depois sistema. Dentro de cada grupo, por data.
+        conquistasData.sort((a, b) => {
+            const isAAdmin = (a.icon === 'fa-comment-medical' || a.icon === 'fa-bell');
+            const isBAdmin = (b.icon === 'fa-comment-medical' || b.icon === 'fa-bell');
+            
+            if (isAAdmin && !isBAdmin) return -1;
+            if (!isAAdmin && isBAdmin) return 1;
+            
+            return new Date(b.timestamp) - new Date(a.timestamp);
+        });
+
         conquistasData.forEach(item => {
             const hasAlertClass = item.alert ? 'alert' : '';
             const unreadClass = item.read === false ? 'unread' : '';
+            const isAdminMsg = item.icon === 'fa-comment-medical' ? 'admin-msg' : '';
             const iconClass = item.icon || 'fa-info-circle';
-            const title = window.escapeHTML(capitalizeName(item.title || 'Conquista!'));
+            const title = window.escapeHTML(item.title || 'Conquista!');
             const desc = window.escapeHTML(item.description || '');
 
             // Formatando o tempo aproximado
@@ -109,7 +120,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             const html = `
-                <div class="notification-item ${unreadClass}">
+                <div class="notification-item ${unreadClass} ${isAdminMsg}" onclick="window.markAsRead('${item.id}')">
                     <div class="icon-wrapper ${hasAlertClass}">
                         <i class="fa-solid ${iconClass}"></i>
                     </div>
@@ -128,8 +139,22 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Expondo para o escopo global para o onclick funcional
+    // Marca uma específica como lida
+    async function markOneAsRead(id) {
+        try {
+            await fetch(`/api/conquistas/${id}/read`, { 
+                method: "PUT",
+                credentials: "include" 
+            });
+            loadNotifications();
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    // Expondo para o escopo global
     window.deleteNotification = (id) => deleteItem(id);
+    window.markAsRead = (id) => markOneAsRead(id);
 
     if (btnMarkReadAll) btnMarkReadAll.onclick = markAllAsRead;
     if (btnClearAll) btnClearAll.onclick = clearAll;

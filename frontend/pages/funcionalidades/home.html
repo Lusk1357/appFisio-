@@ -70,9 +70,9 @@
             </div>
           </a>
         </div>
-        <a href="/pages/funcionalidades/notificacoes.html" style="text-decoration: none; color: inherit; position: relative;">
+        <a href="/pages/funcionalidades/notificacoes.html" class="bell-container" style="text-decoration: none; color: inherit; position: relative; display: flex; align-items: center; justify-content: center;">
           <i class="fa-regular fa-bell bell-icon"></i>
-          <span id="notifBadge" style="display:none; position:absolute; top:-4px; right:-6px; background:#ef4444; color:#fff; font-size:10px; font-weight:700; min-width:16px; height:16px; border-radius:50%; display:none; align-items:center; justify-content:center; line-height:1; padding:2px;">0</span>
+          <span id="notifBadge" style="display:none; position:absolute; top:-4px; right:-6px; background:#ef4444; color:#fff; font-size:10px; font-weight:700; min-width:16px; height:16px; border-radius:50%; align-items:center; justify-content:center; line-height:1; padding:2px; box-shadow: 0 0 0 2px #fff;">0</span>
         </a>
       </div>
 
@@ -116,6 +116,24 @@
     </div>
 
     <!-- Bottom Navigation Componentized -->
+  </div>
+
+  <!-- Pop-up de Notificação do Admin -->
+  <div id="notifPopupOverlay" class="notif-modal-overlay">
+    <div class="notif-modal-card">
+      <div class="notif-modal-header">
+        <div class="notif-modal-icon">
+          <i class="fa-solid fa-comment-medical"></i>
+        </div>
+        <h2 class="notif-modal-title" id="notifPopTitle">Mensagem do Físio</h2>
+      </div>
+      <div class="notif-modal-body" id="notifPopBody">
+        —
+      </div>
+      <div class="notif-modal-footer">
+        <button class="btn-notif-confirm" id="btnNotifConfirm">Entendido</button>
+      </div>
+    </div>
   </div>
 </body>
 

@@ -472,10 +472,28 @@ window.escapeHTML = function(str) {
 };
 
 /**
- * Cria e exibe o popup de conquista em qualquer tela que tenha components.js
+ * Sistema de Fila para Popups de Conquista
  */
+const _achievementQueue = [];
+let _isShowingAchievement = false;
+
 function showAchievementPopup(name, desc, icon = "fa-medal") {
-  // Remove popup anterior se existir
+  _achievementQueue.push({ name, desc, icon });
+  if (!_isShowingAchievement) {
+    _processAchievementQueue();
+  }
+}
+
+function _processAchievementQueue() {
+  if (_achievementQueue.length === 0) {
+    _isShowingAchievement = false;
+    return;
+  }
+
+  _isShowingAchievement = true;
+  const { name, desc, icon } = _achievementQueue.shift();
+
+  // Remove popup anterior se existir (segurança)
   const old = document.getElementById("globalAchievementPopup");
   if (old) old.remove();
 
@@ -485,7 +503,6 @@ function showAchievementPopup(name, desc, icon = "fa-medal") {
   const popup = document.createElement("div");
   popup.id = "globalAchievementPopup";
   popup.className = "achievement-popup";
-  // Estilo inline para garantir que funcione em qualquer página sem depender de CSS externo específico
   popup.style.cssText = `
     position: fixed;
     top: -150px;
@@ -526,18 +543,20 @@ function showAchievementPopup(name, desc, icon = "fa-medal") {
     if (bar) setTimeout(() => bar.style.width = "0%", 100);
   }, 100);
 
-  // Fecha ao clicar
-  popup.onclick = () => {
+  const closePopup = () => {
     popup.style.top = "-150px";
-    setTimeout(() => popup.remove(), 600);
+    setTimeout(() => {
+      popup.remove();
+      // Espera um pouco antes de processar a próxima
+      setTimeout(_processAchievementQueue, 300);
+    }, 600);
   };
+
+  popup.onclick = closePopup;
 
   // Auto-fecha após 5s
   setTimeout(() => {
-    if (popup.parentElement) {
-      popup.style.top = "-150px";
-      setTimeout(() => popup.remove(), 600);
-    }
+    if (popup.parentElement) closePopup();
   }, 5000);
 }
 

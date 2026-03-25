@@ -26,8 +26,7 @@ exports.addAchievement = async (req, res) => {
         const existing = await prisma.achievement.findFirst({
             where: {
                 userId: req.user.id,
-                title: title,
-                icon: { not: 'DELETED' }
+                title: title
             }
         });
 
@@ -67,6 +66,21 @@ exports.markAllAsRead = async (req, res) => {
     }
 };
 
+// Marca uma única conquista como lida
+exports.markOneAsRead = async (req, res) => {
+    try {
+        const { id } = req.params;
+        await prisma.achievement.update({
+            where: { id, userId: req.user.id },
+            data: { read: true }
+        });
+        res.status(200).json({ sucesso: true });
+    } catch (error) {
+        console.error("Erro ao marcar lida:", error);
+        res.status(500).json({ erro: "Erro ao atualizar notificação." });
+    }
+};
+
 // Exclui uma conquista específica
 exports.deleteAchievement = async (req, res) => {
     try {
@@ -103,5 +117,32 @@ exports.deleteAllAchievements = async (req, res) => {
     } catch (error) {
         console.error("Erro ao limpar notificações:", error);
         res.status(500).json({ erro: "Erro ao limpar notificações." });
+    }
+};
+// Envia uma notificação direta (admin para paciente)
+exports.sendDirectNotification = async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const { title, description, icon } = req.body;
+
+        if (!title || !description) {
+            return res.status(400).json({ erro: "Título e descrição são obrigatórios." });
+        }
+
+        const notification = await prisma.achievement.create({
+            data: {
+                userId,
+                title,
+                description,
+                icon: icon || 'fa-comment-medical',
+                alert: true,
+                read: false
+            }
+        });
+
+        res.status(201).json(notification);
+    } catch (error) {
+        console.error("Erro ao enviar notificação direta:", error);
+        res.status(500).json({ erro: "Erro ao enviar notificação." });
     }
 };

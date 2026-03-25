@@ -167,6 +167,18 @@ document.addEventListener("DOMContentLoaded", () => {
                     `;
 
                     exercisesList.appendChild(item);
+
+                    // Trigger para ver detalhes
+                    item.addEventListener("click", () => {
+                        window.openExerciseDetails({
+                            name: ex.name,
+                            series: seriesReal,
+                            observation: obsReal,
+                            instructions: associacao.howToExecute || ex.howToExecute || "Nenhuma instrução específica fornecida.",
+                            videoUrl: ex.videoUrl || "",
+                            imageUrl: ex.imageUrl || ""
+                        });
+                    });
                 });
             });
 
@@ -228,6 +240,72 @@ document.addEventListener("DOMContentLoaded", () => {
     // Init principal
     renderCalendar();
     renderExercisesForSelectedDate();
+
+    // ── Modal de Detalhes ─────────────────────────────────────────────
+    window.openExerciseDetails = (ex) => {
+        const modal = document.getElementById("exerciseDetailModal");
+        const title = document.getElementById("exModalTitle");
+        const series = document.getElementById("exModalSeries");
+        const media = document.getElementById("exModalMedia");
+        const instructions = document.getElementById("exModalInstructions");
+        const obsContainer = document.getElementById("exModalObsContainer");
+        const obsText = document.getElementById("exModalObservation");
+
+        if (!modal) return;
+
+        title.textContent = ex.name;
+        series.textContent = ex.series;
+        instructions.textContent = ex.instructions || "Nenhuma instrução específica.";
+
+        if (ex.observation && ex.observation.trim() !== "") {
+            obsContainer.style.display = "block";
+            obsText.textContent = ex.observation;
+        } else {
+            obsContainer.style.display = "none";
+        }
+
+        // Tratar Mídia (Prioridade vídeo)
+        media.innerHTML = "";
+        if (ex.videoUrl) {
+            let embedUrl = ex.videoUrl;
+            if (embedUrl.includes("youtube.com/watch?v=")) {
+                embedUrl = embedUrl.replace("watch?v=", "embed/");
+            } else if (embedUrl.includes("youtu.be/")) {
+                embedUrl = embedUrl.replace("youtu.be/", "youtube.com/embed/");
+            }
+            media.innerHTML = `<iframe src="${embedUrl}" allowfullscreen></iframe>`;
+        } else if (ex.imageUrl) {
+            media.innerHTML = `<img src="${ex.imageUrl}" alt="${ex.name}" onerror="this.src='/images/ex-placeholder.png'">`;
+        } else {
+            media.innerHTML = `<div style="padding: 20px; color: #94a3b8; text-align: center;"><i class="fa-solid fa-image" style="font-size: 48px; display: block; margin-bottom: 10px;"></i> Sem prévia disponível</div>`;
+        }
+
+        modal.classList.add("active");
+    };
+
+    function closeExModal() {
+        const modal = document.getElementById("exerciseDetailModal");
+        if (modal) {
+            modal.classList.remove("active");
+            // Limpa o iframe para parar o vídeo
+            setTimeout(() => {
+                const media = document.getElementById("exModalMedia");
+                if (media) media.innerHTML = "";
+            }, 300);
+        }
+    }
+
+    const closeBtn = document.getElementById("closeExModal");
+    const exitBtn = document.getElementById("btnExitExModal");
+    const overlay = document.getElementById("exerciseDetailModal");
+
+    if (closeBtn) closeBtn.onclick = closeExModal;
+    if (exitBtn) exitBtn.onclick = closeExModal;
+    if (overlay) {
+        overlay.onclick = (e) => {
+            if (e.target === overlay) closeExModal();
+        };
+    }
 
     // Componentes Injetados
     renderBottomNav('treinamento');

@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
 			viewMonth = 11;
 			viewYear--;
 		}
-		selectedDays.clear();
+		// selectedDays.clear(); // Mantém a seleção ao trocar de mês
 		updateSaveBtn();
 		renderCalendar();
 	});
@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
 			viewMonth = 0;
 			viewYear++;
 		}
-		selectedDays.clear();
+		// selectedDays.clear(); // Mantém a seleção ao trocar de mês
 		updateSaveBtn();
 		renderCalendar();
 	});
@@ -67,14 +67,12 @@ document.addEventListener("DOMContentLoaded", () => {
 	btnSave.addEventListener("click", () => {
 		if (selectedDays.size === 0) return;
 
-		// Passa os dias selecionados e contexto para a próxima tela via sessionStorage
-		const diasOrdenados = Array.from(selectedDays).sort((a, b) => a - b);
+		// Passa todas as datas selecionadas (ISO strings YYYY-MM-DD)
+		const diasOrdenados = Array.from(selectedDays).sort();
 		sessionStorage.setItem(
 			"exerciciosDiaContexto",
 			JSON.stringify({
-				ano: viewYear,
-				mes: viewMonth, // 0-indexed
-				dias: diasOrdenados,
+				dates: diasOrdenados, // Novo formato: lista de datas completas
 			}),
 		);
 
@@ -143,16 +141,18 @@ document.addEventListener("DOMContentLoaded", () => {
 				viewMonth === today.getMonth() &&
 				viewYear === today.getFullYear();
 
+			const dateString = `${viewYear}-${String(viewMonth + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+
 			if (isToday) cell.classList.add("today");
 			if (persisted.has(d)) cell.classList.add("has-exercise");
-			if (selectedDays.has(d)) cell.classList.add("selected");
+			if (selectedDays.has(dateString)) cell.classList.add("selected");
 
 			cell.addEventListener("click", () => {
-				if (selectedDays.has(d)) {
-					selectedDays.delete(d);
+				if (selectedDays.has(dateString)) {
+					selectedDays.delete(dateString);
 					cell.classList.remove("selected");
 				} else {
-					selectedDays.add(d);
+					selectedDays.add(dateString);
 					cell.classList.add("selected");
 				}
 				updateSaveBtn();

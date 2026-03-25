@@ -225,7 +225,8 @@ body {
 }
 
 .btn-edit,
-.btn-exercises {
+.btn-exercises,
+.btn-notify {
   background: #5b8af5;
   color: #fff;
   box-shadow: 0 4px 14px rgba(91, 138, 245, 0.25);

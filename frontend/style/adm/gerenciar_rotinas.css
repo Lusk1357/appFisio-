@@ -1,0 +1,19 @@
+/* ==============================
+   gerenciar_rotinas.css
+   ============================== */
+
+@import url("gerenciar_exercicios.css");
+
+/* Ajustes específicos para rotinas se necessário */
+.card-icon-circle {
+    background: #eff6ff; /* Azul claro */
+    color: #3b82f6;      /* Azul principal */
+}
+
+.routine-card .card-info .card-description {
+    font-size: 11px;
+    color: #9ca3af;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

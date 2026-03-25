@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const firstName = fullName.split(" ")[0];
         if (sideMenuName) sideMenuName.textContent = firstName;
         if (greetingName) greetingName.textContent = firstName + "!";
-        
+
         const avatarUrl = data.patientProfile?.avatar || null;
 
         if (sideMenuAvatar) {
@@ -120,7 +120,7 @@ document.addEventListener("DOMContentLoaded", () => {
           heroTitle.innerHTML = "RECUPERAÇÃO<br/>COMEÇA AQUI";
           heroSubtitle.innerText = `Você tem ${pendentes.length} exercícios pendentes hoje.`;
           btnStartWorkout.style.display = "inline-block";
-          btnStartWorkout.innerText = "Comear Treino";
+          btnStartWorkout.innerText = "Começar Treino";
           btnStartWorkout.onclick = () => {
             const trainingSession = {
               date: dateStr,
@@ -144,8 +144,63 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // ── Notificações ──────────────────────────────────────────────────
+  async function checkNotifications() {
+    try {
+      const res = await fetch("/api/conquistas/me", { credentials: "include" });
+      if (!res.ok) return;
+
+      const achievements = await res.json();
+      const unread = achievements.filter(a => !a.read);
+      const badge = document.getElementById("notifBadge");
+
+      if (badge) {
+        if (unread.length > 0) {
+          badge.textContent = unread.length > 9 ? "9+" : unread.length;
+          badge.style.display = "flex";
+          
+          // Se houver uma notificação de admin nas não lidas, mostra o pop-up
+          const adminMsg = unread.find(a => a.icon === 'fa-comment-medical' || a.icon === 'fa-bell');
+          if (adminMsg) {
+            showAdminPopup(adminMsg);
+          }
+        } else {
+          badge.style.display = "none";
+        }
+      }
+    } catch (e) {
+      console.error("Erro ao conferir notificações:", e);
+    }
+  }
+
+  function showAdminPopup(msg) {
+    const overlay = document.getElementById("notifPopupOverlay");
+    const title = document.getElementById("notifPopTitle");
+    const body = document.getElementById("notifPopBody");
+    const btn = document.getElementById("btnNotifConfirm");
+
+    if (!overlay || !title || !body || !btn) return;
+
+    title.textContent = msg.title || "Mensagem do Físio";
+    body.textContent = msg.description || "";
+    overlay.classList.add("active");
+
+    btn.onclick = async () => {
+      overlay.classList.remove("active");
+      // Marca esta específica como lida no backend
+      try {
+        await fetch(`/api/conquistas/${msg.id}/read`, { 
+          method: "PUT",
+          credentials: "include"
+        });
+        checkNotifications(); // Refresh e mostra a próxima se houver
+      } catch (e) { console.error(e); }
+    };
+  }
+
   // Despara o carregamento
   initDashboard();
+  checkNotifications();
 
   // ── Logout ────────────────────────────────────────────────────────
 
@@ -187,7 +242,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (dica.link) {
               window.open(dica.link, '_blank');
             } else {
-                if (typeof showToast === "function") showToast("warning", "O link para este vídeo não está disponível.");
+              if (typeof showToast === "function") showToast("warning", "O link para este vídeo não está disponível.");
             }
           });
 

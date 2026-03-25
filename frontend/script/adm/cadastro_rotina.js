@@ -34,6 +34,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 label.innerHTML = `
                     <input type="checkbox" class="ex-checkbox" value="${ex.id}" />
+                    ${ex.imageUrl 
+                        ? `<img src="${ex.imageUrl}" class="exercise-thumb" alt="${escapeHTML(ex.name)}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">` 
+                        : ''
+                    }
+                    <div class="exercise-thumb-placeholder" style="${ex.imageUrl ? 'display:none;' : 'display:flex;'}">
+                        <i class="fa-solid fa-dumbbell"></i>
+                    </div>
                     <div class="exercise-info">
                         <span class="exercise-name">${escapeHTML(ex.name)}</span>
                         <span class="exercise-category">${escapeHTML(ex.type)}</span>
@@ -61,8 +68,11 @@ document.addEventListener("DOMContentLoaded", () => {
                             <input type="number" class="input-rest" placeholder="60" value="60" min="0" style="width: 100%; border: none; background: transparent; font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 700; text-align: center; color: #0f172a; outline: none;" title="Descanso em segundos" />
                         </div>
                     </div>
+                    <div class="form-group" style="margin-bottom: 8px;">
+                        <input type="text" class="input-obs" placeholder="Observação no app (Ex: 30s de intervalo)" value="${escapeHTML(ex.observation || '')}" style="width: 100%;" />
+                    </div>
                     <div class="form-group" style="margin-bottom: 0;">
-                        <input type="text" class="input-obs" placeholder="Observação específica" value="${escapeHTML(ex.observation || '')}" style="width: 100%;" />
+                        <textarea class="input-how-to" placeholder="Instruções de execução (Opcional)" style="width: 100%; border-radius: 12px; border: 1px solid #e2e8f0; padding: 10px; font-family: 'DM Sans', sans-serif; font-size: 14px; outline: none; resize: vertical; min-height: 60px;">${escapeHTML(ex.howToExecute || '')}</textarea>
                     </div>
                 `;
 
@@ -174,12 +184,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 const series = (sQty && rQty) ? `${sQty}x${rQty}` : "3x15";
                 const restTime = parseInt(container.querySelector(".input-rest").value.trim()) || 60;
                 const obs = container.querySelector(".input-obs").value.trim();
+                const howTo = container.querySelector(".input-how-to").value.trim();
 
                 selectedExercises.push({
                     id: cb.value,
                     series: series,
                     observation: obs || null,
-                    restTime: restTime
+                    restTime: restTime,
+                    howToExecute: howTo || null
                 });
             }
         });
@@ -220,7 +232,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 showToast("success", "Rotina criada com sucesso!");
 
                 setTimeout(() => {
-                    window.location.href = "/pages/adm/home_adm.html";
+                    window.location.href = "/pages/adm/gerenciar_rotinas.html";
                 }, 1500);
             })
             .catch(err => {
@@ -233,5 +245,5 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function back() {
-    window.history.back();
+    window.location.href = "/pages/adm/gerenciar_rotinas.html";
 }

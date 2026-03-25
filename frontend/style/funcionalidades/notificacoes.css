@@ -242,3 +242,20 @@ body {
     padding: 20px;
   }
 }
+
+/* Notificações do Administrador (Laranja) */
+.notification-item.admin-msg .icon-wrapper {
+  background-color: #fff7ed;
+}
+
+.notification-item.admin-msg .icon-wrapper i {
+  color: #f97316;
+}
+
+.notification-item.admin-msg.unread h4 {
+  color: #ea580c;
+}
+
+.notification-item.admin-msg.unread::after {
+  background-color: #ea580c;
+}

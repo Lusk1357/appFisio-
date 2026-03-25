@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gerenciar Rotinas - Pro Fisio</title>
+
+    <link rel="stylesheet" href="/style/adm/gerenciar_rotinas.css" />
+    <!-- PWA Setup -->
+    <link rel="icon" type="image/png" href="/images/icon-192.png">
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <script src="/script/authGuard.js"></script>
+    <script>verificarAcesso("ADMIN");</script>
+    <script src="/script/components.js" defer></script>
+    <script src="/script/adm/gerenciar_rotinas.js" defer></script>
+    <style>
+        /* Botão Flutuante */
+        .btn-floating-bottom {
+            position: fixed;
+            bottom: 30px;
+            right: 24px;
+            width: 56px;
+            height: 56px;
+            background-color: #5b8af5 !important;
+            color: #fff !important;
+            border: none;
+            border-radius: 50%;
+            box-shadow: 0 4px 15px rgba(91, 138, 245, 0.4);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            z-index: 2000;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0) !important;
+            user-select: none !important;
+            outline: none !important;
+            touch-action: manipulation;
+        }
+
+        @media (hover: hover) and (pointer: fine) {
+            .btn-floating-bottom:hover {
+                background-color: #1a1a2e !important;
+                transform: translateY(-5px);
+                box-shadow: 0 8px 25px rgba(26, 26, 46, 0.3);
+            }
+        }
+
+        /* Garante que em touch o botão NUNCA mude de cor no foco ou hover */
+        @media (hover: none) {
+            .btn-floating-bottom:hover,
+            .btn-floating-bottom:active,
+            .btn-floating-bottom:focus {
+                background-color: #5b8af5 !important;
+            }
+        }
+
+        .btn-floating-bottom:focus,
+        .btn-floating-bottom:focus-visible {
+            outline: none !important;
+            background-color: #5b8af5 !important;
+        }
+
+        .btn-floating-bottom:active {
+            transform: scale(0.92);
+            transition: transform 0.05s;
+        }
+
+        .btn-floating-bottom i {
+            filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.1));
+            transition: transform 0.4s ease;
+            pointer-events: none;
+        }
+
+        .btn-floating-bottom.is-up i {
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="app-wrapper">
+
+        <!-- Header -->
+        <header class="page-header">
+            <button class="btn-back" onclick="history.back()">
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <span class="header-title">Gerenciar Rotinas</span>
+            <button class="btn-back" onclick="window.location.href='/pages/adm/home_adm.html'" title="Página Inicial">
+                <i class="fa-solid fa-house"></i>
+            </button>
+        </header>
+
+        <!-- Título + controles -->
+        <div class="section-top">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+                <h1 class="section-title" style="margin-bottom: 0;">ROTINAS</h1>
+                <button class="btn-primary-small" onclick="window.location.href='/pages/adm/cadastro_rotina.html'">
+                    <i class="fa-solid fa-plus"></i> Nova
+                </button>
+            </div>
+
+            <!-- Barra de busca -->
+            <div class="search-bar">
+                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                <input type="text" id="searchInput" placeholder="Buscar rotina..." />
+            </div>
+
+            <div class="filter-bar">
+                <span class="filter-label">Ordenar por:</span>
+                <div class="filter-pills" id="filterPills">
+                    <button class="pill active" data-sort="az">A–Z</button>
+                    <button class="pill" data-sort="za">Z–A</button>
+                    <button class="pill" data-sort="recent">Mais Recentes</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lista de rotinas -->
+        <main class="exercises-list" id="routinesList">
+            <!-- Preenchida via JS -->
+        </main>
+
+        <!-- Estado vazio -->
+        <div class="empty-state" id="emptyState" style="display:none">
+            <i class="fa-solid fa-notes-medical"></i>
+            <p>Nenhuma rotina cadastrada ainda.</p>
+        </div>
+
+    </div>
+
+    <!-- ═══════════════════════════════
+         MODAL DE CONFIRMAÇÃO DE EXCLUSÃO
+    ═══════════════════════════════════ -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal-content modal-delete">
+            <div class="delete-icon-circle">
+                <i class="fa-solid fa-trash-can"></i>
+            </div>
+            <h2>Excluir Rotina?</h2>
+            <p class="delete-msg" id="deleteMsg">Tem certeza que deseja excluir esta rotina? Esta ação não pode ser desfeita.</p>
+            <div class="delete-actions">
+                <button class="btn-cancel" id="cancelDelete">Cancelar</button>
+                <button class="btn-confirm-delete" id="confirmDelete">
+                    <i class="fa-solid fa-trash-can"></i> Excluir
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Botão Flutuante -->
+    <button id="scrollToBottomBtn" class="btn-floating-bottom" onclick="toggleScroll()" aria-label="Rolar para baixo">
+        <i class="fas fa-chevron-down"></i>
+    </button>
+
+    <script>
+        function toggleScroll() {
+            const btn = document.getElementById('scrollToBottomBtn');
+            setTimeout(() => btn.blur(), 50);
+
+            const isBottom = (window.innerHeight + window.scrollY) >= (document.documentElement.scrollHeight - 100);
+            if (isBottom) {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' });
+            }
+        }
+
+        window.addEventListener('scroll', () => {
+            const btn = document.getElementById('scrollToBottomBtn');
+            const isBottom = (window.innerHeight + window.scrollY) >= (document.documentElement.scrollHeight - 100);
+            
+            if (isBottom) {
+                btn.classList.add('is-up');
+            } else {
+                btn.classList.remove('is-up');
+            }
+        });
+    </script>
+</body>
+
+</html>

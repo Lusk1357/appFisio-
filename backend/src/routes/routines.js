@@ -11,6 +11,9 @@ router.post('/', verificarToken, checkAdmin, validateRequest(routineSchema), rou
 // Administrador ou Paciente lista Rotinas Modelos
 router.get('/', verificarToken, routineController.getAllRoutines);
 
+// Administrador ou Paciente busca uma Rotina Modelo específica
+router.get('/:id', verificarToken, routineController.getRoutineById);
+
 // Administrador atualiza ou deleta Rotina Modelo
 router.put('/:id', verificarToken, checkAdmin, validateRequest(routineSchema), routineController.updateRoutine);
 router.delete('/:id', verificarToken, checkAdmin, routineController.deleteRoutine);

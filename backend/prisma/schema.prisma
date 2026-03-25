@@ -120,12 +120,13 @@ model RoutineTemplate {
 }
 
 model RoutineExercise {
-  id          String          @id @default(uuid())
-  routineId   String
-  exerciseId  String
-  series      String          @default("3x15")
-  observation String?
-  restTime    Int             @default(60)
-  exercise    Exercise        @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
-  routine     RoutineTemplate @relation(fields: [routineId], references: [id], onDelete: Cascade)
+  id           String          @id @default(uuid())
+  routineId    String
+  exerciseId   String
+  series       String          @default("3x15")
+  observation  String?
+  restTime     Int             @default(60)
+  howToExecute String?
+  exercise     Exercise        @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+  routine      RoutineTemplate @relation(fields: [routineId], references: [id], onDelete: Cascade)
 }

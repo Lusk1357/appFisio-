@@ -101,6 +101,9 @@
         >
           <i class="fa-solid fa-plus"></i> Exercícios
         </button>
+        <button class="btn-action btn-notify" onclick="openNotifyModal()">
+          <i class="fa-solid fa-bell"></i> Notificar
+        </button>
         <button class="btn-action btn-delete" onclick="deletePatient()">
           <i class="fa-solid fa-trash"></i> Excluir
         </button>
@@ -162,6 +165,29 @@
             onclick="confirmDelete()"
           >
             <i class="fa-solid fa-trash"></i> Excluir
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal de Notificação -->
+    <div id="notifyModal" class="modal-overlay" aria-modal="true" role="dialog">
+      <div class="modal-card">
+        <div class="modal-icon-wrap" style="background: #eff6ff; color: #5b8af5;">
+          <i class="fa-solid fa-paper-plane"></i>
+        </div>
+        <h2 class="modal-title">Nova Notificação</h2>
+        <p class="modal-body">Envie um alerta direto para o celular/painel do paciente.</p>
+        
+        <div class="modal-form" style="width: 100%; display: flex; flex-direction: column; gap: 12px;">
+          <input type="text" id="notifyTitle" placeholder="Título (ex: Ótimo treino!)" style="width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #e1e4e8; outline: none; font-family: inherit;">
+          <textarea id="notifyMessage" placeholder="Mensagem..." style="width: 100%; height: 100px; padding: 12px; border-radius: 12px; border: 1px solid #e1e4e8; outline: none; font-family: inherit; resize: none;"></textarea>
+        </div>
+
+        <div class="modal-actions">
+          <button class="modal-btn modal-btn-cancel" onclick="closeNotifyModal()">Cancelar</button>
+          <button class="modal-btn modal-btn-confirm" id="btnConfirmNotify" onclick="confirmNotify()" style="background: #5b8af5; box-shadow: 0 4px 14px rgba(91, 138, 245, 0.3);">
+            <i class="fa-solid fa-paper-plane"></i> Enviar
           </button>
         </div>
       </div>

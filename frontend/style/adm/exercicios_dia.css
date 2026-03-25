@@ -214,26 +214,51 @@ body {
 	position: absolute;
 	inset: 0;
 	background: linear-gradient(135deg, #7aa3ec 0%, #4a7de8 100%);
-	/* quando houver imagem real: background-image */
+    background-size: cover;
+    background-position: center;
 }
 
 .exercise-overlay {
 	position: absolute;
 	inset: 0;
 	background: linear-gradient(90deg,
-			rgba(26, 26, 46, 0.72) 0%,
-			rgba(26, 26, 46, 0.2) 100%);
+			rgba(26, 26, 46, 0.85) 0%,
+			rgba(26, 26, 46, 0.4) 100%);
 	display: flex;
 	align-items: center;
-	padding: 0 18px;
+	padding: 0 16px;
+    gap: 12px;
+}
+
+.exercise-block-thumb {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    object-fit: cover;
+    border: 1.5px solid rgba(255, 255, 255, 0.2);
+    flex-shrink: 0;
+}
+
+.exercise-block-thumb-placeholder {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
 }
 
 .exercise-name {
 	color: #fff;
 	font-family: "DM Sans", sans-serif;
 	font-weight: 700;
-	font-size: 15px;
+	font-size: 14px;
 	letter-spacing: 0.3px;
+    line-height: 1.2;
 }
 
 /* Botão "+" para adicionar */
@@ -400,7 +425,7 @@ body {
 }
 
 .exercise-pick-list li {
-	padding: 14px 16px;
+	padding: 10px 16px;
 	background: #f3f4f6;
 	border-radius: 12px;
 	font-weight: 600;
@@ -410,6 +435,31 @@ body {
 	transition:
 		background 0.15s,
 		transform 0.12s;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.exercise-thumb {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    object-fit: cover;
+    background: #e2e8f0;
+    flex-shrink: 0;
+}
+
+.exercise-thumb-placeholder {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    background: #e2e8f0;
+    color: #94a3b8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
 }
 
 .exercise-pick-list li:hover {

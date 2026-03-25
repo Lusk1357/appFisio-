@@ -66,6 +66,38 @@
 
     <!-- Bottom Navigation Componentized -->
   </div>
+
+  <!-- Modal de Detalhes do Exercício -->
+  <div id="exerciseDetailModal" class="ex-modal-overlay">
+    <div class="ex-modal-card">
+      <button class="ex-modal-close" id="closeExModal">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      
+      <div class="ex-modal-header">
+        <h2 id="exModalTitle">Nome do Exercício</h2>
+        <span id="exModalSeries" class="ex-modal-tag">3x15</span>
+      </div>
+
+      <div class="ex-modal-media" id="exModalMedia">
+        <!-- Vídeo ou Imagem injetados aqui -->
+      </div>
+
+      <div class="ex-modal-info">
+        <h3><i class="fa-solid fa-circle-info"></i> Como Executar</h3>
+        <p id="exModalInstructions">Carregando instruções...</p>
+        
+        <div id="exModalObsContainer" style="margin-top: 15px; display: none;">
+          <h3 style="color: #f97316;"><i class="fa-solid fa-comment-dots"></i> Observação</h3>
+          <p id="exModalObservation" style="font-style: italic; color: #4b5563;"></p>
+        </div>
+      </div>
+
+      <div class="ex-modal-footer">
+        <button class="btn-close-modal" id="btnExitExModal">Entendido</button>
+      </div>
+    </div>
+  </div>
 </body>
 
 </html>
