@@ -57,15 +57,15 @@
          DASHBOARD STATS (NOVO)
     ══════════════════════════════════ -->
     <div class="dashboard-stats" id="dashboard-stats">
-      <div class="stat-box">
+      <div class="stat-box" id="stat-box-pacientes" onclick="goTo('/pages/adm/pacientes.html', event)">
         <span class="stat-value" id="stat-pacientes">--</span>
         <span class="stat-label">Pacientes</span>
       </div>
-      <div class="stat-box">
+      <div class="stat-box" id="stat-box-rotinas" onclick="goTo('/pages/adm/gerenciar_rotinas.html', event)">
         <span class="stat-value" id="stat-rotinas">--</span>
         <span class="stat-label">Rotinas</span>
       </div>
-      <div class="stat-box">
+      <div class="stat-box" id="stat-box-exercicios" onclick="goTo('/pages/adm/gerenciar_exercicios.html', event)">
         <span class="stat-value" id="stat-exercicios">--</span>
         <span class="stat-label">Exercícios</span>
       </div>

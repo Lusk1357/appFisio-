@@ -19,14 +19,15 @@ window.addEventListener("pageshow", (event) => {
 });
 
 function resetAllButtons() {
-	const actionCards = document.querySelectorAll(".action-card");
-	actionCards.forEach(btn => {
+	const clickableCards = document.querySelectorAll(".action-card, .stat-box");
+	clickableCards.forEach(btn => {
 		btn.style.pointerEvents = "auto";
 		btn.style.opacity = "1";
-		const label = btn.querySelector(".card-label");
+		
+		const label = btn.querySelector(".card-label") || btn.querySelector(".stat-label");
 		if (label) {
 			// Remove the spinner HTML if it exists, keeping just the text
-			label.innerHTML = label.textContent.replace(/<i.*><\/i>/, "").trim();
+			label.innerHTML = label.textContent.trim();
 		}
 	});
 
@@ -110,7 +111,8 @@ function setLoading(btnId) {
 	if (btn.classList.contains("btn-logout")) {
 		btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> Saindo...`;
 	} else {
-		const label = btn.querySelector(".card-label");
+		// Busca label de card ou de stat box
+		const label = btn.querySelector(".card-label") || btn.querySelector(".stat-label");
 		if (label) {
 			const text = label.textContent;
 			label.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin" style="margin-right:8px;"></i>${text}`;
