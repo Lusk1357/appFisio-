@@ -147,6 +147,14 @@ body {
   transition: transform 0.2s;
 }
 
+/* No celular, se houver um número ímpar de cards pequenos, o último deles deve ser full-width */
+.detail-card:nth-child(3) {
+  grid-column: 1 / -1;
+  flex-direction: row;
+  text-align: left;
+  padding: 16px 20px;
+}
+
 .detail-card:hover {
   transform: translateY(-2px);
 }
@@ -193,16 +201,15 @@ body {
 
 /* ── Botões de ação ── */
 .actions {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 12px;
   width: 100%;
   padding: 0 24px;
 }
 
 .btn-action {
-  flex: 1;
-  min-width: 140px;
+  width: 100%;
   height: 52px;
   border: none;
   border-radius: 14px;
@@ -345,7 +352,8 @@ body {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  .detail-card.full-width {
+  .detail-card.full-width,
+  .detail-card:nth-child(3) {
     grid-column: span 1;
     flex-direction: column;
     text-align: center;
