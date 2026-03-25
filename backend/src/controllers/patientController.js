@@ -212,6 +212,8 @@ exports.updateMe = async (req, res) => {
             const parsedHeight = (height !== undefined && height !== null && height !== "") ? parseFloat(height) : undefined;
             const parsedAge = (age !== undefined && age !== null && age !== "") ? parseInt(age, 10) : undefined;
 
+            console.log(`[DEBUG] updateMe userId=${userId}`, { parsedWeight, parsedHeight, parsedAge });
+
             updatedProfile = await prisma.patientProfile.upsert({
                 where: { userId: userId },
                 update: {
