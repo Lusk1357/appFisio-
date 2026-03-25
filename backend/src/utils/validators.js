@@ -45,10 +45,10 @@ const routineSchema = z.object({
 });
 
 const profileUpdateSchema = z.object({
-    name: z.string().min(3, "O nome deve ter pelo menos 3 caracteres").max(100, "O nome deve ter no máximo 100 caracteres").optional(),
-    email: z.string().min(3, "O login/e-mail deve ter pelo menos 3 caracteres").optional(),
-    telefone: z.string().max(20, "O telefone deve ter no máximo 20 caracteres").optional(),
-    password: z.string().min(6, "A nova senha deve ter no mínimo 6 caracteres").optional(),
+    name: z.preprocess(v => v === "" ? undefined : v, z.string().min(3, "O nome deve ter pelo menos 3 caracteres").max(100, "O nome deve ter no máximo 100 caracteres").optional()),
+    email: z.preprocess(v => v === "" ? undefined : v, z.string().min(3, "O login/e-mail deve ter pelo menos 3 caracteres").optional()),
+    telefone: z.preprocess(v => v === "" ? undefined : v, z.string().max(20, "O telefone deve ter no máximo 20 caracteres").optional()),
+    password: z.preprocess(v => v === "" ? undefined : v, z.string().min(6, "A nova senha deve ter no mínimo 6 caracteres").optional()),
     estado: z.string().max(2, "UF deve ter no máximo 2 caracteres").optional(),
     cidade: z.string().max(100, "A cidade deve ter no máximo 100 caracteres").optional(),
     bairro: z.string().max(100, "O bairro deve ter no máximo 100 caracteres").optional(),
