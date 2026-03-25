@@ -91,19 +91,37 @@ exports.updatePatient = async (req, res) => {
             const parsedHeight = (height !== undefined && height !== null && height !== "") ? parseFloat(height) : undefined;
             const parsedAge = (age !== undefined && age !== null && age !== "") ? parseInt(age, 10) : undefined;
 
-            console.log(`[DEBUG] Atualizando PatientProfile id=${id}`, { parsedWeight, parsedHeight, parsedAge });
-
-            await prisma.patientProfile.upsert({
-                where: { userId: id },
-                update: { 
-                    telefone, estado, cidade, bairro, endereco, cep, notes, avatar,
-                    weight: parsedWeight, height: parsedHeight, age: parsedAge, gender
-                },
-                create: { 
-                    userId: id, telefone, estado, cidade, bairro, endereco, cep, notes, avatar,
-                    weight: parsedWeight, height: parsedHeight, age: parsedAge, gender
-                }
+            console.log(`[DEBUG] Processando Perfil para id=${id}`, {
+                telefone: telefone ? 'PRESENTE' : 'VAZIO',
+                endereco: endereco ? 'PRESENTE' : 'VAZIO',
+                parsedWeight,
+                parsedHeight,
+                parsedAge
             });
+
+            // Usando findUnique + create/update em vez de upsert para evitar bugs com extensão de criptografia
+            const existingProfile = await prisma.patientProfile.findUnique({ where: { userId: id } });
+            
+            const profilePayload = { 
+                telefone, estado, cidade, bairro, endereco, cep, notes, avatar,
+                weight: parsedWeight, height: parsedHeight, age: parsedAge, gender
+            };
+
+            if (existingProfile) {
+                console.log(`[DEBUG] Perfil existe. Fazendo UPDATE id=${id}`);
+                await prisma.patientProfile.update({
+                    where: { userId: id },
+                    data: profilePayload
+                });
+            } else {
+                console.log(`[DEBUG] Perfil novo. Fazendo CREATE id=${id}`);
+                await prisma.patientProfile.create({
+                    data: { 
+                        userId: id,
+                        ...profilePayload
+                    }
+                });
+            }
         }
 
         // 4. Busca o usuário completo para retornar ao frontend
@@ -214,24 +232,28 @@ exports.updateMe = async (req, res) => {
 
             console.log(`[DEBUG] updateMe userId=${userId}`, { parsedWeight, parsedHeight, parsedAge });
 
-            updatedProfile = await prisma.patientProfile.upsert({
-                where: { userId: userId },
-                update: {
-                    weight: parsedWeight,
-                    height: parsedHeight,
-                    age: parsedAge,
-                    gender,
-                    telefone, estado, cidade, bairro, cep, avatar
-                },
-                create: {
-                    userId: userId,
-                    weight: parsedWeight,
-                    height: parsedHeight,
-                    age: parsedAge,
-                    gender,
-                    telefone, estado, cidade, bairro, cep, avatar
-                }
-            });
+            const existingProfile = await prisma.patientProfile.findUnique({ where: { userId: userId } });
+            const profilePayload = {
+                weight: parsedWeight,
+                height: parsedHeight,
+                age: parsedAge,
+                gender,
+                telefone, estado, cidade, bairro, cep, avatar
+            };
+
+            if (existingProfile) {
+                updatedProfile = await prisma.patientProfile.update({
+                    where: { userId: userId },
+                    data: profilePayload
+                });
+            } else {
+                updatedProfile = await prisma.patientProfile.create({
+                    data: {
+                        userId: userId,
+                        ...profilePayload
+                    }
+                });
+            }
         }
 
         // Busca o usuário completo para retornar ao frontend
