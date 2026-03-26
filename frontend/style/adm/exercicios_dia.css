@@ -50,7 +50,7 @@ body {
 	width: 100%;
 	max-width: 430px;
 	min-height: 100vh;
-	background: #f0f2f5;
+	background: #f8fafc;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -235,17 +235,13 @@ body {
 .exercise-bg {
 	position: absolute;
 	inset: 0;
-	background: linear-gradient(135deg, #7aa3ec 0%, #4a7de8 100%);
-    background-size: cover;
-    background-position: center;
+	background: #5b8af5;
 }
 
 .exercise-overlay {
 	position: absolute;
 	inset: 0;
-	background: linear-gradient(90deg,
-			rgba(26, 26, 46, 0.85) 0%,
-			rgba(26, 26, 46, 0.4) 100%);
+	background: rgba(26, 26, 46, 0.8);
 	display: flex;
 	align-items: center;
 	padding: 0 16px;
@@ -761,7 +757,7 @@ body {
 
 /* ── Botão Confirmar Premium ── */
 #btnConfirmAddOptions {
-    background: linear-gradient(135deg, #1a1a2e 0%, #2d2d4e 100%) !important;
+    background: #1a1a2e !important;
     box-shadow: 0 4px 15px rgba(26, 26, 46, 0.2);
     transition: all 0.25s ease;
     border: 1px solid rgba(255, 255, 255, 0.1) !important;

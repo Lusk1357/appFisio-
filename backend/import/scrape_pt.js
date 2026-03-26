@@ -7,7 +7,7 @@ const https = require('https');
 
 // ─── CONFIGURAÇÃO: DEFINA O LIMITE AQUI ───────────────────────────
 // Escolha quantos exercícios processar (ex: 10, 100, ou null para TODOS)
-const LIMITE_EXERCICIOS = 1; // Limite para teste (use null para todos)
+const LIMITE_EXERCICIOS = null; // Limite para teste (use null para todos)
 // ──────────────────────────────────────────────────────────────────
 
 const prisma = new PrismaClient();
@@ -229,21 +229,29 @@ async function run() {
         const imgDest = path.join(imgDir, imgFilename);
         let imageCaptured = false;
 
-        // 1. Tentar Alta Resolução (Download Direto)
-        const candidates = [];
-        if (ex.i2) candidates.push({ type: 'Photos', prefix: 'Ph', id: ex.i2 });
-        if (ex.i1) candidates.push({ type: 'Drawings', prefix: 'Ex', id: ex.i1 });
+        // --- Otimização: Pular se imagem já existe ---
+        if (fs.existsSync(imgDest) && fs.statSync(imgDest).size > 0) {
+            console.log(`  -> Imagem já existe: ${imgFilename}. Pulando captura.`);
+            imageCaptured = true;
+        }
 
-        for (const cand of candidates) {
-            const highResUrl = `https://static.physiotherapyexercises.com/ExerciseImages/${cand.type}_Webp/${cand.prefix}${cand.id}.webp`;
-            try {
-                process.stdout.write(`  Tentando download em alta resolução (${cand.type})... `);
-                await downloadImage(highResUrl, imgDest);
-                console.log('✅ Sucesso!');
-                imageCaptured = true;
-                break;
-            } catch (err) {
-                console.log(`❌ Falha (${err.message})`);
+        // 1. Tentar Alta Resolução (Download Direto)
+        if (!imageCaptured) {
+            const candidates = [];
+            if (ex.i2) candidates.push({ type: 'Photos', prefix: 'Ph', id: ex.i2 });
+            if (ex.i1) candidates.push({ type: 'Drawings', prefix: 'Ex', id: ex.i1 });
+
+            for (const cand of candidates) {
+                const highResUrl = `https://static.physiotherapyexercises.com/ExerciseImages/${cand.type}_Webp/${cand.prefix}${cand.id}.webp`;
+                try {
+                    process.stdout.write(`  Tentando download em alta resolução (${cand.type})... `);
+                    await downloadImage(highResUrl, imgDest);
+                    console.log('✅ Sucesso!');
+                    imageCaptured = true;
+                    break;
+                } catch (err) {
+                    console.log(`❌ Falha (${err.message})`);
+                }
             }
         }
 

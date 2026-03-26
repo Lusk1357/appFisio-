@@ -93,17 +93,19 @@ document.addEventListener("DOMContentLoaded", () => {
         items.forEach(li => {
             if (li.style.pointerEvents === "none") return;
             
-            const isRoutine = li.innerHTML.includes("🌟");
-            const text = li.textContent.replace("🌟 Rotina:", "").trim();
+            const isRoutine = li.dataset.isRoutine === "true";
 
             if (isRoutine) {
-                const matchesSearch = li.textContent.toLowerCase().includes(term);
+                const text = li.textContent.replace("🌟 Rotina:", "").trim().toLowerCase();
+                const matchesSearch = text.includes(term);
                 const matchesCategory = activeCategory === "all"; 
                 if (matchesSearch && matchesCategory) li.classList.remove("hidden");
                 else li.classList.add("hidden");
             } else {
-                const exObj = CATALOGO.find(ex => ex.name === li.textContent);
-                const matchesSearch = li.textContent.toLowerCase().includes(term);
+                const exId = li.dataset.id;
+                const exObj = CATALOGO.find(ex => ex.id === exId);
+                const exName = (exObj ? exObj.name : li.textContent).toLowerCase().trim();
+                const matchesSearch = exName.includes(term);
                 const matchesCategory = activeCategory === "all" || (exObj && exObj.type === activeCategory);
                 if (matchesSearch && matchesCategory) li.classList.remove("hidden");
                 else li.classList.add("hidden");
@@ -450,6 +452,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 				ROTINAS.forEach(rotina => {
 					const li = document.createElement("li");
+					li.dataset.isRoutine = "true";
+					li.dataset.id = rotina.id;
 					li.innerHTML = `🌟 <strong>Rotina:</strong> ${rotina.name}`;
 					li.style.background = "#eef2ff"; 
 					li.addEventListener("click", () => {
@@ -502,6 +506,7 @@ document.addEventListener("DOMContentLoaded", () => {
 			if (jaFoiAdd) return;
 
 			const li = document.createElement("li");
+			li.dataset.id = exObj.id;
 			li.innerHTML = `
                 ${exObj.imageUrl 
                     ? `<img src="${exObj.imageUrl}" class="exercise-thumb" alt="${escapeHTML(exObj.name)}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">` 
