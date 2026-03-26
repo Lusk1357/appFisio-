@@ -16,9 +16,31 @@ body::-webkit-scrollbar {
 	display: none;
 }
 
+/* ── Custom Scrollbar Luxury ── */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(203, 213, 225, 0.5); /* Sutil */
+    border-radius: 20px;
+    border: 2px solid transparent; 
+    background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(148, 163, 184, 0.8);
+    background-clip: content-box;
+}
+
 body {
-	background-color: #f0f2f5;
-	font-family: "DM Sans", sans-serif;
+	background-color: #f8fafc;
+	font-family: "Outfit", "DM Sans", sans-serif;
 	display: flex;
 	justify-content: center;
 	min-height: 100vh;
@@ -703,3 +725,104 @@ body {
 		transform: translateY(-20px);
 	}
 }
+
+/* ── Exercise Preview Card in Details Modal ── */
+.exercise-preview-card {
+    background: #f1f5f9;
+    box-shadow: inset 0 2px 6px rgba(0,0,0,0.06);
+    transition: all 0.3s ease;
+}
+
+#addExercisePreviewImg {
+    border-radius: 18px;
+    animation: fadeInScale 0.5s ease;
+}
+
+@keyframes fadeInScale {
+    from { opacity: 0; transform: scale(0.96); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* ── Estilo Form Premium ── */
+#popupAddOptions .form-group input, 
+#popupAddOptions .form-group textarea {
+    background: #f8fafc;
+    border-color: #e2e8f0;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+#popupAddOptions .form-group input:focus, 
+#popupAddOptions .form-group textarea:focus {
+    background: #fff;
+    border-color: #5b8af5;
+    box-shadow: 0 0 0 4px rgba(91, 138, 245, 0.1);
+}
+
+/* ── Botão Confirmar Premium ── */
+#btnConfirmAddOptions {
+    background: linear-gradient(135deg, #1a1a2e 0%, #2d2d4e 100%) !important;
+    box-shadow: 0 4px 15px rgba(26, 26, 46, 0.2);
+    transition: all 0.25s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+#btnConfirmAddOptions:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(26, 26, 46, 0.3);
+}
+
+/* ── Typography & Refinements Luxury ── */
+.exercise-modal-category {
+    font-family: "Inter", sans-serif;
+    font-size: 10px;
+    font-weight: 800;
+    color: #5b8af5;
+    text-transform: uppercase;
+    letter-spacing: 2px; /* Aumentado */
+    margin-bottom: 6px;
+    opacity: 0.9;
+}
+
+.exercise-modal-name {
+    font-family: "Outfit", sans-serif;
+    font-size: 20px; /* Um pouco maior */
+    font-weight: 800; /* Mais pesado */
+    color: #0f172a;
+    line-height: 1.25;
+    letter-spacing: -0.3px;
+}
+
+/* Scrollbar Sutil para os modais */
+.popup {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(203, 213, 225, 0.4) transparent;
+}
+
+.popup::-webkit-scrollbar {
+    width: 6px;
+}
+
+.popup::-webkit-scrollbar-thumb {
+    background: rgba(203, 213, 225, 0.4);
+    border-radius: 20px;
+}
+
+.popup::-webkit-scrollbar-thumb:hover {
+    background: rgba(91, 138, 245, 0.5); /* Leve toque no hover */
+}
+
+/* Polimento de inputs */
+#popupAddOptions input, 
+#popupAddOptions textarea {
+    font-family: "Outfit", sans-serif; /* Consistência */
+    font-weight: 500;
+}
+
+#popupAddOptions label {
+    font-family: "Inter", sans-serif;
+    font-weight: 700;
+    opacity: 0.85;
+}
+
+

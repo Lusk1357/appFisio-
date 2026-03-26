@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="/style/adm/exercicios_dia.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&display=swap"
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700;800&family=Inter:wght@400;600;700&family=Outfit:wght@400;600;700;800&display=swap"
     rel="stylesheet" />
   <!-- PWA Setup -->
   <link rel="icon" type="image/png" href="/images/icon-192.png">
@@ -141,7 +141,24 @@
         <label for="chkApplyAllOptions" style="font-size: 13px; font-weight: 600; color: #1e293b; cursor: pointer;">Aplicar a todos os dias selecionados</label>
       </div>
 
-      <div style="padding: 16px;">
+      <div style="padding: 16px 16px 0 16px;">
+        <!-- Container da Imagem do Exercício Melhorado -->
+        <div id="addExercisePreviewContainer" style="margin-bottom: 24px;">
+          <div class="exercise-preview-card" style="width: 100%; aspect-ratio: 16/9; border-radius: 20px; overflow: hidden; background: #f1f5f9; border: 1.5px solid #e2e8f0; display: flex; align-items: center; justify-content: center; position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+            <img id="addExercisePreviewImg" src="" style="width: 100%; height: 100%; object-fit: contain; display: none; padding: 5px;" alt="Prévia">
+            <div id="addExercisePreviewPlaceholder" style="display: flex; flex-direction: column; align-items: center; gap: 8px; color: #94a3b8;">
+              <i class="fa-solid fa-image" style="font-size: 36px; opacity: 0.5;"></i>
+              <span style="font-size: 11px; font-weight: 600; letter-spacing: 0.5px;">SEM IMAGEM</span>
+            </div>
+          </div>
+          
+          <!-- Título e Categoria Dinâmicos -->
+          <div style="margin-top: 16px; text-align: center; padding: 0 8px;">
+            <p id="addExerciseCategory" class="exercise-modal-category">CATEGORIA</p>
+            <h2 id="addExerciseName" class="exercise-modal-name">Nome do Exercício</h2>
+          </div>
+        </div>
+
         <div class="form-group" style="margin-bottom: 24px;">
           <label style="display: block; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 700; color: #1e293b; margin-bottom: 10px;">Séries e Repetições</label>
           <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; background: #f8fafc; padding: 12px; border-radius: 16px; border: 1.5px solid #e2e8f0;">
@@ -173,7 +190,7 @@
         </div>
         <div class="form-group" style="margin-bottom: 16px;">
           <label for="addHowToExecute"
-            style="display: block; font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 5px;">Como Executar (Opcional — personalizado para este paciente)</label>
+            style="display: block; font-size: 11px; font-weight: 700; color: #64748b; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Instruções (Personalizadas para este paciente)</label>
           <textarea id="addHowToExecute" rows="3" placeholder="Descreva o passo a passo personalizado..."
             style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-family: 'DM Sans', sans-serif; resize: vertical; font-size: 13px;"></textarea>
         </div>

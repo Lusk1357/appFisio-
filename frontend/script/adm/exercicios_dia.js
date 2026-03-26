@@ -538,6 +538,7 @@ document.addEventListener("DOMContentLoaded", () => {
 						applyAllOptionsContainer.style.display = "none";
 					}
 					
+					updateModalPreview(exObj);
 					closeOverlay("overlayExercises");
 					openOverlay("overlayAddOptions");
 				} else {
@@ -560,6 +561,7 @@ document.addEventListener("DOMContentLoaded", () => {
 						applyAllOptionsContainer.style.display = "none";
 					}
 					
+					updateModalPreview(exObj);
 					closeOverlay("overlayExercises");
 					openOverlay("overlayAddOptions");
 				}
@@ -695,6 +697,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		} else {
 			applyAllOptionsContainer.style.display = "none";
 		}
+		updateModalPreview(exObj);
 
 		openOverlay("overlayAddOptions");
 	});
@@ -798,6 +801,31 @@ document.addEventListener("DOMContentLoaded", () => {
 
 	function closeOverlay(id) {
 		document.getElementById(id).classList.remove("open");
+	}
+
+		function updateModalPreview(ex) {
+		const previewImg = document.getElementById("addExercisePreviewImg");
+		const placeholder = document.getElementById("addExercisePreviewPlaceholder");
+		const nameEl = document.getElementById("addExerciseName");
+		const categoryEl = document.getElementById("addExerciseCategory");
+
+		// Atualiza textos
+		if (nameEl) nameEl.textContent = ex.name || "Exercício";
+		if (categoryEl) categoryEl.textContent = ex.type || "Geral";
+
+		// Atualiza imagem
+		if (ex.imageUrl) {
+			previewImg.src = ex.imageUrl;
+			previewImg.style.display = "block";
+			placeholder.style.display = "none";
+			previewImg.onerror = () => {
+				previewImg.style.display = "none";
+				placeholder.style.display = "flex";
+			};
+		} else {
+			previewImg.style.display = "none";
+			placeholder.style.display = "flex";
+		}
 	}
 
     function dayKey(ano, mes, dia) {
