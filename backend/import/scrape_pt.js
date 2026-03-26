@@ -225,7 +225,7 @@ async function run() {
         console.log(`  Equipamentos: ${currentEquipments}`);
 
         // ─── Captura Imagem ───────────────────────────────────────────────
-        const imgFilename = `ex_${ex.id}.png`;
+        const imgFilename = `ex_${ex.id}.webp`;
         const imgDest = path.join(imgDir, imgFilename);
         let imageCaptured = false;
 
@@ -270,7 +270,7 @@ async function run() {
                 try {
                     await waitForBG(page, '#render-target');
                     const targetElement = await page.$('#render-target');
-                    await targetElement.screenshot({ path: imgDest });
+                    await targetElement.screenshot({ path: imgDest, type: 'webp' });
                     imageCaptured = true;
                     console.log('  ✅ Capturado com sucesso!');
                 } catch (e) {
