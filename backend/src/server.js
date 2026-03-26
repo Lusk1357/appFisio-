@@ -100,7 +100,7 @@ app.use(express.static(path.join(__dirname, '../../frontend')));
 
 // Rota de Healthcheck
 app.get('/api/health', (req, res) => {
-    res.json({ status: 'Pro Fisio API is running!' });
+    res.json({ status: 'PRO FISIO SIMIONATO API is running!' });
 });
 
 // Middleware Global de Tratamento de Erros (sempre no final)
@@ -110,7 +110,7 @@ const PORT = process.env.PORT || 3000;
 
 if (require.main === module) {
     app.listen(PORT, () => {
-        console.log(`Pro Fisio Backend server listening on port ${PORT}`);
+        console.log(`PRO FISIO SIMIONATO Backend server listening on port ${PORT}`);
     });
 }
 

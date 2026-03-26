@@ -1,6 +1,6 @@
 {
-  "name": "Pro Fisio App",
-  "short_name": "Pro Fisio",
+  "name": "PRO FISIO SIMIONATO App",
+  "short_name": "PRO FISIO SIMIONATO",
   "description": "Aplicativo de Fisioterapia e Rotinas de Treino para pacientes e profissionais.",
   "start_url": "/pages/intro/primeira_pagina.html",
   "display": "standalone",
