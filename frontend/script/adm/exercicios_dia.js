@@ -394,7 +394,7 @@ document.addEventListener("DOMContentLoaded", () => {
 			await Promise.all(promessas);
 			showToast("success", "Prescrição salva com sucesso! 🚀");
 			setTimeout(() => {
-				window.location.href = "/pages/adm/perfil_paciente.html";
+				window.location.href = "/admin/perfil-paciente";
 			}, 1800);
 		} catch (e) {
 			console.error(e);

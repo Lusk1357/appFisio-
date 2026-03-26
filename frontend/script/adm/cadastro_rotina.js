@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
             exercisesList.innerHTML = "";
 
             if (exerciciosObj.length === 0) {
-                exercisesList.innerHTML = '<div class="empty-exercises">Nenhum exercício cadastrado ainda.<br><a href="/pages/adm/cadastro_exercicio.html" style="color:#5b8af5;">Cadastrar um agora</a></div>';
+                exercisesList.innerHTML = '<div class="empty-exercises">Nenhum exercício cadastrado ainda.<br><a href="/admin/exercicios/novo" style="color:#5b8af5;">Cadastrar um agora</a></div>';
                 return;
             }
 
@@ -232,7 +232,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 showToast("success", "Rotina criada com sucesso!");
 
                 setTimeout(() => {
-                    window.location.href = "/pages/adm/gerenciar_rotinas.html";
+                    window.location.href = "/admin/rotinas";
                 }, 1500);
             })
             .catch(err => {
@@ -245,5 +245,5 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function back() {
-    window.location.href = "/pages/adm/gerenciar_rotinas.html";
+    window.location.href = "/admin/rotinas";
 }

@@ -3,7 +3,7 @@
 document.addEventListener("DOMContentLoaded", async () => {
   const loggedUserJSON = localStorage.getItem("userProFisio");
   if (!loggedUserJSON) {
-    window.location.replace("/pages/auth/login.html");
+    window.location.replace("/login");
     return;
   }
 

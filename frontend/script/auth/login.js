@@ -77,9 +77,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
         setTimeout(() => {
           if (data.usuario.role === "ADMIN") {
-            window.location.href = "/pages/adm/home_adm.html";
+            window.location.href = "/admin";
           } else {
-            window.location.href = "/pages/funcionalidades/home.html";
+            window.location.href = "/paciente/home";
           }
         }, 1500);
       } else {

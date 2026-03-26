@@ -241,7 +241,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             showToast("success", "Rotina atualizada com sucesso!");
             setTimeout(() => {
-                window.location.href = "/pages/adm/gerenciar_rotinas.html";
+                window.location.href = "/admin/rotinas";
             }, 1500);
         } catch (err) {
             console.error(err);
@@ -255,7 +255,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function back() {
-    window.location.href = "/pages/adm/gerenciar_rotinas.html";
+    window.location.href = "/admin/rotinas";
 }
 
 function escapeHTML(str) {

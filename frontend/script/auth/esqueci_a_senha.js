@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
         
         showToast("success", "Dados confirmados! Redirecionando...");
         setTimeout(() => {
-          window.location.href = "/pages/auth/nova_senha.html";
+          window.location.href = "/nova-senha";
         }, 1500);
       })
       .catch(err => {

@@ -76,7 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
 			}),
 		);
 
-		window.location.href = "/pages/adm/exercicios_dia.html";
+		window.location.href = "/admin/exercicios-hoje";
 	});
 
 	// ── Render calendário ─────────────────────────────────────────

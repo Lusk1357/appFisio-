@@ -132,12 +132,12 @@ function goTo(page, event) {
 	if (btnId) setLoading(btnId);
 
 	const rotas = {
-		"cadastro_paciente": "/pages/adm/cadastro_paciente.html",
-		"pacientes": "/pages/adm/pacientes.html",
-		"cadastro_exercicio": "/pages/adm/cadastro_exercicio.html",
-		"gerenciar_exercicios": "/pages/adm/gerenciar_exercicios.html",
-		"cadastro_rotina": "/pages/adm/cadastro_rotina.html",
-		"dicas": "/pages/adm/dicas.html"
+		"cadastro_paciente": "/admin/novo-paciente",
+		"pacientes": "/admin/pacientes",
+		"cadastro_exercicio": "/admin/exercicios/novo",
+		"gerenciar_exercicios": "/admin/exercicios",
+		"cadastro_rotina": "/admin/rotinas/nova",
+		"dicas": "/admin/dicas"
 	};
 
 	const destination = rotas[page] || page;
@@ -154,11 +154,11 @@ function handleLogout() {
 	fetch("/api/auth/logout", { method: "POST", credentials: "include" })
 		.then(() => {
 			sessionStorage.clear();
-			window.location.href = "/pages/auth/login.html";
+			window.location.href = "/login";
 		})
 		.catch((err) => {
 			console.error("Erro ao deslogar:", err);
 			sessionStorage.clear();
-			window.location.href = "/pages/auth/login.html";
+			window.location.href = "/login";
 		});
 }

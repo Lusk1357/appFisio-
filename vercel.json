@@ -2,6 +2,130 @@
   "version": 2,
   "rewrites": [
     {
+      "source": "/inicio",
+      "destination": "/frontend/pages/intro/primeira_pagina.html"
+    },
+    {
+      "source": "/boas-vindas",
+      "destination": "/frontend/pages/intro/intro_login1.html"
+    },
+    {
+      "source": "/login",
+      "destination": "/frontend/pages/auth/login.html"
+    },
+    {
+      "source": "/cadastro",
+      "destination": "/frontend/pages/auth/cadastro.html"
+    },
+    {
+      "source": "/admin",
+      "destination": "/frontend/pages/adm/home_adm.html"
+    },
+    {
+      "source": "/admin/exercicios",
+      "destination": "/frontend/pages/adm/gerenciar_exercicios.html"
+    },
+    {
+      "source": "/admin/pacientes",
+      "destination": "/frontend/pages/adm/pacientes.html"
+    },
+    {
+      "source": "/admin/perfil-paciente",
+      "destination": "/frontend/pages/adm/perfil_paciente.html"
+    },
+    {
+      "source": "/admin/relatorios",
+      "destination": "/frontend/pages/adm/relatorios_adm.html"
+    },
+    {
+      "source": "/meus-treinos",
+      "destination": "/frontend/pages/paciente/meus_treinamentos.html"
+    },
+    {
+      "source": "/meus-status",
+      "destination": "/frontend/pages/paciente/meus_status.html"
+    },
+    {
+      "source": "/meu-perfil",
+      "destination": "/frontend/pages/paciente/meu_perfil.html"
+    },
+    {
+      "source": "/perfil/editar",
+      "destination": "/frontend/pages/perfil/editar_perfil.html"
+    },
+    {
+      "source": "/admin/exercicios/novo",
+      "destination": "/frontend/pages/adm/cadastro_exercicio.html"
+    },
+    {
+      "source": "/admin/rotinas",
+      "destination": "/frontend/pages/adm/gerenciar_rotinas.html"
+    },
+    {
+      "source": "/admin/rotinas/nova",
+      "destination": "/frontend/pages/adm/cadastro_rotina.html"
+    },
+    {
+      "source": "/admin/rotinas/editar",
+      "destination": "/frontend/pages/adm/editar_rotina.html"
+    },
+    {
+      "source": "/admin/exercicios-hoje",
+      "destination": "/frontend/pages/adm/exercicios_dia.html"
+    },
+    {
+      "source": "/admin/dicas",
+      "destination": "/frontend/pages/adm/dicas.html"
+    },
+    {
+      "source": "/admin/calendario",
+      "destination": "/frontend/pages/adm/calendario.html"
+    },
+    {
+      "source": "/recuperar-senha",
+      "destination": "/frontend/pages/auth/esqueci_a_senha.html"
+    },
+    {
+      "source": "/nova-senha",
+      "destination": "/frontend/pages/auth/nova_senha.html"
+    },
+    {
+      "source": "/paciente/home",
+      "destination": "/frontend/pages/funcionalidades/home.html"
+    },
+    {
+      "source": "/paciente/treino",
+      "destination": "/frontend/pages/funcionalidades/treinamento.html"
+    },
+    {
+      "source": "/paciente/progresso",
+      "destination": "/frontend/pages/funcionalidades/progresso.html"
+    },
+    {
+      "source": "/paciente/ajustes",
+      "destination": "/frontend/pages/funcionalidades/configs.html"
+    },
+    {
+      "source": "/paciente/treino/ativo",
+      "destination": "/frontend/pages/exercicios/treino_ativo.html"
+    },
+    {
+      "source": "/paciente/treino/resultado",
+      "destination": "/frontend/pages/exercicios/resultado.html"
+    },
+    {
+      "source": "/paciente/treino/detalhes",
+      "destination": "/frontend/pages/exercicios/detalhes_exercicios.html"
+    },
+    {
+      "source": "/admin/perfil/editar",
+      "destination": "/frontend/pages/adm/editar_perfil_adm.html"
+    },
+    {
+      "source": "/paciente/exercicios",
+      "destination": "/frontend/pages/exercicios/exercicios.html"
+    },
+    {
       "source": "/api/(.*)",
       "destination": "/api/index.js"
     },

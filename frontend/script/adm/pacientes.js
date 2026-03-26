@@ -23,7 +23,7 @@
 		btnNextSteps.disabled = true;
 		btnNextSteps.addEventListener("click", () => {
 			if (!selectedId) return;
-			window.location.href = "/pages/adm/perfil_paciente.html";
+			window.location.href = "/admin/perfil-paciente";
 		});
 	}
 

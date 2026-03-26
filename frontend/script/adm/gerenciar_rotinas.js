@@ -135,7 +135,7 @@
         // Bind action buttons
         list.querySelectorAll(".btn-edit").forEach(btn => {
             btn.addEventListener("click", () => {
-                window.location.href = `/pages/adm/editar_rotina.html?id=${btn.dataset.id}`;
+                window.location.href = `/admin/rotinas/editar?id=${btn.dataset.id}`;
             });
         });
 

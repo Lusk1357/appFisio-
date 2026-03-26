@@ -1,5 +1,5 @@
 function editPerfil() {
-    window.location.href = "/pages/perfil/editar_perfil.html"
+    window.location.href = "/perfil/editar"
 }
 
 document.addEventListener("DOMContentLoaded", () => {

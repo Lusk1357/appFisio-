@@ -154,7 +154,7 @@ document.addEventListener("DOMContentLoaded", () => {
             };
             console.log("Iniciando Treino (v2.2):", trainingSession);
             sessionStorage.setItem("treinoAtivo", JSON.stringify(trainingSession));
-            window.location.href = "/pages/exercicios/detalhes_exercicios.html";
+            window.location.href = "/paciente/treino/detalhes";
           });
           startTrainingArea.appendChild(btn);
         }

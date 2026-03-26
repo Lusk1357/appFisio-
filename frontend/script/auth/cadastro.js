@@ -78,7 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
       showToast("success", "Cadastro realizado com sucesso! Redirecionando...");
 
       setTimeout(() => {
-        window.location.href = "/pages/auth/login.html";
+        window.location.href = "/login";
       }, 2000);
     } catch (error) {
       console.error("Erro:", error);
@@ -94,5 +94,5 @@ function back() {
 }
 
 function login() {
-  window.location.href = "/pages/auth/login.html";
+  window.location.href = "/login";
 }

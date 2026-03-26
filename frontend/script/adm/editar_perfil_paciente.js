@@ -243,7 +243,7 @@ document.addEventListener("DOMContentLoaded", () => {
 			if (typeof showToast === "function") showToast("success", "Perfil atualizado com sucesso!");
 
 			setTimeout(() => {
-				window.location.href = "/pages/adm/perfil_paciente.html";
+				window.location.href = "/admin/perfil-paciente";
 			}, 1800);
 		} catch (error) {
 			console.error("Erro:", error);

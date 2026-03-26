@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!recoveryToken) {
       showToast("error", "Sessão expirada. Volte para a tela de recuperar senha.");
       setTimeout(() => {
-         window.location.href = "/pages/auth/esqueci_a_senha.html";
+         window.location.href = "/recuperar-senha";
       }, 2000);
       return;
     }
@@ -75,7 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
         sessionStorage.removeItem('recoveryToken');
     
         setTimeout(() => {
-          window.location.href = "/pages/auth/login.html";
+          window.location.href = "/login";
         }, 1500);
     })
     .catch(err => {

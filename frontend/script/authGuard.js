@@ -9,7 +9,7 @@ async function verificarAcesso(roleEsperado) {
         
         if (!response.ok) {
             console.warn("Sessão inválida ou expirada. Redirecionando para login...");
-            window.location.href = "/pages/auth/login.html";
+            window.location.href = "/login";
             return;
         }
 
@@ -22,9 +22,9 @@ async function verificarAcesso(roleEsperado) {
             
             // Redireciona para a home correta baseado no papel real dele, ou login
             if (user.role === "ADMIN") {
-                window.location.href = "/pages/adm/home_adm.html";
+                window.location.href = "/admin";
             } else {
-                window.location.href = "/pages/funcionalidades/home.html";
+                window.location.href = "/paciente/home";
             }
             return;
         }
@@ -41,6 +41,6 @@ async function verificarAcesso(roleEsperado) {
 
     } catch (error) {
         console.error("Erro ao verificar autenticação:", error);
-        window.location.href = "/pages/auth/login.html";
+        window.location.href = "/login";
     }
 }

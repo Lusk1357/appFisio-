@@ -93,7 +93,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       showToast("success", "Senha alterada com sucesso!");
       setTimeout(() => {
-        window.location.href = "/pages/auth/login.html";
+        window.location.href = "/login";
       }, 2000);
     })
     .catch(err => {

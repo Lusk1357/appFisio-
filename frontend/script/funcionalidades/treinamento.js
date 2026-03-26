@@ -3,7 +3,7 @@
 document.addEventListener("DOMContentLoaded", () => {
     const loggedUserJSON = localStorage.getItem("userProFisio");
     if (!loggedUserJSON) {
-        window.location.replace("/pages/auth/login.html");
+        window.location.replace("/login");
         return;
     }
 
@@ -202,7 +202,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             date: dateStr,
                             exercises: exerciciosDoDia
                         }));
-                        window.location.href = "/pages/exercicios/treino_ativo.html";
+                        window.location.href = "/paciente/treino/ativo";
                     });
                     btnArea.innerHTML = "";
                     btnArea.appendChild(btn);

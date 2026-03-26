@@ -57,15 +57,15 @@
          DASHBOARD STATS (NOVO)
     ══════════════════════════════════ -->
     <div class="dashboard-stats" id="dashboard-stats">
-      <div class="stat-box" id="stat-box-pacientes" onclick="goTo('/pages/adm/pacientes.html', event)">
+      <div class="stat-box" id="stat-box-pacientes" onclick="goTo('/admin/pacientes', event)">
         <span class="stat-value" id="stat-pacientes">--</span>
         <span class="stat-label">Pacientes</span>
       </div>
-      <div class="stat-box" id="stat-box-rotinas" onclick="goTo('/pages/adm/gerenciar_rotinas.html', event)">
+      <div class="stat-box" id="stat-box-rotinas" onclick="goTo('/admin/rotinas', event)">
         <span class="stat-value" id="stat-rotinas">--</span>
         <span class="stat-label">Rotinas</span>
       </div>
-      <div class="stat-box" id="stat-box-exercicios" onclick="goTo('/pages/adm/gerenciar_exercicios.html', event)">
+      <div class="stat-box" id="stat-box-exercicios" onclick="goTo('/admin/exercicios', event)">
         <span class="stat-value" id="stat-exercicios">--</span>
         <span class="stat-label">Exercícios</span>
       </div>
@@ -82,7 +82,7 @@
 
       <!-- Cadastrar Pacientes -->
       <button class="action-card card-primary" id="btn-cadastrar-pacientes"
-        onclick="goTo('/pages/adm/cadastro_paciente.html', event)" aria-label="Cadastrar Pacientes">
+        onclick="goTo('/admin/novo-paciente', event)" aria-label="Cadastrar Pacientes">
         <div class="card-icon">
           <i class="fa-solid fa-user-plus" aria-hidden="true"></i>
         </div>
@@ -90,7 +90,7 @@
       </button>
 
       <!-- Listar Pacientes -->
-      <button class="action-card card-dark" id="btn-listar-pacientes" onclick="goTo('/pages/adm/pacientes.html', event)"
+      <button class="action-card card-dark" id="btn-listar-pacientes" onclick="goTo('/admin/pacientes', event)"
         aria-label="Listar Pacientes">
         <div class="card-icon">
           <i class="fa-solid fa-users" aria-hidden="true"></i>
@@ -100,7 +100,7 @@
 
       <!-- Gerenciar Exercícios -->
       <button class="action-card card-surface" id="btn-gerenciar-exercicios"
-        onclick="goTo('/pages/adm/gerenciar_exercicios.html', event)" aria-label="Gerenciar Exercícios">
+        onclick="goTo('/admin/exercicios', event)" aria-label="Gerenciar Exercícios">
         <div class="card-icon">
           <i class="fa-solid fa-dumbbell" aria-hidden="true"></i>
         </div>
@@ -109,7 +109,7 @@
 
       <!-- Gerenciar Rotinas -->
       <button class="action-card card-surface" id="btn-gerenciar-rotinas"
-        onclick="goTo('/pages/adm/gerenciar_rotinas.html', event)" aria-label="Gerenciar Rotinas">
+        onclick="goTo('/admin/rotinas', event)" aria-label="Gerenciar Rotinas">
         <div class="card-icon">
           <i class="fa-solid fa-notes-medical" aria-hidden="true"></i>
         </div>
@@ -117,7 +117,7 @@
       </button>
 
       <!-- Dicas e Vídeos – full width -->
-      <button class="action-card card-tip full-width" id="btn-dicas" onclick="goTo('/pages/adm/dicas.html', event)"
+      <button class="action-card card-tip full-width" id="btn-dicas" onclick="goTo('/admin/dicas', event)"
         aria-label="Gerenciar Dicas e Vídeos">
         <div class="card-icon">
           <i class="fa-solid fa-video" aria-hidden="true"></i>

@@ -111,7 +111,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (typeof showToast === "function") showToast("success", "Paciente cadastrado com sucesso!");
 
             setTimeout(() => {
-                window.location.href = "/pages/adm/pacientes.html";
+                window.location.href = "/admin/pacientes";
             }, 1500);
         } catch (error) {
             console.error("Erro:", error);

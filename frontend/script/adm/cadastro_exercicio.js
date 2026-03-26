@@ -195,7 +195,7 @@ document.addEventListener("DOMContentLoaded", () => {
             showToast("success", "Exercício cadastrado com sucesso!");
 
             setTimeout(() => {
-                window.location.href = "/pages/adm/home_adm.html";
+                window.location.href = "/admin";
             }, 1500);
         } catch (error) {
             console.error("Erro:", error);

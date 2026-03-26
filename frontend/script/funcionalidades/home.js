@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const loggedUserJSON = localStorage.getItem("userProFisio");
   if (!loggedUserJSON) {
-    window.location.replace("/pages/auth/login.html");
+    window.location.replace("/login");
     return;
   }
 
@@ -115,7 +115,7 @@ document.addEventListener("DOMContentLoaded", () => {
           heroSubtitle.innerText = "Você não tem exercícios agendados para hoje.";
           btnStartWorkout.style.display = "inline-block";
           btnStartWorkout.innerText = "Ver meu progresso";
-          btnStartWorkout.onclick = () => window.location.href = "/pages/funcionalidades/progresso.html";
+          btnStartWorkout.onclick = () => window.location.href = "/paciente/progresso";
         } else if (pendentes.length > 0) {
           heroTitle.innerHTML = "RECUPERAÇÃO<br/>COMEÇA AQUI";
           heroSubtitle.innerText = `Você tem ${pendentes.length} exercícios pendentes hoje.`;
@@ -127,14 +127,14 @@ document.addEventListener("DOMContentLoaded", () => {
               exercises: pendentes
             };
             sessionStorage.setItem("treinoAtivo", JSON.stringify(trainingSession));
-            window.location.href = "/pages/exercicios/treino_ativo.html";
+            window.location.href = "/paciente/treino/ativo";
           };
         } else {
           heroTitle.innerHTML = "TREINO DE HOJE<br/>CONCLUÍDO!";
           heroSubtitle.innerText = "Excelente trabalho. Volte amanhã!";
           btnStartWorkout.style.display = "inline-block";
           btnStartWorkout.innerText = "Ver meu progresso";
-          btnStartWorkout.onclick = () => window.location.href = "/pages/funcionalidades/progresso.html";
+          btnStartWorkout.onclick = () => window.location.href = "/paciente/progresso";
         }
       }
     } catch (e) {
@@ -301,7 +301,7 @@ document.addEventListener("DOMContentLoaded", () => {
         await fetch("/api/auth/logout", { method: "POST", credentials: "include" });
       } catch (err) { /* ignora */ }
       localStorage.removeItem("userProFisio");
-      window.location.replace("/pages/auth/login.html");
+      window.location.replace("/login");
     });
   }
 

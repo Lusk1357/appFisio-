@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // ── Lê exercícios do sessionStorage ───────────────────────────
   const treinoJSON = sessionStorage.getItem("treinoAtivo");
   if (!treinoJSON) {
-    window.location.href = "/pages/funcionalidades/treinamento.html";
+    window.location.href = "/paciente/treino";
     return;
   }
 
@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const exercises = allExercises.filter((e) => !e.completed);
 
   if (exercises.length === 0) {
-    window.location.href = "/pages/funcionalidades/treinamento.html";
+    window.location.href = "/paciente/treino";
     return;
   }
 
@@ -429,7 +429,7 @@ document.addEventListener("DOMContentLoaded", () => {
     
     // Limpa o estado ativo e vai para a página de Resultados
     sessionStorage.removeItem("treinoAtivo");
-    window.location.href = "/pages/exercicios/resultado.html";
+    window.location.href = "/paciente/treino/resultado";
   }
 
 
@@ -473,7 +473,7 @@ document.addEventListener("DOMContentLoaded", () => {
     syncProgress()
       .catch(e => console.error("Sincronização falhou na saída:", e))
       .finally(() => {
-        window.location.href = "/pages/funcionalidades/treinamento.html";
+        window.location.href = "/paciente/treino";
       });
   });
 

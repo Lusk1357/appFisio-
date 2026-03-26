@@ -178,7 +178,7 @@ document.addEventListener("DOMContentLoaded", () => {
       saveBtn.style.backgroundColor = "#10b981";
 
       setTimeout(() => {
-        window.location.href = "/pages/perfil/perfil.html";
+        window.location.href = "/perfil";
       }, 1500);
 
     } catch (err) {

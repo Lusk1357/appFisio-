@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     setTimeout(() => {
       showToast("success", "Sessão iniciada! Prepare-se.");
-      window.location.href = "/pages/exercicios/treino_ativo.html"
+      window.location.href = "/paciente/treino/ativo"
       startBtn.innerHTML = '<i class="fa-solid fa-check"></i> Em andamento';
       startBtn.style.backgroundColor = "#10b981";
     }, 1500);

@@ -1,11 +1,11 @@
 function skip() {
-  window.location.href = "/pages/auth/login.html"
+  window.location.href = "/login"
 }
 
 function ref() {
-  window.location.href = "/pages/intro/intro_login3.html";
+  window.location.href = "/boas-vindas-3";
 }
 
 function back() {
-  window.location.href = "/pages/intro/intro_login1.html"
+  window.location.href = "/boas-vindas"
 }

@@ -304,7 +304,7 @@ async function confirmDelete() {
 
 		// Aguarda o toast aparecer antes de redirecionar
 		setTimeout(() => {
-			window.location.href = "/pages/adm/pacientes.html";
+			window.location.href = "/admin/pacientes";
 		}, 1400);
 
 	} catch (error) {

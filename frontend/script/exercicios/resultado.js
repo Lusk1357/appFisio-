@@ -99,7 +99,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   backBtn.addEventListener("click", () => {
-    window.location.href = "/pages/funcionalidades/treinamento.html";
+    window.location.href = "/paciente/treino";
   });
 
   saveBtn.addEventListener("click", () => {
@@ -119,7 +119,7 @@ document.addEventListener("DOMContentLoaded", () => {
       sessionStorage.setItem("justFinishedWorkout", "true");
 
       setTimeout(() => {
-        window.location.href = "/pages/funcionalidades/progresso.html"; // Redireciona para o progresso para ver conquistas
+        window.location.href = "/paciente/progresso"; // Redireciona para o progresso para ver conquistas
       }, 2000);
     }, 1000);
   });

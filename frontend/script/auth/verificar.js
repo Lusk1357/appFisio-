@@ -78,9 +78,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
         setTimeout(() => {
             if (context === 'reset') {
-                window.location.href = "/pages/auth/nova_senha.html";
+                window.location.href = "/nova-senha";
             } else {
-                window.location.href = "/pages/funcionalidades/home.html";
+                window.location.href = "/paciente/home";
             }
         }, 2000);
     });

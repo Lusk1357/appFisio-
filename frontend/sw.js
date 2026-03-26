@@ -2,12 +2,12 @@ const CACHE_NAME = 'profisio-cache-v2';
 
 // Arquivos mínimos para a tela de erro / load rápido
 const urlsToCache = [
-  '/pages/intro/primeira_pagina.html',
-  '/pages/auth/login.html',
-  '/pages/auth/esqueci_a_senha.html',
-  '/pages/paciente/meus_status.html',
-  '/pages/paciente/meus_treinamentos.html',
-  '/pages/adm/home_adm.html',
+  '/inicio',
+  '/login',
+  '/recuperar-senha',
+  '/meus-status',
+  '/meus-treinos',
+  '/admin',
   '/style/intro/primeira_pagina.css',
   '/style/auth/login.css',
   '/style/paciente/home_paciente.css',
@@ -59,7 +59,7 @@ self.addEventListener('fetch', event => {
 
       // Se for uma navegação de página, retorna o login como fallback (ou offline page)
       if (event.request.mode === 'navigate') {
-        return caches.match('/pages/auth/login.html');
+        return caches.match('/login');
       }
 
       // Para outros recursos (css/js/img), se não tem no cache e falhou a rede, 

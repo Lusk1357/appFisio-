@@ -1,3 +1,3 @@
 function ref() {
-  window.location.href = "/pages/intro/intro_login1.html";
+  window.location.href = "/boas-vindas";
 }
