@@ -8,6 +8,7 @@ exports.getTips = async (req, res) => {
                 title: true,
                 thumbnail: true,
                 duration: true,
+                link: true,
                 createdAt: true
             },
             orderBy: { createdAt: "desc" }
