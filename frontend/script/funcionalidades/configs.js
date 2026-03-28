@@ -67,13 +67,13 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             if (res.ok) {
-                window.location.href = "/index.html";
+                window.location.href = "/inicio";
             } else {
-                window.location.href = "/index.html";
+                window.location.href = "/inicio";
             }
         } catch (error) {
             console.error("Erro no logout:", error);
-            window.location.href = "/index.html";
+            window.location.href = "/inicio";
         }
     }
 });

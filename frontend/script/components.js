@@ -7,7 +7,7 @@ const _PF_CACHE = new Map();
  * @param {object} options 
  * @param {number} ttl - Tempo de vida em ms (default 30s)
  */
-window.pfFetch = async function(url, options = {}, ttl = 30000) {
+window.pfFetch = async function (url, options = {}, ttl = 30000) {
   const isGet = !options.method || options.method.toUpperCase() === "GET";
   if (isGet) {
     const cached = _PF_CACHE.get(url);
@@ -184,16 +184,16 @@ window.pfFetch = async function(url, options = {}, ttl = 30000) {
  * Exibe um modal customizado de confirmação ou alerta.
  * @param {Object} options { title, message, type, confirmText, cancelText, confirmColor, onConfirm }
  */
-window.showCustomModal = function(options) {
-  const { 
-    title = "Confirmação", 
-    message = "", 
+window.showCustomModal = function (options) {
+  const {
+    title = "Confirmação",
+    message = "",
     type = "info", // info, success, warning, danger
-    confirmText = "OK", 
+    confirmText = "OK",
     cancelText = "Cancelar",
     confirmColor = "#2563eb",
     showCancel = true,
-    onConfirm = null 
+    onConfirm = null
   } = options;
 
   // Limpa modais existentes
@@ -264,7 +264,7 @@ window.showCustomModal = function(options) {
 /**
  * Versão simplificada para confirmação tipo "Deseja apagar?"
  */
-window.showCustomConfirm = function(title, message, onConfirm, type = "danger") {
+window.showCustomConfirm = function (title, message, onConfirm, type = "danger") {
   window.showCustomModal({
     title,
     message,
@@ -278,7 +278,7 @@ window.showCustomConfirm = function(title, message, onConfirm, type = "danger") 
 /**
  * Toast global de feedback rápido
  */
-window.showToast = function(type, message) {
+window.showToast = function (type, message) {
   const existing = document.getElementById("pf-toast-root");
   if (existing) existing.remove();
 
@@ -297,9 +297,9 @@ window.showToast = function(type, message) {
 
   document.body.insertAdjacentHTML("beforeend", toastHTML);
   const toast = document.getElementById("pf-toast-root");
-  
+
   setTimeout(() => toast.classList.add("active"), 10);
-  
+
   setTimeout(() => {
     toast.classList.remove("active");
     setTimeout(() => toast.remove(), 400);
@@ -312,7 +312,7 @@ window.showToast = function(type, message) {
  * @param {string} str 
  * @returns {string}
  */
-window.escapeHTML = function(str) {
+window.escapeHTML = function (str) {
   if (!str) return "";
   const temp = document.createElement("div");
   temp.textContent = str;
@@ -339,21 +339,18 @@ function renderBottomNav(currentPage) {
   const isTreinamento = currentPage === 'treinamento' ? 'active' : '';
   const isProgresso = (currentPage === 'progresso' || currentPage === 'perfil') ? 'active' : '';
 
-  // Utilizado caminho relativo assumindo que as telas estão em /pages/funcionalidades/ ou /pages/perfil/
-  const basePath = "/pages";
-
   const navHTML = `
     <!-- Bottom Navigation Component (Injetado via JS) -->
     <div class="bottom-nav">
-      <a href="${basePath}/funcionalidades/home.html" class="nav-item ${isHome}">
+      <a href="/paciente/home" class="nav-item ${isHome}">
         <i class="fa-solid fa-house"></i>
         <span>Home</span>
       </a>
-      <a href="${basePath}/funcionalidades/treinamento.html" class="nav-item ${isTreinamento}">
+      <a href="/paciente/treino" class="nav-item ${isTreinamento}">
         <i class="fa-solid fa-dumbbell"></i>
         <span>Exercícios</span>
       </a>
-      <a href="${basePath}/funcionalidades/progresso.html" class="nav-item ${isProgresso}">
+      <a href="/paciente/progresso" class="nav-item ${isProgresso}">
         <i class="fa-solid fa-chart-line"></i>
         <span>Progresso</span>
       </a>
@@ -440,7 +437,7 @@ async function addAchievement(title, description, icon = "fa-medal", alert = fal
       credentials: "include",
       body: JSON.stringify({ title, description, icon, alert })
     });
-    
+
     if (!response.ok) return null;
     const data = await response.json();
 
@@ -461,7 +458,7 @@ async function addAchievement(title, description, icon = "fa-medal", alert = fal
  * @param {string} str 
  * @returns {string}
  */
-window.escapeHTML = function(str) {
+window.escapeHTML = function (str) {
   if (!str) return "";
   return String(str)
     .replace(/&/g, "&amp;")
@@ -591,7 +588,7 @@ async function checkMilestones() {
         await addAchievement(rule.name, rule.desc, rule.icon);
       }
     }
-    
+
     return stats; // Retorna os stats para quem chamou (ex: progresso.js)
   } catch (e) {
     console.error("Erro ao verificar marcos:", e);

@@ -10,6 +10,14 @@
       "destination": "/frontend/pages/intro/intro_login1.html"
     },
     {
+      "source": "/boas-vindas-2",
+      "destination": "/frontend/pages/intro/intro_login2.html"
+    },
+    {
+      "source": "/boas-vindas-3",
+      "destination": "/frontend/pages/intro/intro_login3.html"
+    },
+    {
       "source": "/login",
       "destination": "/frontend/pages/auth/login.html"
     },
@@ -32,6 +40,18 @@
     {
       "source": "/admin/perfil-paciente",
       "destination": "/frontend/pages/adm/perfil_paciente.html"
+    },
+    {
+      "source": "/admin/perfil-paciente/editar",
+      "destination": "/frontend/pages/adm/editar_perfil_paciente.html"
+    },
+    {
+      "source": "/admin/novo-paciente",
+      "destination": "/frontend/pages/adm/cadastro_paciente.html"
+    },
+    {
+      "source": "/perfil",
+      "destination": "/frontend/pages/perfil/perfil.html"
     },
     {
       "source": "/admin/relatorios",
