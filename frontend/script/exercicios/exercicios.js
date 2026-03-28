@@ -281,4 +281,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const walk = (x - startX) * 2;
     daysCarousel.scrollLeft = scrollLeft - walk;
   });
-});
+
+  // Componentes Injetados
+  if (typeof renderBottomNav === 'function') {
+    renderBottomNav('treinamento');
+  }
+});

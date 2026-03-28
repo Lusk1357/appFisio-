@@ -146,6 +146,26 @@
       "destination": "/frontend/pages/exercicios/exercicios.html"
     },
     {
+      "source": "/admin/perfil",
+      "destination": "/frontend/pages/adm/perfil_adm.html"
+    },
+    {
+      "source": "/admin/treinos",
+      "destination": "/frontend/pages/adm/treinos.html"
+    },
+    {
+      "source": "/alterar-senha",
+      "destination": "/frontend/pages/auth/alterar_senha.html"
+    },
+    {
+      "source": "/verificar",
+      "destination": "/frontend/pages/auth/verificar.html"
+    },
+    {
+      "source": "/paciente/notificacoes",
+      "destination": "/frontend/pages/funcionalidades/notificacoes.html"
+    },
+    {
       "source": "/api/(.*)",
       "destination": "/api/index.js"
     },
