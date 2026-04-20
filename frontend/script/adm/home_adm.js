@@ -19,7 +19,7 @@ window.addEventListener("pageshow", (event) => {
 });
 
 function resetAllButtons() {
-	const clickableCards = document.querySelectorAll(".action-card, .stat-box");
+	const clickableCards = document.querySelectorAll(".action-card, .stat-box, .hero-user-row");
 	clickableCards.forEach(btn => {
 		btn.style.pointerEvents = "auto";
 		btn.style.opacity = "1";

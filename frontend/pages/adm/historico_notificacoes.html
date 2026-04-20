@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Histórico de Notificações - PRO FISIO SIMIONATO</title>
+    <link rel="icon" type="image/png" href="/images/icon-192.png">
+
+    <link rel="stylesheet" href="/style/adm/perfil_paciente.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <script src="/script/authGuard.js"></script>
+    <script>
+      verificarAcesso("ADMIN");
+    </script>
+    <script src="/script/components.js" defer></script>
+    <script src="/script/adm/historico_notificacoes.js" defer></script>
+  </head>
+
+  <body>
+    <div class="app-container">
+      <header class="page-header">
+        <button class="btn-back" onclick="history.back()">
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <button
+          class="btn-back"
+          onclick="window.location.href = '/admin'"
+          title="Página Inicial"
+        >
+          <i class="fa-solid fa-house"></i>
+        </button>
+      </header>
+
+      <section class="notification-history" style="margin-top: 20px; width: 100%; padding: 0 24px;">
+        <div class="notes-header">
+          <h3 style="font-family: 'Bebas Neue', sans-serif; font-size: 24px; color: #1a1a2e; text-align: center; width: 100%;"><i class="fa-solid fa-clock-rotate-left"></i> Histórico de Notificações</h3>
+        </div>
+        <div id="notificationList" style="display: flex; flex-direction: column; gap: 12px; margin-top: 20px;">
+           <p style="color: #64748b; font-size: 14px; text-align: center;">Carregando histórico...</p>
+        </div>
+      </section>
+    </div>
+
+    <!-- Edit Notification Modal -->
+    <div id="editNotifyModal" class="modal-overlay" aria-modal="true" role="dialog">
+      <div class="modal-card">
+        <div class="modal-icon-wrap" style="background: #fef3c7; color: #d97706;">
+          <i class="fa-solid fa-pen"></i>
+        </div>
+        <h2 class="modal-title">Editar Notificação</h2>
+        <p class="modal-body">Altere a mensagem enviada. Isso reenviará a notificação ao paciente.</p>
+        
+        <div class="modal-form" style="width: 100%; display: flex; flex-direction: column; gap: 12px;">
+          <input type="text" id="editNotifyTitle" style="width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #e1e4e8; outline: none; font-family: inherit;">
+          <textarea id="editNotifyMessage" style="width: 100%; height: 100px; padding: 12px; border-radius: 12px; border: 1px solid #e1e4e8; outline: none; font-family: inherit; resize: none;"></textarea>
+        </div>
+
+        <div class="modal-actions">
+          <button class="modal-btn modal-btn-cancel" onclick="closeEditNotifyModal()">Cancelar</button>
+          <button class="modal-btn modal-btn-confirm" id="btnConfirmEditNotify" style="background: #d97706; box-shadow: 0 4px 14px rgba(217, 119, 6, 0.3);">
+            <i class="fa-solid fa-save"></i> Salvar e Reenviar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="appToast" class="app-toast" role="alert" aria-live="polite">
+      <i id="appToastIcon" class="fa-solid fa-check-circle"></i>
+      <span id="appToastMsg"></span>
+    </div>
+  </body>
+</html>

@@ -1,6 +1,28 @@
 const prisma = require('../utils/prisma');
 const fs = require('fs');
 const path = require('path');
+const { put } = require('@vercel/blob');
+
+// Export para a nova rota de upload 
+exports.uploadImage = async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ erro: "Nenhum arquivo enviado." });
+        }
+
+        const file = req.file;
+        const filename = `exercises/${Date.now()}-${file.originalname.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
+
+        const blob = await put(filename, file.buffer, {
+            access: 'public',
+        });
+
+        res.status(200).json({ url: blob.url });
+    } catch (error) {
+        console.error("Erro no upload para Vercel Blob:", error);
+        res.status(500).json({ erro: "Erro ao realizar o upload." });
+    }
+};
 
 // Listar imagens locais disponíveis em /public/images/exercises/
 exports.listLocalImages = async (req, res) => {
@@ -70,7 +92,8 @@ exports.getAllExercises = async (req, res) => {
                 duration: true,
                 howToExecute: true,
                 observation: true,
-                videoUrl: true
+                videoUrl: true,
+                createdAt: true
             }
         });
         res.status(200).json(exercises);

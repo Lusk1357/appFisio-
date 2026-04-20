@@ -46,6 +46,14 @@
       "destination": "/frontend/pages/adm/editar_perfil_paciente.html"
     },
     {
+      "source": "/admin/perfil-paciente/historico",
+      "destination": "/frontend/pages/adm/historico_notificacoes.html"
+    },
+    {
+      "source": "/admin/perfil-paciente/treinos",
+      "destination": "/frontend/pages/adm/treinos_paciente.html"
+    },
+    {
       "source": "/admin/novo-paciente",
       "destination": "/frontend/pages/adm/cadastro_paciente.html"
     },

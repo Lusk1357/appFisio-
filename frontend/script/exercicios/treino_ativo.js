@@ -146,7 +146,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     const fallback =
-      imageUrl ||
+      (imageUrl ? ((imageUrl.startsWith('http') || imageUrl.startsWith('/')) ? imageUrl : '/' + imageUrl) : null) ||
       "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80";
     muteBtn.style.display = "none";
 
@@ -158,7 +158,12 @@ document.addEventListener("DOMContentLoaded", () => {
       img.onerror = () => {
         if (img.src !== fallback) img.src = fallback;
       };
-      img.src = src || fallback;
+      
+      let finalSrc = src;
+      if (src && !src.startsWith('http') && !src.startsWith('/')) {
+         finalSrc = '/' + src;
+      }
+      img.src = finalSrc || fallback;
       mediaContainer.appendChild(img);
     };
 

@@ -32,13 +32,17 @@ document.addEventListener("DOMContentLoaded", () => {
                 const label = document.createElement("label");
                 label.className = "exercise-item";
 
+                const finalImg = ex.imageUrl 
+                    ? ((ex.imageUrl.startsWith('http') || ex.imageUrl.startsWith('/')) ? ex.imageUrl : '/' + ex.imageUrl) 
+                    : null;
+
                 label.innerHTML = `
                     <input type="checkbox" class="ex-checkbox" value="${ex.id}" />
-                    ${ex.imageUrl 
-                        ? `<img src="${ex.imageUrl}" class="exercise-thumb" alt="${escapeHTML(ex.name)}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">` 
+                    ${finalImg 
+                        ? `<img src="${finalImg}" class="exercise-thumb" alt="${escapeHTML(ex.name)}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">` 
                         : ''
                     }
-                    <div class="exercise-thumb-placeholder" style="${ex.imageUrl ? 'display:none;' : 'display:flex;'}">
+                    <div class="exercise-thumb-placeholder" style="${finalImg ? 'display:none;' : 'display:flex;'}">
                         <i class="fa-solid fa-dumbbell"></i>
                     </div>
                     <div class="exercise-info">

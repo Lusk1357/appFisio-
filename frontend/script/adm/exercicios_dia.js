@@ -335,11 +335,15 @@ document.addEventListener("DOMContentLoaded", () => {
 		const block = document.createElement("div");
 		block.className = "exercise-block";
 
+        const finalImg = exObj.imageUrl 
+            ? ((exObj.imageUrl.startsWith('http') || exObj.imageUrl.startsWith('/')) ? exObj.imageUrl : '/' + exObj.imageUrl) 
+            : null;
+
 		block.innerHTML = `
       <div class="exercise-bg"></div>
       <div class="exercise-overlay">
-        ${exObj.imageUrl 
-            ? `<img src="${exObj.imageUrl}" class="exercise-block-thumb" alt="${escapeHTML(exObj.name)}">` 
+        ${finalImg 
+            ? `<img src="${finalImg}" class="exercise-block-thumb" alt="${escapeHTML(exObj.name)}">` 
             : `<div class="exercise-block-thumb-placeholder"><i class="fa-solid fa-dumbbell"></i></div>`
         }
         <span class="exercise-name">${escapeHTML(exObj.name)}</span>
@@ -507,12 +511,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
 			const li = document.createElement("li");
 			li.dataset.id = exObj.id;
+
+            const finalImgLi = exObj.imageUrl 
+                ? ((exObj.imageUrl.startsWith('http') || exObj.imageUrl.startsWith('/')) ? exObj.imageUrl : '/' + exObj.imageUrl) 
+                : null;
+
 			li.innerHTML = `
-                ${exObj.imageUrl 
-                    ? `<img src="${exObj.imageUrl}" class="exercise-thumb" alt="${escapeHTML(exObj.name)}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">` 
+                ${finalImgLi 
+                    ? `<img src="${finalImgLi}" class="exercise-thumb" alt="${escapeHTML(exObj.name)}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">` 
                     : ''
                 }
-                <div class="exercise-thumb-placeholder" style="${exObj.imageUrl ? 'display:none;' : 'display:flex;'}">
+                <div class="exercise-thumb-placeholder" style="${finalImgLi ? 'display:none;' : 'display:flex;'}">
                     <i class="fa-solid fa-dumbbell"></i>
                 </div>
                 <span>${escapeHTML(exObj.name)}</span>

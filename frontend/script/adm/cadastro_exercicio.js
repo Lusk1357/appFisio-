@@ -9,104 +9,54 @@ document.addEventListener("DOMContentLoaded", () => {
     const imagePreview = document.getElementById("imagePreview");
     const imgPreviewTag = document.getElementById("imgPreviewTag");
 
-    let currentMode = "local"; // "local" or "url"
-    
-    // ── Lógica do Dropdown Customizado ─────────────────────────
-    const categoryContainer = document.getElementById("categorySelectContainer");
+    let currentMode = "upload"; // "upload" or "url"
+    let uploadedImageUrl = ""; // To store the uploaded URL temporarily for preview if needed
+
+    // Lógica do Dropdown Customizado (Categoria)
+    const categorySelectContainer = document.getElementById("categorySelectContainer");
     const categoryTrigger = document.getElementById("categoryTrigger");
     const categoryDropdown = document.getElementById("categoryDropdown");
-    const selectedText = document.getElementById("selectedCategoryText");
-    const hiddenInput = document.getElementById("categoria");
+    const selectedCategoryText = document.getElementById("selectedCategoryText");
+    const categoriaHiddenInput = document.getElementById("categoria");
+    const selectOptions = document.querySelectorAll(".select-option");
 
-    categoryTrigger.addEventListener("click", () => {
-        categoryContainer.classList.toggle("open");
-    });
-
-    categoryDropdown.querySelectorAll(".select-option").forEach(option => {
-        option.addEventListener("click", (e) => {
-            const val = e.target.dataset.value;
-            const text = e.target.textContent;
-
-            // Update UI
-            selectedText.textContent = text;
-            selectedText.classList.remove("placeholder");
-            
-            // Update value
-            hiddenInput.value = val;
-
-            // Highlight selected
-            categoryDropdown.querySelectorAll(".select-option").forEach(opt => opt.classList.remove("selected"));
-            e.target.classList.add("selected");
-
-            // Close
-            categoryContainer.classList.remove("open");
+    if (categoryTrigger && categorySelectContainer) {
+        categoryTrigger.addEventListener("click", (e) => {
+            e.stopPropagation();
+            categorySelectContainer.classList.toggle("open");
         });
-    });
 
-    // Fechar ao clicar fora
-    document.addEventListener("click", (e) => {
-        if (!categoryContainer.contains(e.target)) {
-            categoryContainer.classList.remove("open");
-        }
-    });
-    // ── Toast ──────────────────────────────────────────────────
-    function showToast(type, message) {
-        let toastContainer = document.getElementById("toast-container");
-        if (!toastContainer) {
-            toastContainer = document.createElement("div");
-            toastContainer.id = "toast-container";
-            document.body.appendChild(toastContainer);
-        }
+        selectOptions.forEach(option => {
+            option.addEventListener("click", () => {
+                const value = option.getAttribute("data-value");
+                selectedCategoryText.textContent = value;
+                selectedCategoryText.classList.remove("placeholder");
+                categoriaHiddenInput.value = value;
+                categorySelectContainer.classList.remove("open");
 
-        const toast = document.createElement("div");
-        toast.className = `toast ${type}`;
-
-        const icon =
-            type === "success"
-                ? '<i class="fa-solid fa-circle-check"></i>'
-                : '<i class="fa-solid fa-circle-exclamation"></i>';
-
-        toast.innerHTML = `${icon} <span>${message}</span>`;
-        toastContainer.appendChild(toast);
-
-        setTimeout(() => {
-            toast.style.animation = "fadeOut 0.3s forwards";
-            setTimeout(() => { toast.remove(); }, 300);
-        }, 4000);
-    }
-
-    // ── Carregar imagens locais ────────────────────────────────
-    async function loadLocalImages() {
-        try {
-            const res = await fetch("/api/exercicios/imagens", {
-                method: "GET",
-                credentials: "include"
+                // Highlight selected
+                selectOptions.forEach(opt => opt.classList.remove("selected"));
+                option.classList.add("selected");
             });
-            if (!res.ok) throw new Error("Falha ao carregar imagens.");
-            const images = await res.json();
-            imagemLocalSelect.innerHTML = '<option value="" disabled selected>Selecione uma imagem...</option>';
-            if (images.length === 0) {
-                imagemLocalSelect.innerHTML += '<option value="" disabled>Nenhuma imagem disponível</option>';
-            } else {
-                images.forEach(img => {
-                    const opt = document.createElement("option");
-                    opt.value = img.path;
-                    opt.textContent = img.name;
-                    imagemLocalSelect.appendChild(opt);
-                });
+        });
+
+        // Fechar ao clicar fora
+        document.addEventListener("click", (e) => {
+            if (!categorySelectContainer.contains(e.target)) {
+                categorySelectContainer.classList.remove("open");
             }
-        } catch (error) {
-            console.error("Erro ao carregar imagens:", error);
-            imagemLocalSelect.innerHTML = '<option value="" disabled selected>Erro ao carregar imagens</option>';
-        }
+        });
     }
 
-    // ── Toggle de modo de imagem ──────────────────────────────
-    btnModoLocal.addEventListener("click", () => {
-        currentMode = "local";
-        btnModoLocal.classList.add("active");
+    const btnModoUpload = document.getElementById("btnModoUpload");
+    const imagemUploadWrapper = document.getElementById("imagemUploadWrapper");
+    const imageUploadInput = document.getElementById("imageUploadInput");
+
+    btnModoUpload.addEventListener("click", () => {
+        currentMode = "upload";
+        btnModoUpload.classList.add("active");
         btnModoUrl.classList.remove("active");
-        imagemLocalWrapper.style.display = "";
+        imagemUploadWrapper.style.display = "";
         imagemUrlWrapper.style.display = "none";
         updatePreview();
     });
@@ -114,37 +64,65 @@ document.addEventListener("DOMContentLoaded", () => {
     btnModoUrl.addEventListener("click", () => {
         currentMode = "url";
         btnModoUrl.classList.add("active");
-        btnModoLocal.classList.remove("active");
-        imagemLocalWrapper.style.display = "none";
+        btnModoUpload.classList.remove("active");
+        imagemUploadWrapper.style.display = "none";
         imagemUrlWrapper.style.display = "";
         updatePreview();
     });
 
-    // ── Preview de imagem ────────────────────────────────────
     function updatePreview() {
-        const val = getImageUrl();
-        if (val) {
-            imgPreviewTag.src = val;
-            imagePreview.style.display = "block";
+        if (currentMode === "url") {
+            const val = imageUrlInput?.value.trim();
+            if (val) {
+                imgPreviewTag.src = val;
+                imagePreview.style.display = "block";
+            } else {
+                imagePreview.style.display = "none";
+            }
         } else {
-            imagePreview.style.display = "none";
+            const fileNameDisplay = document.getElementById("fileNameDisplay");
+            if (imageUploadInput.files && imageUploadInput.files[0]) {
+                const file = imageUploadInput.files[0];
+                if (fileNameDisplay) {
+                    fileNameDisplay.textContent = file.name;
+                    fileNameDisplay.style.display = "block";
+                }
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imgPreviewTag.src = e.target.result;
+                    imagePreview.style.display = "block";
+                };
+                reader.readAsDataURL(file);
+            } else {
+                if (fileNameDisplay) fileNameDisplay.style.display = "none";
+                imagePreview.style.display = "none";
+            }
         }
     }
 
-    function getImageUrl() {
-        if (currentMode === "local") {
-            return imagemLocalSelect.value || "";
-        } else {
-            return (imageUrlInput?.value || "").trim();
-        }
+    if (imageUrlInput) imageUrlInput.addEventListener("input", updatePreview);
+    if (imageUploadInput) {
+        imageUploadInput.addEventListener("change", updatePreview);
+        
+        // Drag and drop styles
+        imagemUploadWrapper.addEventListener("dragover", (e) => {
+            e.preventDefault();
+            imagemUploadWrapper.classList.add("dragover");
+        });
+        imagemUploadWrapper.addEventListener("dragleave", () => {
+            imagemUploadWrapper.classList.remove("dragover");
+        });
+        imagemUploadWrapper.addEventListener("drop", (e) => {
+            e.preventDefault();
+            imagemUploadWrapper.classList.remove("dragover");
+            if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                imageUploadInput.files = e.dataTransfer.files;
+                updatePreview();
+            }
+        });
     }
 
-    imagemLocalSelect.addEventListener("change", updatePreview);
-    if (imageUrlInput) {
-        imageUrlInput.addEventListener("input", updatePreview);
-    }
-
-    // ── Cadastrar exercício ──────────────────────────────────
+    // Cadastrar exercício
     const form = document.querySelector("form");
     form.addEventListener("submit", async (e) => {
         e.preventDefault();
@@ -155,18 +133,43 @@ document.addEventListener("DOMContentLoaded", () => {
         const comoExecutarVal = document.getElementById("comoExecutar")?.value.trim() || "";
         const equipamentosVal = document.getElementById("equipamentos")?.value.trim() || "";
         const observacaoVal = document.getElementById("observacao").value.trim();
-        const imageUrlVal = getImageUrl();
-        const videoLinkVal = document.getElementById("videoLink").value.trim();
-
-        if (!nomeVal || !categoriaVal) {
-            showToast("error", "Preencha o nome e a categoria do exercício.");
-            return;
-        }
-
         btnCadastrar.disabled = true;
-        btnCadastrar.textContent = "Cadastrando...";
+        btnCadastrar.textContent = "Validando...";
 
         try {
+            let finalImageUrl = "";
+
+            if (currentMode === "upload") {
+                if (imageUploadInput.files && imageUploadInput.files[0]) {
+                    btnCadastrar.textContent = "Enviando arquivo...";
+                    const formData = new FormData();
+                    formData.append("image", imageUploadInput.files[0]);
+
+                    const uploadRes = await fetch("/api/exercicios/upload", {
+                        method: "POST",
+                        body: formData,
+                        credentials: "include"
+                    });
+
+                    if (!uploadRes.ok) throw new Error("Erro ao subir a imagem para o servidor.");
+                    const uploadData = await uploadRes.json();
+                    finalImageUrl = uploadData.url;
+                }
+            } else {
+                finalImageUrl = (imageUrlInput?.value || "").trim();
+            }
+
+            btnCadastrar.textContent = "Salvando Exercício...";
+
+            if (!nomeVal || !categoriaVal) {
+                showToast("error", "Preencha o nome e a categoria do exercício.");
+                btnCadastrar.disabled = false;
+                btnCadastrar.textContent = "CADASTRAR EXERCÍCIO";
+                return;
+            }
+
+            const videoLinkVal = document.getElementById("videoLink")?.value.trim() || "";
+
             const response = await fetch("/api/exercicios", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -178,7 +181,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     howToExecute: comoExecutarVal || null,
                     equipments: equipamentosVal || null,
                     observation: observacaoVal || null,
-                    imageUrl: imageUrlVal || null,
+                    imageUrl: finalImageUrl || null,
                     videoUrl: videoLinkVal || null
                 })
             });
@@ -199,7 +202,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }, 1500);
         } catch (error) {
             console.error("Erro:", error);
-            showToast("error", "Erro de conexão com o servidor.");
+            showToast("error", error.message || "Erro de conexão com o servidor.");
             btnCadastrar.disabled = false;
             btnCadastrar.textContent = "CADASTRAR EXERCÍCIO";
         }
@@ -215,8 +218,8 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // ── Init ──────────────────────────────────────────────────
-    loadLocalImages();
+    // Init 
+    // loadLocalImages removido, iniciando limpo
 });
 
 function back() {

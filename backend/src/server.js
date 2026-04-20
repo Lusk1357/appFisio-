@@ -94,9 +94,30 @@ app.use('/api/rotinas', require('./routes/routines')); // Nova rota para os temp
 app.use('/api/tips', tipRoutes);
 app.use('/api/conquistas', achievementRoutes);
 
-// SERVINDO O FRONTEND: Resolve o problema do "file://"
-// Agora o frontend e a API rodam debaixo do mesmo teto (http://localhost:3000)
+// SERVIÇO DE FRONTEND COM SUPORTE A REWRITES DO VERCEL (APENAS LOCAL)
+if (process.env.NODE_ENV !== 'production') {
+    try {
+        const vercelConfig = require('../../vercel.json');
+        if (vercelConfig && vercelConfig.rewrites) {
+            vercelConfig.rewrites.forEach(rule => {
+                // Remove placeholders como (.*) ou $1 pois é uma simulação simples
+                if (!rule.source.includes('(') && !rule.destination.includes('$')) {
+                    // Mapeia a rota exata (ex: /admin) para o arquivo físico correspondente
+                    app.get(rule.source, (req, res) => {
+                        res.sendFile(path.join(__dirname, '../../', rule.destination));
+                    });
+                }
+            });
+            console.log(`[Config] ${vercelConfig.rewrites.length} rewrites do vercel.json carregadas para simulação local.`);
+        }
+    } catch (e) {
+        console.error('Erro ao processar vercel.json localmente:', e.message);
+    }
+}
+
+// Serve os arquivos estáticos normais (js, css, imagens)
 app.use(express.static(path.join(__dirname, '../../frontend')));
+app.use('/frontend', express.static(path.join(__dirname, '../../frontend')));
 
 // Rota de Healthcheck
 app.get('/api/health', (req, res) => {

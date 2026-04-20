@@ -129,6 +129,7 @@
                     <button class="pill active" data-sort="az">A–Z</button>
                     <button class="pill" data-sort="za">Z–A</button>
                     <button class="pill" data-sort="type">Categoria</button>
+                    <button class="pill" data-sort="recent">Recentes</button>
                 </div>
             </div>
         </div>
@@ -218,19 +219,16 @@
                 <div class="form-group">
                     <label>Imagem do Exercício (Opcional)</label>
                     <div class="image-mode-toggle">
-                        <button type="button" class="toggle-btn active" data-mode="local" id="editBtnModoLocal">
-                            <i class="fa-solid fa-folder-open"></i> Imagem Local
+                        <button type="button" class="toggle-btn active" data-mode="upload" id="editBtnModoUpload">
+                            <i class="fa-solid fa-cloud-arrow-up"></i> Fazer Upload
                         </button>
                         <button type="button" class="toggle-btn" data-mode="url" id="editBtnModoUrl">
                             <i class="fa-solid fa-link"></i> URL Externa
                         </button>
                     </div>
-                    <!-- Modo Local -->
-                    <div class="input-wrapper" id="editImagemLocalWrapper">
-                        <select id="editImagemLocalSelect">
-                            <option value="" disabled selected>Carregando imagens...</option>
-                        </select>
-                        <i class="fa-solid fa-image input-icon"></i>
+                    <!-- Modo Upload -->
+                    <div class="input-wrapper" id="editImagemUploadWrapper" style="padding: 0; overflow: hidden; background: #fff;">
+                        <input type="file" id="editImageUploadInput" accept="image/*" style="padding: 18px 16px; cursor: pointer;" />
                     </div>
                     <!-- Modo URL -->
                     <div class="input-wrapper" id="editImagemUrlWrapper" style="display:none;">

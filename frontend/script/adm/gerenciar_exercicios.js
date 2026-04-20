@@ -31,13 +31,13 @@
     const editVideoLink = document.getElementById("editVideoLink");
     const btnSaveEdit = document.getElementById("btnSaveEdit");
 
-    // Dual-mode imagem no modal de edição
-    const editBtnModoLocal = document.getElementById("editBtnModoLocal");
+    const editBtnModoUpload = document.getElementById("editBtnModoUpload");
     const editBtnModoUrl = document.getElementById("editBtnModoUrl");
-    const editImagemLocalWrapper = document.getElementById("editImagemLocalWrapper");
+    const editImagemUploadWrapper = document.getElementById("editImagemUploadWrapper");
     const editImagemUrlWrapper = document.getElementById("editImagemUrlWrapper");
-    const editImagemLocalSelect = document.getElementById("editImagemLocalSelect");
-    let editImageMode = "local";
+    const editImageUploadInput = document.getElementById("editImageUploadInput");
+    
+    let editImageMode = "upload";
 
     // Modal de exclusão
     const deleteModal = document.getElementById("deleteModal");
@@ -45,74 +45,66 @@
     const cancelDelete = document.getElementById("cancelDelete");
     const confirmDelete = document.getElementById("confirmDelete");
 
-    // ── Carregar imagens locais ────────────────────────────────
-    let localImages = [];
-    async function loadLocalImages() {
-        try {
-            const res = await fetch("/api/exercicios/imagens", { method: "GET", credentials: "include" });
-            if (!res.ok) throw new Error();
-            localImages = await res.json();
-            populateLocalSelect();
-        } catch (e) {
-            console.error("Erro ao carregar imagens:", e);
-        }
-    }
-
-    function populateLocalSelect(currentVal) {
-        if (!editImagemLocalSelect) return;
-        editImagemLocalSelect.innerHTML = '<option value="" disabled selected>Selecione uma imagem...</option>';
-        if (localImages.length === 0) {
-            editImagemLocalSelect.innerHTML += '<option value="" disabled>Nenhuma imagem disponível</option>';
-        } else {
-            localImages.forEach(img => {
-                const opt = document.createElement("option");
-                opt.value = img.path;
-                opt.textContent = img.name;
-                if (currentVal && img.path === currentVal) opt.selected = true;
-                editImagemLocalSelect.appendChild(opt);
-            });
-        }
-    }
-
     // ── Toggle de modo de imagem (edição) ─────────────────────
     function setEditImageMode(mode) {
         editImageMode = mode;
-        if (mode === "local") {
-            editBtnModoLocal.classList.add("active");
-            editBtnModoUrl.classList.remove("active");
-            editImagemLocalWrapper.style.display = "";
-            editImagemUrlWrapper.style.display = "none";
+        if (mode === "upload") {
+            if (editBtnModoUpload) editBtnModoUpload.classList.add("active");
+            if (editBtnModoUrl) editBtnModoUrl.classList.remove("active");
+            if (editImagemUploadWrapper) editImagemUploadWrapper.style.display = "";
+            if (editImagemUrlWrapper) editImagemUrlWrapper.style.display = "none";
         } else {
-            editBtnModoUrl.classList.add("active");
-            editBtnModoLocal.classList.remove("active");
-            editImagemLocalWrapper.style.display = "none";
-            editImagemUrlWrapper.style.display = "";
+            if (editBtnModoUrl) editBtnModoUrl.classList.add("active");
+            if (editBtnModoUpload) editBtnModoUpload.classList.remove("active");
+            if (editImagemUploadWrapper) editImagemUploadWrapper.style.display = "none";
+            if (editImagemUrlWrapper) editImagemUrlWrapper.style.display = "";
         }
         updateEditPreview();
     }
 
-    if (editBtnModoLocal) editBtnModoLocal.addEventListener("click", () => setEditImageMode("local"));
+    if (editBtnModoUpload) editBtnModoUpload.addEventListener("click", () => setEditImageMode("upload"));
     if (editBtnModoUrl) editBtnModoUrl.addEventListener("click", () => setEditImageMode("url"));
 
     function getEditImageUrl() {
-        if (editImageMode === "local") {
-            return editImagemLocalSelect ? editImagemLocalSelect.value : "";
+        if (editImageMode === "upload") {
+            // Se for upload, retornar nada (será uma URL nova ou mantida no backend se não vier)
+            return null;
         } else {
             return editImageUrl ? editImageUrl.value.trim() : "";
         }
     }
 
     function updateEditPreview() {
-        const val = getEditImageUrl();
-        if (val && editImgTag) {
-            editImgTag.src = val.startsWith('http') || val.startsWith('/') ? val : '/' + val;
-            editImagePreview.style.display = "block";
-        } else if (editImagePreview) {
-            editImagePreview.style.display = "none";
+        if (editImageMode === "url") {
+            const val = getEditImageUrl();
+            if (val && editImgTag) {
+                editImgTag.src = val.startsWith('http') || val.startsWith('/') ? val : '/' + val;
+                editImagePreview.style.display = "block";
+            } else if (editImagePreview) {
+                editImagePreview.style.display = "none";
+            }
+        } else {
+            if (editImageUploadInput && editImageUploadInput.files && editImageUploadInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    editImgTag.src = e.target.result;
+                    editImagePreview.style.display = "block";
+                };
+                reader.readAsDataURL(editImageUploadInput.files[0]);
+            } else {
+                // Ao abrir o modal e ser upload, mostrar a imagem atual do banco se houver,
+                // que é guardada no editImageUrl (a gente pode reaproveitar essa variável pro estado)
+                if (editImageUrl && editImageUrl.value) {
+                    editImgTag.src = editImageUrl.value.startsWith('http') || editImageUrl.value.startsWith('/') ? editImageUrl.value : '/' + editImageUrl.value;
+                    editImagePreview.style.display = "block";
+                } else if (editImagePreview) {
+                    editImagePreview.style.display = "none";
+                }
+            }
         }
     }
 
-    if (editImagemLocalSelect) editImagemLocalSelect.addEventListener("change", updateEditPreview);
+    if (editImageUploadInput) editImageUploadInput.addEventListener("change", updateEditPreview);
     if (editImageUrl) editImageUrl.addEventListener("input", updateEditPreview);
 
     // ── Toast ──────────────────────────────────────────────────
@@ -203,6 +195,9 @@
             case "type":
                 sorted.sort((a, b) => (a.type || "").localeCompare(b.type || "", "pt-BR"));
                 break;
+            case "recent":
+                sorted.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+                break;
         }
         return sorted;
     }
@@ -239,10 +234,14 @@
             card.className = "exercise-card";
             card.style.animationDelay = `${index * 0.04}s`;
 
-            // Imagem ou ícone padrão
-            const imageBlock = ex.imageUrl
-                ? `<img src="${ex.imageUrl.startsWith('/') ? ex.imageUrl : '/' + ex.imageUrl}" alt="${ex.name}" style="width:52px;height:64px;object-fit:cover;border-radius:10px;border:1px solid #e2e8f0;flex-shrink:0;" onerror="this.style.display='none'">`
-                : `<div class="card-icon-circle" style="background:#3b82f615;color:#3b82f6;flex-shrink:0;"><i class="fa-solid fa-person-walking"></i></div>`;
+            const imgPath = (ex.imageUrl && (ex.imageUrl.startsWith('http') || ex.imageUrl.startsWith('/'))) 
+                ? ex.imageUrl 
+                : (ex.imageUrl ? '/' + ex.imageUrl : null);
+
+            const fallbackHtml = `<div class="card-icon-circle" style="background:#3b82f615;color:#3b82f6;flex-shrink:0;"><i class="fa-solid fa-person-walking"></i></div>`;
+            const imageBlock = imgPath
+                ? `<img src="${imgPath}" alt="${ex.name}" style="width:52px;height:64px;object-fit:cover;border-radius:10px;border:1px solid #e2e8f0;flex-shrink:0;" onerror="this.outerHTML='${fallbackHtml.replace(/"/g, '&quot;')}';">`
+                : fallbackHtml;
 
             card.innerHTML = `
                 <div class="card-left">
@@ -289,18 +288,19 @@
         editVideoLink.value = ex.videoUrl || "";
         editEquipamentos.value = ex.equipments || "";
 
-        // Detectar se imagem é local ou URL e configurar modo correto
+        // Configurar a imagem inicial
         const imgUrl = ex.imageUrl || "";
-        const isLocal = imgUrl.startsWith('/public/images/exercises/');
-        if (isLocal) {
-            populateLocalSelect(imgUrl);
-            if (editImageUrl) editImageUrl.value = "";
-            setEditImageMode("local");
-        } else {
-            populateLocalSelect();
-            if (editImageUrl) editImageUrl.value = imgUrl;
+        if (editImageUrl) editImageUrl.value = imgUrl; // Guarda a url atual
+
+        // Se for upload ou externo, por padrão vamos deixar URL ou Upload
+        // Como não sabemos a origem, mas tem imagem, e não é local...
+        if (imgUrl.trim() !== '') {
             setEditImageMode("url");
+        } else {
+            setEditImageMode("upload");
+            if (editImageUploadInput) editImageUploadInput.value = ""; // limpa o file input
         }
+        
         updateEditPreview();
 
         editModal.classList.add("active");
@@ -326,22 +326,44 @@
         const observation = editObservacao.value.trim() || null;
         const videoUrl = editVideoLink.value.trim() || null;
         const equipments = editEquipamentos ? (editEquipamentos.value.trim() || null) : null;
-        const imageUrl = getEditImageUrl() || null;
+        let finalImageUrl = editImageUrl.value; // Pega o que estava original se nada mudar
+        
+        if (editImageMode === "upload") {
+            if (editImageUploadInput && editImageUploadInput.files && editImageUploadInput.files[0]) {
+                btnSaveEdit.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Enviando arquivo...';
+                try {
+                    const formData = new FormData();
+                    formData.append("image", editImageUploadInput.files[0]);
 
-        if (!name || !type) {
-            showToast("error", "Nome e categoria são obrigatórios.");
-            return;
+                    const uploadRes = await fetch("/api/exercicios/upload", {
+                        method: "POST",
+                        body: formData,
+                        credentials: "include"
+                    });
+
+                    if (!uploadRes.ok) throw new Error("Erro ao subir a imagem para o servidor.");
+                    const uploadData = await uploadRes.json();
+                    finalImageUrl = uploadData.url;
+                } catch(error) {
+                    showToast("error", error.message);
+                    btnSaveEdit.disabled = false;
+                    btnSaveEdit.innerHTML = '<i class="fa-solid fa-check"></i> SALVAR ALTERAÇÕES';
+                    return;
+                }
+            } 
+            // Se estiver em modo upload mas não mandou arquivo, vai manter a url velha (finalImageUrl que puxou lá do editUrlValue) 
+        } else {
+            finalImageUrl = editImageUrl.value.trim();
         }
 
-        btnSaveEdit.disabled = true;
-        btnSaveEdit.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Salvando...';
+        btnSaveEdit.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Salvando Exercício...';
 
         try {
             const res = await fetch(`/api/exercicios/${id}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 credentials: "include",
-                body: JSON.stringify({ name, type, duration, howToExecute, observation, videoUrl, equipments, imageUrl })
+                body: JSON.stringify({ name, type, duration, howToExecute, observation, videoUrl, equipments, imageUrl: finalImageUrl || null })
             });
 
             const data = await res.json();
@@ -426,5 +448,4 @@
 
     // ── Init ──────────────────────────────────────────────────
     fetchExercicios();
-    loadLocalImages();
 })();

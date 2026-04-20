@@ -418,3 +418,25 @@
 .ex-modal-media img {
   object-fit: contain !important;
 }
+
+/* Cor para o dia concluído no calendário */
+.day-pill.completed {
+    background: #f0fdf4;
+    border-color: #10b981;
+}
+
+.day-pill.completed span:last-child {
+    color: #10b981;
+    font-weight: 700;
+}
+
+.day-pill.completed.active {
+    background: #10b981 !important;
+    border-color: #10b981 !important;
+    color: #fff !important;
+    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4) !important;
+}
+
+.day-pill.completed.active span {
+    color: #fff !important;
+}

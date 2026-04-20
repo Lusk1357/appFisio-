@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Treinos do Paciente - PRO FISIO SIMIONATO</title>
+
+  <link rel="stylesheet" href="/style/funcionalidades/home.css">
+  <link rel="stylesheet" href="/style/adm/calendario.css">
+  <link rel="stylesheet" href="/style/funcionalidades/treinamento.css">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&display=swap"
+    rel="stylesheet">
+  <!-- PWA Setup -->
+  <link rel="icon" type="image/png" href="/images/icon-192.png">
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <script src="/script/authGuard.js"></script>
+  <script>verificarAcesso("ADMIN");</script>
+  <script src="/script/components.js"></script>
+  <script src="/script/adm/treinos_paciente.js" defer></script>
+  <style>
+    /* Ajustes específicos de Layout */
+    .app-container {
+       min-height: 100vh;
+       background: #f0f2f5;
+       padding-bottom: 30px;
+    }
+    .header-bg {
+       width: 100%;
+       border-radius: 0 0 30px 30px;
+       margin-bottom: 20px;
+    }
+    
+    /* Dia Concluído */
+    .day-cell.completed {
+        position: relative;
+    }
+    .day-cell.completed::after {
+        content: "";
+        display: block;
+        width: 5px;
+        height: 5px;
+        background: #10b981; /* Verde */
+        border-radius: 50%;
+        position: absolute;
+        bottom: 4px;
+    }
+    .day-cell.completed.today::after,
+    .day-cell.completed.selected::after {
+        background: #fff;
+    }
+
+    /* Modal estilo */
+    #dailyExercisesModal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 10000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .exercises-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: stretch;
+      width: 100%;
+    }
+    .exercise-item {
+      width: 100%;
+      position: relative;
+    }
+    .exercise-status {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Botões de ação inline */
+    .exercise-actions {
+      display: flex;
+      gap: 6px;
+      margin-left: 8px;
+      flex-shrink: 0;
+    }
+    .exercise-actions button {
+      width: 32px;
+      height: 32px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+    .btn-ex-delete {
+      background: #fef2f2;
+      color: #ef4444;
+    }
+    .btn-ex-delete:hover {
+      background: #ef4444;
+      color: #fff;
+    }
+    .btn-ex-replace {
+      background: #eff6ff;
+      color: #3b82f6;
+    }
+    .btn-ex-replace:hover {
+      background: #3b82f6;
+      color: #fff;
+    }
+
+    /* Modal de Substituição */
+    .replace-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 10001;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+    .replace-modal-overlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .replace-modal-card {
+      width: 92%;
+      max-width: 420px;
+      max-height: 85vh;
+      overflow-y: auto;
+      background: #fff;
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+      transform: translateY(20px);
+      transition: transform 0.3s;
+    }
+    .replace-modal-overlay.active .replace-modal-card {
+      transform: translateY(0);
+    }
+    .replace-modal-card h3 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 22px;
+      color: #1a1a2e;
+      margin: 0 0 6px 0;
+    }
+    .replace-modal-card .subtitle {
+      font-size: 13px;
+      color: #64748b;
+      margin-bottom: 16px;
+    }
+
+    /* Lista de ocorrências */
+    .occurrences-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 20px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    .occ-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      background: #f8fafc;
+      border-radius: 10px;
+      font-size: 14px;
+      color: #1a1a2e;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .occ-item:hover {
+      background: #eff6ff;
+    }
+    .occ-item input[type="checkbox"] {
+      accent-color: #3b82f6;
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+    .occ-item .occ-date {
+      font-weight: 600;
+    }
+
+    /* Barra de busca de exercício */
+    .search-exercise-wrapper {
+      position: relative;
+      margin-bottom: 16px;
+    }
+    .search-exercise-wrapper input {
+      width: 100%;
+      padding: 12px 16px 12px 40px;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .search-exercise-wrapper input:focus {
+      border-color: #3b82f6;
+    }
+    .search-exercise-wrapper i {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #94a3b8;
+    }
+    .search-results {
+      max-height: 180px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .search-result-item {
+      padding: 10px 14px;
+      border-radius: 10px;
+      background: #f8fafc;
+      cursor: pointer;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: background 0.15s;
+    }
+    .search-result-item:hover {
+      background: #dbeafe;
+    }
+    .search-result-item.selected {
+      background: #3b82f6;
+      color: #fff;
+    }
+
+    /* Botões do modal */
+    .replace-modal-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+    }
+    .replace-modal-actions button {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 12px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-cancel-replace {
+      background: #f1f5f9;
+      color: #64748b;
+    }
+    .btn-cancel-replace:hover {
+      background: #e2e8f0;
+    }
+    .btn-confirm-replace {
+      background: #3b82f6;
+      color: #fff;
+    }
+    .btn-confirm-replace:hover {
+      background: #2563eb;
+    }
+    .btn-confirm-replace:disabled {
+      background: #94a3b8;
+      cursor: not-allowed;
+    }
+
+    /* Select All */
+    .select-all-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      margin-bottom: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #3b82f6;
+      cursor: pointer;
+    }
+    .select-all-row input[type="checkbox"] {
+      accent-color: #3b82f6;
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+    /* Estilos para miniaturas de exercícios */
+    .exercise-icon.has-img {
+      background: #f8fafc;
+      padding: 0;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .ex-thumb {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .search-result-img {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: #f1f5f9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .search-ex-thumb {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .broken-img {
+      padding: 5px;
+      opacity: 0.5;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app-container">
+
+    <!-- Top Nav / Cabeçalho limpo -->
+    <div class="header-bg compact-header" style="background: linear-gradient(135deg, #1f2937 0%, #111827 100%);">
+      <div class="top-nav" style="margin-bottom: 5px;">
+        <div class="menu-left">
+          <button class="btn-back" onclick="window.location.href='/admin/perfil-paciente'" style="background: rgba(255,255,255,0.2); width: 40px; height: 40px; border: none; border-radius: 50%; cursor: pointer;">
+            <i class="fa-solid fa-chevron-left" style="color: #fff; font-size: 18px;"></i>
+          </button>
+        </div>
+        <h2 class="page-title" style="margin: 0;">TREINOS CADASTRADOS</h2>
+        <i class="fa-regular fa-bell bell-icon" style="opacity: 0;"></i> <!-- Espaçador invisível -->
+      </div>
+    </div>
+
+    <div class="main-content" style="padding: 10px 0; width: 100%;">
+      <!-- Calendário -->
+      <section class="calendar-section" style="width: 100%;">
+        <!-- Navegação mês/ano -->
+        <div class="calendar-nav">
+          <button class="nav-btn" id="btnPrevMonth">
+            <i class="fa-solid fa-chevron-left"></i>
+          </button>
+          <div class="month-year">
+            <span class="month-label" id="monthLabel">—</span>
+            <span class="year-label" id="yearLabel">—</span>
+          </div>
+          <button class="nav-btn" id="btnNextMonth">
+            <i class="fa-solid fa-chevron-right"></i>
+          </button>
+        </div>
+
+        <!-- Cabeçalho dias da semana -->
+        <div class="weekdays-header">
+          <span>Dom</span>
+          <span>Seg</span>
+          <span>Ter</span>
+          <span>Qua</span>
+          <span>Qui</span>
+          <span>Sex</span>
+          <span>Sab</span>
+        </div>
+
+        <!-- Grid de dias -->
+        <div class="days-grid" id="daysGrid">
+          <!-- Preenchido via JS -->
+        </div>
+
+      </section>
+    </div>
+
+  </div>
+
+  <!-- Modal Diário de Exercícios -->
+  <div id="dailyExercisesModal" style="display: none;">
+    <div style="width: 90%; max-width: 400px; padding: 25px; border-radius: 20px; background: white; max-height: 80vh; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2 style="font-family: 'Bebas Neue', sans-serif; font-size: 24px; color: #1a1a2e; margin: 0;" id="selectedDateLabel">Hoje</h2>
+        <button onclick="document.getElementById('dailyExercisesModal').style.display='none'" style="background: none; border: none; font-size: 20px; color: #94a3b8; cursor: pointer;">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      
+      <div class="exercises-list" id="exercisesList">
+        <!-- Renderizado no JS -->
+        <p class="empty-msg">Carregando...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Substituição Inteligente -->
+  <div id="replaceModal" class="replace-modal-overlay">
+    <div class="replace-modal-card">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+        <h3 id="replaceModalTitle">SUBSTITUIR EXERCÍCIO</h3>
+        <button onclick="closeReplaceModal()" style="background: none; border: none; font-size: 18px; color: #94a3b8; cursor: pointer;">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <p class="subtitle" id="replaceModalSubtitle">Selecione em quais dias deseja aplicar a substituição:</p>
+
+      <!-- Lista de Ocorrências -->
+      <div class="select-all-row" id="selectAllRow">
+        <input type="checkbox" id="selectAllCheckbox">
+        <label for="selectAllCheckbox">Selecionar Todos</label>
+      </div>
+      <div class="occurrences-list" id="occurrencesList">
+        <!-- Renderizado via JS -->
+      </div>
+
+      <!-- Seção de escolha do novo exercício (só aparece no modo substituição) -->
+      <div id="replaceSearchSection" style="display: none;">
+        <p style="font-size: 13px; font-weight: 600; color: #1a1a2e; margin-bottom: 8px;">
+          <i class="fa-solid fa-magnifying-glass" style="margin-right: 5px;"></i> Escolha o novo exercício:
+        </p>
+        <div class="search-exercise-wrapper">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" id="replaceSearchInput" placeholder="Buscar exercício...">
+        </div>
+        <div class="search-results" id="replaceSearchResults">
+          <!-- Renderizado via JS -->
+        </div>
+      </div>
+
+      <div class="replace-modal-actions">
+        <button class="btn-cancel-replace" onclick="closeReplaceModal()">Cancelar</button>
+        <button class="btn-confirm-replace" id="btnConfirmAction" disabled>
+          <i class="fa-solid fa-check"></i> Confirmar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Detalhes do Exercício -->
+  <div id="exerciseDetailModal" class="ex-modal-overlay">
+    <div class="ex-modal-card">
+      <button class="ex-modal-close" id="closeExModal">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      
+      <div class="ex-modal-header">
+        <h2 id="exModalTitle">Nome do Exercício</h2>
+        <span id="exModalSeries" class="ex-modal-tag">3x15</span>
+      </div>
+
+      <div class="ex-modal-media" id="exModalMedia">
+        <!-- Vídeo ou Imagem injetados aqui -->
+      </div>
+
+      <div class="ex-modal-info">
+        <h3><i class="fa-solid fa-circle-info"></i> Como Executar</h3>
+        <p id="exModalInstructions">Carregando instruções...</p>
+        
+        <div id="exModalObsContainer" style="margin-top: 15px; display: none;">
+          <h3 style="color: #f97316;"><i class="fa-solid fa-comment-dots"></i> Observação</h3>
+          <p id="exModalObservation" style="font-style: italic; color: #4b5563;"></p>
+        </div>
+      </div>
+
+      <div class="ex-modal-footer">
+        <button class="btn-close-modal" id="btnExitExModal">Entendido</button>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>
+

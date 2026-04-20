@@ -233,14 +233,28 @@ body {
 
 .btn-edit,
 .btn-exercises,
-.btn-notify {
+.btn-notify,
+.btn-treinos {
   background: #5b8af5;
   color: #fff;
   box-shadow: 0 4px 14px rgba(91, 138, 245, 0.25);
 }
 
+.btn-history {
+  background: #f8fafc;
+  color: #64748b;
+  border: 1px solid #e2e8f0;
+}
+
+.btn-history:hover {
+  background: #f1f5f9;
+  color: #475569;
+}
+
 .btn-edit:hover,
-.btn-exercises:hover {
+.btn-exercises:hover,
+.btn-notify:hover,
+.btn-treinos:hover {
   filter: brightness(1.1);
 }
 

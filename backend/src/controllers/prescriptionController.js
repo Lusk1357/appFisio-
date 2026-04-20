@@ -269,14 +269,15 @@ exports.getMyStats = async (req, res) => {
         let mesAtualDiasConcluidos = new Set();
 
         const now = new Date();
-        const currentMonth = now.getMonth();
-        const currentYear = now.getFullYear();
+        const currentMonthString = String(now.getMonth() + 1).padStart(2, '0');
+        const currentYearString = String(now.getFullYear());
+        const currentMonthPrefix = `${currentYearString}-${currentMonthString}`;
 
         prescriptions.forEach(p => {
-            const pDate = new Date(p.assignedDay);
-            const isThisMonth = pDate.getMonth() === currentMonth && pDate.getFullYear() === currentYear;
+            // Garante que usamos a data UTC que foi salva, evitando problemas de fuso horário
+            const dayStr = p.assignedDay.toISOString().split('T')[0]; // ex: "2023-11-20"
+            const isThisMonth = dayStr.startsWith(currentMonthPrefix);
 
-            const dayStr = pDate.toDateString();
             let todosConcluidos = true;
             let temExercicio = false;
 
@@ -314,11 +315,134 @@ exports.getMyStats = async (req, res) => {
             mesAtualDiasConcluidos: mesAtualDiasConcluidos.size,
             diasTreinados: diasTreinados.size,
             diasComTreinoCompleto: diasComTreinoCompleto.size,
+            completedDates: Array.from(diasComTreinoCompleto),
             tempoTotalMinutos,
             totalPrescricoes: prescriptions.length
         });
     } catch (error) {
         console.error("Erro ao buscar stats:", error);
         res.status(500).json({ erro: "Falha ao buscar estatísticas." });
+    }
+};
+
+// ADMIN busca todas as ocorrências PENDENTES de um exercício específico para um paciente
+exports.getExerciseOccurrences = async (req, res) => {
+    try {
+        const { patientId, exerciseId } = req.params;
+
+        const occurrences = await prisma.prescriptionExercise.findMany({
+            where: {
+                exerciseId: exerciseId,
+                completed: false,
+                prescription: {
+                    patientId: patientId
+                }
+            },
+            include: {
+                prescription: {
+                    select: { assignedDay: true }
+                },
+                exercise: {
+                    select: { name: true }
+                }
+            },
+            orderBy: {
+                prescription: { assignedDay: 'asc' }
+            }
+        });
+
+        const result = occurrences.map(occ => ({
+            prescriptionExerciseId: occ.id,
+            prescriptionId: occ.prescriptionId,
+            exerciseId: occ.exerciseId,
+            exerciseName: occ.exercise.name,
+            series: occ.series,
+            observation: occ.observation,
+            assignedDay: occ.prescription.assignedDay
+        }));
+
+        res.status(200).json(result);
+    } catch (error) {
+        console.error("Erro ao buscar ocorrências do exercício:", error);
+        res.status(500).json({ erro: "Erro interno ao buscar ocorrências." });
+    }
+};
+
+// ADMIN substitui um exercício por outro em múltiplas prescrições
+exports.bulkReplacePrescriptionExercise = async (req, res) => {
+    try {
+        const { prescriptionExerciseIds, newExerciseId } = req.body;
+
+        if (!prescriptionExerciseIds || prescriptionExerciseIds.length === 0 || !newExerciseId) {
+            return res.status(400).json({ erro: "IDs das associações e novo exercício são obrigatórios." });
+        }
+
+        // Verifica se o novo exercício existe
+        const newExercise = await prisma.exercise.findUnique({ where: { id: newExerciseId } });
+        if (!newExercise) {
+            return res.status(404).json({ erro: "Novo exercício não encontrado no catálogo." });
+        }
+
+        // Atualiza todas as associações de uma vez
+        const updated = await prisma.prescriptionExercise.updateMany({
+            where: {
+                id: { in: prescriptionExerciseIds },
+                completed: false // Segurança: só troca os pendentes
+            },
+            data: {
+                exerciseId: newExerciseId
+            }
+        });
+
+        res.status(200).json({
+            sucesso: true,
+            mensagem: `Exercício substituído em ${updated.count} dia(s) com sucesso!`,
+            count: updated.count
+        });
+    } catch (error) {
+        console.error("Erro ao substituir exercícios em massa:", error);
+        res.status(500).json({ erro: "Erro interno ao substituir exercícios." });
+    }
+};
+
+// ADMIN exclui exercícios específicos de prescrições (por PrescriptionExercise ID)
+exports.deletePrescriptionExercise = async (req, res) => {
+    try {
+        const { prescriptionExerciseIds } = req.body;
+
+        if (!prescriptionExerciseIds || prescriptionExerciseIds.length === 0) {
+            return res.status(400).json({ erro: "IDs das associações são obrigatórios." });
+        }
+
+        // Deleta as associações
+        const deleted = await prisma.prescriptionExercise.deleteMany({
+            where: {
+                id: { in: prescriptionExerciseIds }
+            }
+        });
+
+        // Limpa prescrições que ficaram vazias (sem exercícios)
+        const emptyPrescriptions = await prisma.prescription.findMany({
+            where: {
+                exercises: { none: {} }
+            },
+            select: { id: true }
+        });
+
+        if (emptyPrescriptions.length > 0) {
+            await prisma.prescription.deleteMany({
+                where: { id: { in: emptyPrescriptions.map(p => p.id) } }
+            });
+        }
+
+        res.status(200).json({
+            sucesso: true,
+            mensagem: `${deleted.count} exercício(s) removido(s) com sucesso!`,
+            count: deleted.count,
+            prescriptionsRemoved: emptyPrescriptions.length
+        });
+    } catch (error) {
+        console.error("Erro ao deletar exercícios da prescrição:", error);
+        res.status(500).json({ erro: "Erro interno ao remover exercícios." });
     }
 };

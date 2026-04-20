@@ -579,7 +579,7 @@ window.ACHIEVEMENT_RULES = [
 
 async function checkMilestones() {
   try {
-    const res = await fetch("/api/prescricoes/me/stats", { credentials: "include" });
+    const res = await fetch(`/api/prescricoes/me/stats?_t=${Date.now()}`, { credentials: "include" });
     if (!res.ok) return;
     const stats = await res.json();
 

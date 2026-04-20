@@ -29,7 +29,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Cache dos exercícios do dia selecionado (para enviar ao treino ativo)
     let exerciciosDoDia = [];
+    let completedDates = []; // Lista de datas YYYY-MM-DD com treino 100% concluído
 
+    async function loadStats() {
+        try {
+            const res = await fetch("/api/prescricoes/me/stats", { credentials: "include" });
+            if (res.ok) {
+                const stats = await res.json();
+                completedDates = stats.completedDates || [];
+            }
+        } catch (e) {
+            console.error("Erro ao carregar stats no calendário:", e);
+        }
+    }
     async function renderCalendar() {
         currentMonthYear.textContent = `${monthNames[viewDate.getMonth()]} ${viewDate.getFullYear()}`;
         weekSlider.innerHTML = "";
@@ -38,9 +50,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
         for (let d = 1; d <= daysInMonth; d++) {
             const cellDate = new Date(viewDate.getFullYear(), viewDate.getMonth(), d);
+            const dateStr = `${cellDate.getFullYear()}-${String(cellDate.getMonth() + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
 
             const pill = document.createElement("div");
             pill.className = "day-pill";
+
+            // Se o treino está completo, adiciona a classe
+            if (completedDates.includes(dateStr)) {
+                pill.classList.add("completed");
+            }
 
             if (
                 d === selectedDate.getDate() &&
@@ -214,6 +232,17 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (btnArea) {
                     btnArea.innerHTML = '<p class="completed-msg"><i class="fa-solid fa-medal" style="color: #f59e0b;"></i> Treino do dia concluído! </p>';
                 }
+                
+                // Se acabamos de descobrir que está completo (e não estava no cache), atualiza o calendário
+                const ano = selectedDate.getFullYear();
+                const mes = String(selectedDate.getMonth() + 1).padStart(2, "0");
+                const dia = String(selectedDate.getDate()).padStart(2, "0");
+                const dateStr = `${ano}-${mes}-${dia}`;
+                
+                if (!completedDates.includes(dateStr)) {
+                    completedDates.push(dateStr);
+                    renderCalendar(); // Re-renderiza para mostrar o dia como verde
+                }
             }
 
         } catch (error) {
@@ -238,8 +267,12 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Init principal
-    renderCalendar();
-    renderExercisesForSelectedDate();
+    async function init() {
+        await loadStats();
+        renderCalendar();
+        renderExercisesForSelectedDate();
+    }
+    init();
 
     // ── Modal de Detalhes ─────────────────────────────────────────────
     window.openExerciseDetails = (ex) => {
@@ -275,7 +308,8 @@ document.addEventListener("DOMContentLoaded", () => {
             }
             media.innerHTML = `<iframe src="${embedUrl}" allowfullscreen></iframe>`;
         } else if (ex.imageUrl) {
-            media.innerHTML = `<img src="${ex.imageUrl}" alt="${ex.name}" onerror="this.src='/images/ex-placeholder.png'">`;
+            const finalImg = (ex.imageUrl.startsWith('http') || ex.imageUrl.startsWith('/')) ? ex.imageUrl : '/' + ex.imageUrl;
+            media.innerHTML = `<img src="${finalImg}" alt="${ex.name}" onerror="this.src='/images/ex-placeholder.png'">`;
         } else {
             media.innerHTML = `<div style="padding: 20px; color: #94a3b8; text-align: center;"><i class="fa-solid fa-image" style="font-size: 48px; display: block; margin-bottom: 10px;"></i> Sem prévia disponível</div>`;
         }

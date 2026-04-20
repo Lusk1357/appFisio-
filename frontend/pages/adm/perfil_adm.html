@@ -4,24 +4,94 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Perfil Administrador - PRO FISIO SIMIONATO</title>
-    <link rel="stylesheet" href="/style/adm/home_adm.css">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="/style/adm/cadastro_adm.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- PWA Setup -->
+    <link rel="icon" type="image/png" href="/images/icon-192.png">
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- Scripts -->
     <script src="/script/authGuard.js"></script>
+    <script>verificarAcesso("ADMIN");</script>
     <script src="/script/components.js" defer></script>
     <script src="/script/adm/perfil_adm.js" defer></script>
+
+    <style>
+        .toggle-password {
+            cursor: pointer;
+            color: #94a3b8;
+            transition: color 0.2s;
+            padding: 8px;
+        }
+        .toggle-password:hover {
+            color: #4f7ef8;
+        }
+    </style>
 </head>
 <body>
-    <div class="app-container">
-        <header class="home-hero">
-            <h1 class="home-title">MEU <span>PERFIL</span></h1>
-            <p class="home-subtitle">Administrador</p>
+    <div class="app-wrapper">
+        <header class="page-header">
+            <button onclick="history.back()" class="btn-back" aria-label="Voltar">
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <h1>MEU PERFIL</h1>
+            <p class="subtitle">Gerencie suas credenciais de acesso</p>
         </header>
-        <main style="padding: 20px;">
-            <p>Carregando perfil...</p>
+
+        <main>
+            <form id="formChangePassword">
+                <div class="form-group">
+                    <label for="senhaAtual">Senha Atual</label>
+                    <div class="input-wrapper">
+                        <input type="password" id="senhaAtual" placeholder="Digite sua senha atual" required>
+                        <i class="fa-solid fa-eye toggle-password" onclick="toggleVisibility('senhaAtual', this)"></i>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="novaSenha">Nova Senha</label>
+                    <div class="input-wrapper">
+                        <input type="password" id="novaSenha" placeholder="Mínimo 6 caracteres" required minlength="6">
+                        <i class="fa-solid fa-eye toggle-password" onclick="toggleVisibility('novaSenha', this)"></i>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmarSenha">Confirmar Nova Senha</label>
+                    <div class="input-wrapper">
+                        <input type="password" id="confirmarSenha" placeholder="Repita a nova senha" required minlength="6">
+                        <i class="fa-solid fa-eye toggle-password" onclick="toggleVisibility('confirmarSenha', this)"></i>
+                    </div>
+                </div>
+
+                <div id="passwordFeedback" style="color: #ef4444; font-size: 14px; font-weight: 500; padding: 0 4px; min-height: 20px;"></div>
+
+                <button type="submit" class="btn-submit" id="btnChangePassword">
+                    ATUALIZAR SENHA
+                </button>
+            </form>
         </main>
     </div>
+
+    <script>
+        function toggleVisibility(inputId, icon) {
+            const input = document.getElementById(inputId);
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                input.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
+        }
+    </script>
 </body>
 </html>

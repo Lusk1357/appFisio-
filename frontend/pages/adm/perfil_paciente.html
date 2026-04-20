@@ -101,15 +101,21 @@
         >
           <i class="fa-solid fa-plus"></i> Exercícios
         </button>
+        <button class="btn-action btn-treinos" onclick="goTo('/admin/perfil-paciente/treinos')">
+          <i class="fa-solid fa-calendar-days"></i> Ver Treinos
+        </button>
         <button class="btn-action btn-notify" onclick="openNotifyModal()">
           <i class="fa-solid fa-bell"></i> Notificar
         </button>
-        <button class="btn-action btn-delete" onclick="deletePatient()">
-          <i class="fa-solid fa-trash"></i> Excluir
+        <button class="btn-action btn-history" onclick="goTo('/admin/perfil-paciente/historico')" style="grid-column: 1 / -1;">
+          <i class="fa-solid fa-clock-rotate-left"></i> Histórico
+        </button>
+        <button class="btn-action btn-delete" onclick="deletePatient()" style="grid-column: 1 / -1; margin-top: 4px;">
+          <i class="fa-solid fa-trash"></i> Excluir Paciente
         </button>
       </section>
 
-      <section class="patient-notes">
+    <section class="patient-notes">
         <div class="notes-header">
           <h3><i class="fa-solid fa-clipboard"></i> Observações Clínicas</h3>
           <button
@@ -126,7 +132,8 @@
           placeholder="Adicione notas, histórico de lesões, ou observações importantes sobre este paciente..."
         ></textarea>
       </section>
-    </div>
+
+
 
     <div
       id="deleteModal"

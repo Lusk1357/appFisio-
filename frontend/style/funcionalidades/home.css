@@ -616,3 +616,11 @@ body {
 .btn-notif-confirm:hover {
   background: #ea580c;
 }
+/* Estilo especial para o link do WhatsApp no hover */
+.link-whatsapp:hover {
+    color: #25d366 !important;
+}
+
+.link-whatsapp:hover i {
+    color: #25d366 !important;
+}

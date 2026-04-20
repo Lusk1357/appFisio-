@@ -66,6 +66,7 @@ model Exercise {
   bodyCategory      String?
   equipments        String?
   howToExecute      String?
+  createdAt         DateTime               @default(now())
   videos            ExerciseVideo[]
   prescriptionItems PrescriptionExercise[]
   routineItems      RoutineExercise[]

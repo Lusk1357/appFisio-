@@ -146,3 +146,60 @@ exports.sendDirectNotification = async (req, res) => {
         res.status(500).json({ erro: "Erro ao enviar notificação." });
     }
 };
+
+// ADMIN: Lista histórico de notificações enviadas a um paciente
+exports.getAdminNotificationsForPatient = async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const achievements = await prisma.achievement.findMany({
+            where: { 
+                userId, 
+                icon: 'fa-comment-medical' // Identificador de msg manual
+            },
+            orderBy: { timestamp: 'desc' }
+        });
+        res.status(200).json(achievements);
+    } catch (error) {
+        console.error("Erro ao buscar histórico:", error);
+        res.status(500).json({ erro: "Erro ao buscar histórico." });
+    }
+};
+
+// ADMIN: Atualiza uma notificação
+exports.updateAdminNotification = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { title, description } = req.body;
+
+        if (!title || !description) {
+            return res.status(400).json({ erro: "Título e descrição são obrigatórios." });
+        }
+
+        const updated = await prisma.achievement.update({
+            where: { id },
+            data: { title, description, read: false, alert: true, timestamp: new Date() } // Ao atualizar, manda de novo
+        });
+
+        res.status(200).json(updated);
+    } catch (error) {
+        console.error("Erro ao atualizar notificação:", error);
+        res.status(500).json({ erro: "Erro ao atualizar notificação." });
+    }
+};
+
+// ADMIN: Deleta (esconde) notificação do histórico
+exports.deleteAdminNotification = async (req, res) => {
+    try {
+        const { id } = req.params;
+        
+        // Exclusão física (já que é histórico administrativo) ou lógica trocando o ícone
+        await prisma.achievement.delete({
+            where: { id }
+        });
+
+        res.status(200).json({ sucesso: true });
+    } catch (error) {
+        console.error("Erro ao deletar notificação admin:", error);
+        res.status(500).json({ erro: "Erro ao excluir notificação." });
+    }
+};

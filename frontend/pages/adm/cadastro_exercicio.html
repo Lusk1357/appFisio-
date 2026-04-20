@@ -105,28 +105,30 @@
             <div class="form-group">
                 <label>Imagem do Exercício (Opcional)</label>
                 <div class="image-mode-toggle">
-                    <button type="button" class="toggle-btn active" data-mode="local" id="btnModoLocal">
-                        <i class="fa-solid fa-folder-open"></i> Imagem Local
+                    <button type="button" class="toggle-btn active" data-mode="upload" id="btnModoUpload">
+                        <i class="fa-solid fa-cloud-arrow-up"></i> Fazer Upload
                     </button>
                     <button type="button" class="toggle-btn" data-mode="url" id="btnModoUrl">
                         <i class="fa-solid fa-link"></i> URL Externa
                     </button>
                 </div>
-                <!-- Modo Local -->
-                <div class="input-wrapper" id="imagemLocalWrapper">
-                    <select id="imagemLocalSelect">
-                        <option value="" disabled selected>Carregando imagens...</option>
-                    </select>
-                    <i class="fa-solid fa-image input-icon"></i>
+                <!-- Modo Upload -->
+                <div class="file-upload-wrapper" id="imagemUploadWrapper">
+                    <input type="file" id="imageUploadInput" accept="image/*" />
+                    <div class="file-upload-content">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                        <span class="file-upload-text">Toque para escolher uma foto<br><small style="color:#94a3b8;font-size:12px;">Ou arraste e solte o arquivo aqui</small></span>
+                        <span class="file-name-display" id="fileNameDisplay"></span>
+                    </div>
                 </div>
                 <!-- Modo URL -->
-                <div class="input-wrapper" id="imagemUrlWrapper" style="display:none;">
+                <div class="input-wrapper" id="imagemUrlWrapper" style="display:none; margin-top:8px;">
                     <input type="text" id="imageUrl" placeholder="Ex: https://exemplo.com/imagem.png" />
                     <i class="fa-solid fa-link input-icon"></i>
                 </div>
                 <!-- Preview -->
-                <div id="imagePreview" style="margin-top:8px; display:none; text-align:center;">
-                    <img id="imgPreviewTag" src="" alt="Prévia" style="max-height:100px; border-radius:10px; border:1px solid #e2e8f0;" />
+                <div id="imagePreview">
+                    <img id="imgPreviewTag" src="" alt="Prévia" />
                 </div>
             </div>
 

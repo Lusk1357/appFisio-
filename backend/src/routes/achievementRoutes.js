@@ -13,4 +13,9 @@ router.delete('/:id', verificarToken, achievementController.deleteAchievement);
 // ADMIN: Enviar notificação direta para um usuário específico
 router.post('/admin/:userId', verificarToken, checkAdmin, achievementController.sendDirectNotification);
 
+// ADMIN: Gerenciar Notificações (Histórico)
+router.get('/admin/patient/:userId', verificarToken, checkAdmin, achievementController.getAdminNotificationsForPatient);
+router.put('/admin/:id', verificarToken, checkAdmin, achievementController.updateAdminNotification);
+router.delete('/admin/:id', verificarToken, checkAdmin, achievementController.deleteAdminNotification);
+
 module.exports = router;
