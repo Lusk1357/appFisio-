@@ -2,8 +2,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // showToast é provido globalmente pelo components.js
 
 
-  const btnReform = document.getElementById("btnRecoverParams");
   const telInput = document.getElementById("telefone");
+  const emailInput = document.getElementById("email");
 
   // Máscara de telefone
   if (telInput) {
@@ -21,7 +21,6 @@ document.addEventListener("DOMContentLoaded", () => {
     form.addEventListener("submit", (e) => {
       e.preventDefault();
 
-      const emailInput = document.getElementById("email");
       const emailVal = emailInput.value.trim();
       const telVal = telInput.value.trim();
 
@@ -36,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       // Realiza a chamada real para a API
-      const btn = e.target;
+      const btn = document.getElementById("btnRecoverParams");
       const originalText = btn.textContent;
       btn.textContent = "VERIFICANDO...";
       btn.disabled = true;

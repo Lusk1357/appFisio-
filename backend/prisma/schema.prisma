@@ -17,6 +17,8 @@ model User {
   name           String
   email          String          @unique
   passwordHash   String
+  telefone       String?         /// @encrypted
+  recoveryEmail  String?         @unique
   role           String          @default("PATIENT")
   createdAt      DateTime        @default(now())
   achievements   Achievement[]

@@ -35,6 +35,7 @@ exports.register = async (req, res) => {
                 name,
                 email, // Usado como Login internamente
                 passwordHash,
+                telefone: telefone || null,
                 role: role || "PATIENT" // Padrão é paciente, a não ser que explícito
             }
         });
@@ -116,7 +117,7 @@ exports.logout = (req, res) => {
 
 // ── Recuperação de Senha (Self-Service) ──
 
-// Passo 1: Verificar se os dados (Login + Celular) batem
+// Passo 1: Verificar se os dados (Login + Telefone) batem
 exports.verifyRecoveryData = async (req, res) => {
     try {
         const { email, telefone } = req.body;
@@ -125,9 +126,20 @@ exports.verifyRecoveryData = async (req, res) => {
             return res.status(400).json({ erro: "E-mail é obrigatório." });
         }
 
-        // 1. Busca o usuário
-        const user = await prisma.user.findUnique({
-            where: { email },
+        // 1. Busca o usuário com lógica diferenciada (Segurança para Admin)
+        const user = await prisma.user.findFirst({
+            where: {
+                OR: [
+                    { 
+                        email: email,
+                        role: 'PATIENT' // Pacientes recuperam pelo e-mail principal
+                    },
+                    { 
+                        recoveryEmail: email,
+                        role: 'ADMIN' // Admins recuperam APENAS pelo e-mail de recuperação
+                    }
+                ]
+            },
             include: { patientProfile: true }
         });
 
@@ -135,24 +147,23 @@ exports.verifyRecoveryData = async (req, res) => {
             return res.status(404).json({ erro: "Dados incorretos ou não encontrados." });
         }
 
-        // 2. Verificação de telefone (apenas para pacientes)
-        if (user.role === 'PATIENT') {
-            if (!telefone) {
-                return res.status(400).json({ erro: "Telefone é obrigatório para pacientes." });
-            }
-
-            if (!user.patientProfile) {
-                return res.status(404).json({ erro: "Dados incorretos ou não encontrados." });
-            }
-
-            const phoneDb = (user.patientProfile.telefone || "").replace(/\D/g, '');
-            const phoneInput = telefone.replace(/\D/g, '');
-
-            if (!phoneDb || phoneDb !== phoneInput) {
-                return res.status(401).json({ erro: "Dados incorretos. Verifique o telefone informado." });
-            }
+        // 2. Verificação de telefone (Para Paciente ou Admin)
+        if (!telefone) {
+            return res.status(400).json({ erro: "Telefone é obrigatório para recuperação." });
         }
-        // Para ADMIN: não exige telefone
+
+        const phoneInput = telefone.replace(/\D/g, '');
+
+        // Tenta pegar o telefone da tabela User primeiro, senão tenta da PatientProfile (legado)
+        let phoneDb = (user.telefone || "").replace(/\D/g, '');
+        
+        if (!phoneDb && user.patientProfile) {
+            phoneDb = (user.patientProfile.telefone || "").replace(/\D/g, '');
+        }
+
+        if (!phoneDb || phoneDb !== phoneInput) {
+            return res.status(401).json({ erro: "Dados incorretos. Verifique o telefone informado." });
+        }
 
         // 3. Sucesso! Gera um Token Temporário de 15 minutos especializado para "Reset"
         const tokenPayload = {

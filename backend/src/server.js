@@ -119,6 +119,13 @@ if (process.env.NODE_ENV !== 'production') {
 app.use(express.static(path.join(__dirname, '../../frontend')));
 app.use('/frontend', express.static(path.join(__dirname, '../../frontend')));
 
+// Rota de Configurações Públicas (Frontend)
+app.get('/api/config', (req, res) => {
+    res.json({
+        whatsapp: process.env.WHATSAPP_FISIO || '5511999999999'
+    });
+});
+
 // Rota de Healthcheck
 app.get('/api/health', (req, res) => {
     res.json({ status: 'PRO FISIO SIMIONATO API is running!' });

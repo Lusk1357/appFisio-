@@ -594,3 +594,28 @@ async function checkMilestones() {
     console.error("Erro ao verificar marcos:", e);
   }
 }
+
+/**
+ * Auto-injetor de Configurações Dinâmicas (ex: WhatsApp do Fisioterapeuta)
+ */
+document.addEventListener("DOMContentLoaded", async () => {
+    try {
+        const res = await fetch("/api/config");
+        if (!res.ok) return;
+        const config = await res.json();
+        
+        if (config.whatsapp) {
+            // Procura todos os links que apontam pro wa.me
+            const waLinks = document.querySelectorAll('a[href*="wa.me/"]');
+            waLinks.forEach(link => {
+                const url = new URL(link.href);
+                // url.pathname é "/5511999999999"
+                // url.search (ou searchParams) guarda as mensagens ?text=...
+                const currentSearch = url.search;
+                link.href = `https://wa.me/${config.whatsapp}${currentSearch}`;
+            });
+        }
+    } catch (e) {
+        console.error("Erro ao carregar configurações do sistema (WhatsApp).", e);
+    }
+});

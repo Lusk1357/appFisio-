@@ -20,14 +20,3 @@ lucas.pereira
 1234567
 
 
-precisamos fazer uma seria de melhorias e mudanças, faça um plano de ação:
-
-- que o admin tenha possibilidade de mudar sua senha
-- revisar o por que ao concluir o exercicio, ainda fica a opção de fazer novamente
-- tela de progresso do paciente nao esta atualizando
-- na tela de ADM tem que ter uum historico de notificações que ele enviou a determinado paciente, possuindo a opção de apagar ou modificar a notição,
-  ou que seja enviada novamente ao paciente
-- revise a parte de adicionar exercicios, principalmente para adiconar imagem no exercicio
--na lista de exercicios, crie a opção de filtro para que os recem adicionados fiquem no topo 
-- na tela de paciente, no menu lateral, acima de configurações, crie a opção Contatar fisioterapeuta
-
